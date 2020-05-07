@@ -25,6 +25,22 @@
 	</repositories>
 
 	<dependencies>
+	
+		<!-- MongoDB와 스프링 프레임워크와의 연동을 위해 추가 -->
+		<!-- https://mvnrepository.com/artifact/org.springframework.data/spring-data-mongodb -->
+		<dependency>
+			<groupId>org.springframework.data</groupId>
+			<artifactId>spring-data-mongodb</artifactId>
+			<version>1.9.11.RELEASE</version>
+		</dependency>
+		
+		<!-- MongoDB 연동을 위해 Driver 파일 다운로드 -->
+		<dependency>
+			<groupId>org.mongodb</groupId>
+			<artifactId>mongo-java-driver</artifactId>
+			<version>3.11.1</version>
+		</dependency>
+	
 		<!-- 웹 크롤링을 위한 jsoup 라이브러리 -->
 		<dependency>
 			<groupId>org.jsoup</groupId>

@@ -6,8 +6,6 @@
     	<!-- 사용할 DTO 등록  -->
     	<typeAlias type="poly.dto.MovieDTO" alias="MovieDTO"/>
     	<typeAlias type="poly.dto.WeatherDTO" alias="WeatherDTO"/>
-		<!-- <typeAlias type="poly.dto.NoticeDTO" alias="NoticeDTO"/>
-		<typeAlias type="poly.dto.UserDTO" alias="UserDTO"/>
-		<typeAlias type="poly.dto.BoardDTO" alias="BoardDTO"/> -->
+    	<typeAlias type="poly.dto.MelonDTO" alias="MelonDTO"/>
     </typeAliases>
 </configuration>
