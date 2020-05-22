@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import poly.dto.CommuDTO;
 import poly.service.ICommuService;
+import poly.util.DateUtil;
 
 @Controller
 public class CommuController {
@@ -59,7 +60,8 @@ public class CommuController {
 	public List<CommuDTO> getDcData(HttpServletRequest request, HttpServletResponse response) throws Exception {
 		log.info(this.getClass().getName() + " getDcData start!");
 
-		List<CommuDTO> rList = commuService.getData();
+		String colNm = "DcCom_" + DateUtil.getDateTime("yyyyMMddHH");
+		List<CommuDTO> rList = commuService.getData(colNm);
 
 		if (rList == null) {
 			rList = new ArrayList<CommuDTO>();
@@ -68,6 +70,21 @@ public class CommuController {
 		log.info(this.getClass().getName() + " getDcData end!");
 
 		return rList;
+	}
+	/**
+	 * 크롤링 데이터 분석하기
+	 */
+	@RequestMapping(value = "Data/AnalysisData")
+	@ResponseBody
+	public String AnalysisData(HttpServletRequest request, HttpServletResponse response) throws Exception {
+
+		log.info(this.getClass().getName() + " AnalysisData start!");
+
+		commuService.AnalysisData();
+
+		log.info(this.getClass().getName() + " AnalysisData end!");
+
+		return "success";
 	}
 
 }

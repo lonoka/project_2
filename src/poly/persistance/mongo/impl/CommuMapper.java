@@ -14,6 +14,7 @@ import com.mongodb.DBCollection;
 import com.mongodb.DBObject;
 
 import poly.dto.CommuDTO;
+import poly.dto.DataDTO;
 import poly.dto.MelonDTO;
 import poly.persistance.mongo.ICommuMapper;
 import poly.util.CmmUtil;
@@ -112,6 +113,73 @@ public class CommuMapper implements ICommuMapper {
 		}
 
 		log.info(this.getClass().getName() + " getData end!");
+
+		return rList;
+	}
+
+	@Override
+	public int insertAnalysisData(ArrayList<DataDTO> pList, String colNm) {
+		log.info(this.getClass().getName() + " insertAnalysisData Start!");
+
+		int res = 0;
+
+		if (pList == null) {
+			pList = new ArrayList<DataDTO>();
+		}
+
+		Iterator<DataDTO> it = pList.iterator();
+
+		while (it.hasNext()) {
+			DataDTO pDTO = (DataDTO) it.next();
+
+			if (pDTO == null) {
+				pDTO = new DataDTO();
+			}
+
+			mongodb.insert(pDTO, colNm);
+
+		}
+
+		res = 1;
+
+		log.info(this.getClass().getName() + " insertAnalysisData end!");
+
+		return res;
+		
+	}
+
+	@Override
+	public List<DataDTO> getAnalysisData(String colNm) throws Exception {
+		log.info(this.getClass().getName() + " getAnalysisData Start!");
+		DBCollection rCol = mongodb.getCollection(colNm);
+
+		Iterator<DBObject> cursor = rCol.find();
+
+		List<DataDTO> rList = new ArrayList<DataDTO>();
+
+		DataDTO rDTO = null;
+
+		while (cursor.hasNext()) {
+			rDTO = new DataDTO();
+			final DBObject current = cursor.next();
+
+			String analysis_time = CmmUtil.nvl((String) current.get("analysis_time"));
+			String commu_name = CmmUtil.nvl((String) current.get("commu_name"));
+			String word = CmmUtil.nvl((String) current.get("word"));
+			String count = CmmUtil.nvl((String) current.get("count"));
+
+			rDTO.setAnalysis_time(analysis_time);
+			rDTO.setCommu_name(commu_name);
+			rDTO.setWord(word);
+			rDTO.setCount(count);
+
+			rList.add(rDTO);
+
+			rDTO = null;
+
+		}
+
+		log.info(this.getClass().getName() + " getAnalysisData end!");
 
 		return rList;
 	}

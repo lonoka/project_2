@@ -1,5 +1,7 @@
 package poly.controller;
 
+import java.util.List;
+
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -9,29 +11,39 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import poly.service.IMovieRankService;
-import poly.service.IWeatherService;
+import poly.dto.DataDTO;
+import poly.service.ICommuService;
+import poly.util.DateUtil;
 
 @Controller
 public class MainController {
 	private Logger log = Logger.getLogger(this.getClass());
-	
-	@Resource(name = "WeatherService")
-	private IWeatherService weatherService;
-	
-	// TTS페이지
+
+	// 크롤링 데이터를 확인 및 들고오기 위한 서비스
+	@Resource(name = "CommuService")
+	private ICommuService commuService;
+
+	// 메인 페이지
 	@RequestMapping(value = "index")
 	public String index(HttpServletRequest request, Model model, HttpSession session) throws Exception {
-		weatherService.getWeatherInfoFromWEB();
+		log.info(this.getClass().getName() + " index start!");
+		int result = 0;
+		// 값 있는지 확인
+		result = commuService.checkCrawlingData();
+
+		result = commuService.checkAnalysisData();
+
+		String colNm = "AnalysisDcCom_" + DateUtil.getDateTime("yyyyMMddHH");
+
+		List<DataDTO> rList = commuService.getAnalysisData(colNm);
+		// 있는경우 값 들고와서 워드클라우드 보여주기
+
+		model.addAttribute("rList", rList);
+
+		log.info(this.getClass().getName() + " index end!");
+
 		return "/index";
 
 	}
 
-	// TTS페이지
-	@RequestMapping(value = "TTS")
-	public String TTS(HttpServletRequest request, Model model, HttpSession session) {
-
-		return "/TTS";
-
-	}
 }
