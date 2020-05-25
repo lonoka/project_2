@@ -25,6 +25,7 @@ public class SchedulerService implements ISchedulerService {
 		
 		log.info(this.getClass().getName() + " test!!!");
 		commuService.collectDcComData();
+		commuService.AnalysisData();
 	}
 
 }
