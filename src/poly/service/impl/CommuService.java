@@ -62,7 +62,7 @@ public class CommuService implements ICommuService {
 				CommuDTO pDTO = new CommuDTO();
 
 				pDTO.setCollect_time(DateUtil.getDateTime("yyyyMMddHHmmss"));
-				pDTO.setCommu_name("DC inside 컴본갤");
+				pDTO.setCommu_name("컴퓨터 본체 갤러리");
 				pDTO.setTime(time);
 				pDTO.setTitle(title);
 				pDTO.setWriter(writer);
@@ -196,7 +196,7 @@ public class CommuService implements ICommuService {
 			for (int i = 0; i < noun.length; i++) {
 				pDTO = new DataDTO();
 				pDTO.setAnalysis_time(colNm);
-				pDTO.setCommu_name("DC inside 컴본갤");
+				pDTO.setCommu_name("컴퓨터 본체 갤러리");
 				pDTO.setWord(noun[i]);
 				pDTO.setCount(count[i]);
 				pList.add(pDTO);

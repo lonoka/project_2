@@ -16,6 +16,9 @@
 <link
 	href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,700"
 	rel="stylesheet">
+<link
+	href="https://fonts.googleapis.com/css2?family=Nanum+Gothic:wght@400;700;800&display=swap"
+	rel="stylesheet">
 <link rel="stylesheet" href="/fonts/icomoon/style.css">
 <link rel="stylesheet" href="/css/bootstrap.min.css">
 <link rel="stylesheet" href="/css/jquery-ui.css">
@@ -27,6 +30,11 @@
 <link rel="stylesheet" href="/fonts/flaticon/font/flaticon.css">
 <link rel="stylesheet" href="/css/aos.css">
 <link rel="stylesheet" href="/css/style.css">
+<style type="text/css">
+h2 a:hover {
+	color: aliceblue !important;
+}
+</style>
 
 <title>Insert title here</title>
 </head>
@@ -59,7 +67,7 @@
 
 					<div class="col-6 col-xl-2">
 						<h1 class="mb-0 site-logo">
-							<a href="index.html" class="h2 mb-0">CA<span
+							<a href="/index.do" class="h2 mb-0">CA<span
 								class="text-primary">.</span>
 							</a>
 						</h1>
@@ -71,10 +79,12 @@
 
 							<ul
 								class="site-menu main-menu js-clone-nav mr-auto d-none d-lg-block">
-								<li><a href="" class="nav-link">Login</a></li>
-
-								<li><a href="#blog-section" class="nav-link">Sign in</a></li>
-								<li><a href="#contact-section" class="nav-link">Contact</a></li>
+								<li><a href="javascript:void(0)" class="nav-link"
+									data-toggle="modal" data-target="#login_modal">Login</a></li>
+								<li><a href="javascript:void(0)" class="nav-link"
+									data-toggle="modal" data-target="#Sign_modal">Sign up</a></li>
+								<li><a href="javascript:void(0)" class="nav-link"
+									data-toggle="modal" data-target="#contact_modal">Contact</a></li>
 							</ul>
 						</nav>
 					</div>
@@ -90,6 +100,70 @@
 			</div>
 
 		</header>
+		<!-- Modal -->
+		<div class="modal fade" id="login_modal" tabindex="-1" role="dialog"
+			aria-labelledby="loginLabel" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h4 class="modal-title" id="loginLabel">Login</h4>
+						<button type="button" class="close" data-dismiss="modal"
+							aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+
+					</div>
+					<div class="modal-body">...</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+						<button type="button" class="btn btn-primary">Save
+							changes</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="modal fade" id="Sign_modal" tabindex="-1" role="dialog"
+			aria-labelledby="signLabel" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h4 class="modal-title" id="signLabel">Sign up</h4>
+						<button type="button" class="close" data-dismiss="modal"
+							aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+
+					</div>
+					<div class="modal-body">...</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+						<button type="button" class="btn btn-primary">Save
+							changes</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="modal fade" id="contact_modal" tabindex="-1" role="dialog"
+			aria-labelledby="contactLabel" aria-hidden="true">
+			<div class="modal-dialog modal-lg">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h4 class="modal-title" id="contactLabel">Contact</h4>
+						<button type="button" class="close" data-dismiss="modal"
+							aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+
+					</div>
+					<div class="modal-body">...</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+						<button type="button" class="btn btn-primary">Save
+							changes</button>
+					</div>
+				</div>
+			</div>
+		</div>
 
 
 
@@ -105,11 +179,14 @@
 						<div id="slider" class="carousel slide" data-ride="carousel">
 							<ol class="carousel-indicators">
 								<li data-target="#slider" data-slide-to="0" class="active"></li>
-								<li data-target="#slider" data-slide-to="1"></li>
+
 							</ol>
 							<div class="carousel-inner">
 								<div class="carousel-item active">
-									<h2><%=rList.get(0).getCommu_name()%></h2>
+									<h2 style="font-family: Nanum Gothic">
+										<a href="javascript:void(0)" class="" data-toggle="modal"
+											data-target="#comu_modal_1" style="color: aliceblue!important;"><%=rList.get(0).getCommu_name()%></a>
+									</h2>
 									<div id="chartdiv" class="" style="height: 600px; width: 100%"></div>
 								</div>
 							</div>
@@ -123,7 +200,7 @@
 								</div>
 								<div class="col-12 col-md-3">
 									<button type="submit" class="btn btn-block btn-lg btn-primary"
-										style="padding-top: 8.5px; padding-bottom: 8.5px">검색</button>
+										style="padding-top: 8.5px; padding-bottom: 8.5px; color: gray;">검색</button>
 								</div>
 							</div>
 						</div>
@@ -134,7 +211,27 @@
 
 			</div>
 
+		</div>
+		<div class="modal fade" id="comu_modal_1" tabindex="-1" role="dialog"
+			aria-labelledby="contactLabel" aria-hidden="true">
+			<div class="modal-dialog modal-lg">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h4 class="modal-title" id="contactLabel">comu_modal_1</h4>
+						<button type="button" class="close" data-dismiss="modal"
+							aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
 
+					</div>
+					<div class="modal-body">...</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+						<button type="button" class="btn btn-primary">Save
+							changes</button>
+					</div>
+				</div>
+			</div>
 		</div>
 
 	</div>
@@ -179,6 +276,11 @@ series.dataFields.word = "word";
 series.dataFields.value = "count";
 
 }); // end am4core.ready()
+</script>
+	<script>
+    $('.carousel').carousel({
+  interval: 10000
+})  
 </script>
 
 
