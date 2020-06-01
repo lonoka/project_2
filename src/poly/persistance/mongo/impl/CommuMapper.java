@@ -166,7 +166,7 @@ public class CommuMapper implements ICommuMapper {
 			String analysis_time = CmmUtil.nvl((String) current.get("analysis_time"));
 			String commu_name = CmmUtil.nvl((String) current.get("commu_name"));
 			String word = CmmUtil.nvl((String) current.get("word"));
-			String count = CmmUtil.nvl((String) current.get("count"));
+			int count = (int) current.get("count");
 
 			rDTO.setAnalysis_time(analysis_time);
 			rDTO.setCommu_name(commu_name);

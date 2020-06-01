@@ -56,32 +56,23 @@ public class RController {
 
 		RConnection c = new RConnection();
 		String[] str = new String[rList.size()];
+		String[] writer = new String[rList.size()];
+		String[] time = new String[rList.size()];
 		for (int i = 0; i < rList.size(); i++) {
 			String match = "[^\uAC00-\uD7A3xfe0-9a-zA-Z\\s]";
 			str[i] = rList.get(i).getTitle().replaceAll(match, "");
+			writer[i] = rList.get(i).getWriter();
+			time[i] = rList.get(i).getTime().substring(0,13);
 		}
 		c.assign("pList", str);
-		c.eval("library(KoNLP)");
-		c.eval("library(dplyr)");
-		c.eval("useNIADic()");
-		c.eval("library(reshape2)");
-		c.eval("library(stringr)");
-		c.eval("m_df <- pList %>% SimplePos09 %>% melt %>% as_tibble %>% select(3,1)");
-		c.eval("m_df <- m_df %>% mutate(noun=str_match(value, '([A-Z|a-z|0-9|가-힣]+)/N')[,2]) %>% na.omit %>% count(noun, sort = TRUE)");
-		c.eval("m_df <- filter(m_df,nchar(noun)>=2)");
+		c.assign("writer", writer);
+		c.assign("time", time);
+		c.eval("writer_count <- table(writer)");
+		c.eval("writer_count <- data.frame(writer_count)");
 		
 		REXP x = c.eval("m_df$noun");
 		REXP y = c.eval("m_df$n");
-		c.close();
-		
-		String[] str1 = y.asStrings();
-		log.info("===========================2");
-		String[] str2 = x.asStrings();
-		for (int i = 0; i < str2.length; i++) {
-			log.info(str2[i]+" : "+str1[i]);
-		}
-		log.info("===========================4");
-		return str2[1];
+		return " ";
 
 	}
 }

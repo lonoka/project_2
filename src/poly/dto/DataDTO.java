@@ -4,7 +4,7 @@ public class DataDTO {
 	private String analysis_time;
 	private String commu_name;
 	private String word;
-	private String count;
+	private int count;
 	
 	public String getAnalysis_time() {
 		return analysis_time;
@@ -24,10 +24,10 @@ public class DataDTO {
 	public void setWord(String word) {
 		this.word = word;
 	}
-	public String getCount() {
+	public int getCount() {
 		return count;
 	}
-	public void setCount(String count) {
+	public void setCount(int count) {
 		this.count = count;
 	}
 	

@@ -36,13 +36,19 @@ public class MainController {
 		String colNm = "AnalysisDcCom_" + DateUtil.getDateTime("yyyyMMddHH");
 
 		List<DataDTO> rList = commuService.getAnalysisData(colNm);
+		colNm = "WriterDcCom_" + DateUtil.getDateTime("yyyyMMddHH");
+		List<DataDTO> wList = commuService.getAnalysisData(colNm);
+		colNm = "TimeDcCom_" + DateUtil.getDateTime("yyyyMMddHH");
+		List<DataDTO> tList = commuService.getAnalysisData(colNm);
 		// 있는경우 값 들고와서 워드클라우드 보여주기
 
 		model.addAttribute("rList", rList);
+		model.addAttribute("wList", wList);
+		model.addAttribute("tList", tList);
 
 		log.info(this.getClass().getName() + " index end!");
 
-		return "/index";
+		return "/user/index";
 
 	}
 

@@ -50,7 +50,6 @@ public class CommuService implements ICommuService {
 			Elements element = doc.select("table.gall_list");
 
 			Iterator<Element> postList = element.select("tr.us-post").iterator();
-
 			while (postList.hasNext()) {
 				Element postInfo = postList.next();
 				String title = postInfo.select("td.gall_tit a").eq(0).text();
@@ -109,6 +108,7 @@ public class CommuService implements ICommuService {
 		if (rList == null) {
 			rList = new ArrayList<DataDTO>();
 		}
+		log.info("rList size : "+rList.size());
 
 		log.info(this.getClass().getName() + " getData end!");
 
@@ -173,17 +173,22 @@ public class CommuService implements ICommuService {
 		log.info(rList.size());
 		// 컴본갤
 		if (rList.size() > 0) {
-			String[] str = new String[rList.size()];
+			String[] title = new String[rList.size()];
+			String[] writer = new String[rList.size()];
+			String[] time = new String[rList.size()];
 			for (int i = 0; i < rList.size(); i++) {
 				String match = "[^\uAC00-\uD7A3xfe0-9a-zA-Z\\s]";
-				str[i] = rList.get(i).getTitle().replaceAll(match, "");
+				title[i] = rList.get(i).getTitle().replaceAll(match, "");
+				writer[i] = rList.get(i).getWriter();
+				time[i] = rList.get(i).getTime().substring(0, 15)+"0";
 			}
-			c.assign("pList", str);
-			c.eval("m_df <- pList %>% SimplePos09 %>% melt %>% as_tibble %>% select(3,1)");
+			c.assign("title", title);
+			c.eval("m_df <- title %>% SimplePos09 %>% melt %>% as_tibble %>% select(3,1)");
 			c.eval("m_df <- m_df %>% mutate(noun=str_match(value, '([A-Z|a-z|0-9|가-힣]+)/N')[,2]) %>% na.omit %>% count(noun, sort = TRUE)");
 			c.eval("m_df <- filter(m_df,nchar(noun)>=2)");
 			c.eval("m_df <- filter(m_df,n>=2)");
 
+			// 형태소 분석 결과 몽고DB에 넣기
 			REXP x = c.eval("m_df$noun");
 			REXP y = c.eval("m_df$n");
 			colNm = "AnalysisDcCom_" + DateUtil.getDateTime("yyyyMMddHH");
@@ -198,12 +203,83 @@ public class CommuService implements ICommuService {
 				pDTO.setAnalysis_time(colNm);
 				pDTO.setCommu_name("컴퓨터 본체 갤러리");
 				pDTO.setWord(noun[i]);
-				pDTO.setCount(count[i]);
+				pDTO.setCount(Integer.parseInt(count[i]));
 				pList.add(pDTO);
 				pDTO = null;
 			}
 			commuMapper.createCollection(colNm);
 			commuMapper.insertAnalysisData(pList, colNm);
+
+			pList = null;
+
+			// 글쓴이 분석 결과 몽고 DB에 넣기
+
+			colNm = "WriterDcCom_" + DateUtil.getDateTime("yyyyMMddHH");
+			pList = new ArrayList<DataDTO>();
+
+			List<String> writer_name = new ArrayList<String>();
+			List<Integer> writer_count = new ArrayList<Integer>();
+
+			for (int i = 0; i < writer.length; i++) {
+				if(!writer_name.contains(writer[i])) {
+					writer_name.add(writer[i]);
+					int cnt = 0;
+					for(int j = i;j<writer.length;j++) {
+						if(writer[i].equals(writer[j])) {
+							cnt++;
+						}
+					}
+					writer_count.add(cnt);
+				}
+			}
+			for (int i = 0; i < writer_name.size(); i++) {
+				pDTO = new DataDTO();
+				pDTO.setAnalysis_time(colNm);
+				pDTO.setCommu_name("컴퓨터 본체 갤러리");
+				pDTO.setWord(writer_name.get(i));
+				pDTO.setCount(writer_count.get(i));
+				pList.add(pDTO);
+				pDTO = null;
+			}
+
+			commuMapper.createCollection(colNm);
+			commuMapper.insertAnalysisData(pList, colNm);
+
+			pList = null;
+			// 글쓴 시간대별 분석 결과 몽고 DB에 넣기
+
+			colNm = "TimeDcCom_" + DateUtil.getDateTime("yyyyMMddHH");
+			pList = new ArrayList<DataDTO>();
+			
+			List<String> time_section = new ArrayList<String>();
+			List<Integer> time_count = new ArrayList<Integer>();
+
+			for (int i = 0; i < time.length; i++) {
+				if(!time_section.contains(time[i])) {
+					time_section.add(time[i]);
+					int cnt = 0;
+					for(int j = i;j<time.length;j++) {
+						if(time[i].equals(time[j])) {
+							cnt++;
+						}
+					}
+					time_count.add(cnt);
+				}
+			}
+			for (int i = 0; i < time_section.size(); i++) {
+				pDTO = new DataDTO();
+				pDTO.setAnalysis_time(colNm);
+				pDTO.setCommu_name("컴퓨터 본체 갤러리");
+				pDTO.setWord(time_section.get(i));
+				pDTO.setCount(time_count.get(i));
+				pList.add(pDTO);
+				pDTO = null;
+			}
+
+			commuMapper.createCollection(colNm);
+			commuMapper.insertAnalysisData(pList, colNm);
+
+			pList = null;
 
 		}
 		// 여러 크롤링 하나하나 찾아서 넣기
