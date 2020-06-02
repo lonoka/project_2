@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import poly.dto.CommuDTO;
+import poly.dto.DataDTO;
 import poly.service.ICommuService;
 import poly.util.DateUtil;
 
@@ -55,23 +56,30 @@ public class RController {
 		log.info(rList.size());
 
 		RConnection c = new RConnection();
-		String[] str = new String[rList.size()];
-		String[] writer = new String[rList.size()];
-		String[] time = new String[rList.size()];
+		String[] title = new String[rList.size()];
 		for (int i = 0; i < rList.size(); i++) {
 			String match = "[^\uAC00-\uD7A3xfe0-9a-zA-Z\\s]";
-			str[i] = rList.get(i).getTitle().replaceAll(match, "");
-			writer[i] = rList.get(i).getWriter();
-			time[i] = rList.get(i).getTime().substring(0,13);
+			title[i] = rList.get(i).getTitle().replaceAll(match, "");
 		}
-		c.assign("pList", str);
-		c.assign("writer", writer);
-		c.assign("time", time);
-		c.eval("writer_count <- table(writer)");
-		c.eval("writer_count <- data.frame(writer_count)");
 		
-		REXP x = c.eval("m_df$noun");
-		REXP y = c.eval("m_df$n");
+		c.assign("title", title);
+		c.eval("negative <- readLines('c:\\\\word\\\\negative.txt', encoding = 'UTF-8')");
+		c.eval("positive <- readLines('c:\\\\word\\\\positive.txt', encoding = 'UTF-8')");
+		c.eval("m_df <- title %>% SimplePos09 %>% melt %>% as_tibble %>% select(3,1)");
+		c.eval("m_df <- m_df %>% mutate(noun=str_match(value, '([A-Z|a-z|0-9|가-힣]+)/N')[,2]) %>% na.omit %>% count(noun, sort = TRUE)");
+		c.eval("wordList <- m_df$noun");
+		c.eval("m_df <- filter(m_df,nchar(noun)>=2)");
+		c.eval("m_df <- filter(m_df,n>=2)");
+		c.eval("wordList = unlist(wordList)");
+		c.eval("posM = match(wordList, positive)");
+		c.eval("posM = !is.na(posM)");
+		c.eval("negM = match(wordList, negative)");
+		c.eval("negM = !is.na(negM)");
+		
+		REXP y = c.eval("sum(posM)");
+		log.info(y.asString());
+		REXP z = c.eval("sum(negM)");
+		log.info(z.asString());
 		return " ";
 
 	}

@@ -40,11 +40,15 @@ public class MainController {
 		List<DataDTO> wList = commuService.getAnalysisData(colNm);
 		colNm = "TimeDcCom_" + DateUtil.getDateTime("yyyyMMddHH");
 		List<DataDTO> tList = commuService.getAnalysisData(colNm);
+		colNm = "OpinionDcCom_" + DateUtil.getDateTime("yyyyMMddHH");
+		List<DataDTO> oList = commuService.getAnalysisData(colNm);
 		// 있는경우 값 들고와서 워드클라우드 보여주기
 
 		model.addAttribute("rList", rList);
 		model.addAttribute("wList", wList);
 		model.addAttribute("tList", tList);
+		model.addAttribute("oList", oList);
+
 
 		log.info(this.getClass().getName() + " index end!");
 

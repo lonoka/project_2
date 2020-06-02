@@ -23,8 +23,25 @@
 			<url>http://maven.jahia.org/maven2<!-- https://code.lds.org/nexus/content/groups/main-repo--></url>
 		</repository>
 	</repositories>
+	<!-- 구글 클라우드 플펫폼 사용하기 위한 메니지먼트 -->
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>com.google.cloud</groupId>
+				<artifactId>libraries-bom</artifactId>
+				<version>5.3.0</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
 
 	<dependencies>
+		<!-- 구글 클라우드 플렛폼 사용 -->
+		<dependency>
+			<groupId>com.google.cloud</groupId>
+			<artifactId>google-cloud-language</artifactId>
+		</dependency>
 		<!-- Rserve 사용을 위한 라이브러리 -->
 		<dependency>
 			<groupId>org.rosuda.REngine</groupId>
@@ -36,7 +53,7 @@
 			<artifactId>Rserve</artifactId>
 			<version>1.8.1</version>
 		</dependency>
-		
+
 		<!-- MongoDB와 스프링 프레임워크와의 연동을 위해 추가 -->
 		<!-- https://mvnrepository.com/artifact/org.springframework.data/spring-data-mongodb -->
 		<dependency>

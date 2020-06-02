@@ -8,6 +8,7 @@
 	List<DataDTO> rList = (List<DataDTO>) request.getAttribute("rList");
 	List<DataDTO> wList = (List<DataDTO>) request.getAttribute("wList");
 	List<DataDTO> tList = (List<DataDTO>) request.getAttribute("tList");
+	List<DataDTO> oList = (List<DataDTO>) request.getAttribute("oList");
 	String userId = (String) session.getAttribute("userId");
 	String userAuthor = (String) session.getAttribute("userAuthor");
 %>
@@ -202,9 +203,14 @@ h2 a:hover {
 					</div>
 					<div class="modal-body">
 						<div class="row">
+							<div id="" class="col-md-6"
+								style="border: 1px solid black;"></div>
+							<div id="" class="col-md-6" style="text-align: center;">커뮤니티 긍정, 부정 정도 <br>(0에 가까울수록 부정적입니다.)</div>
+						</div>
+						<div class="row">
 							<div id="time_chart_1" class="col-md-6"
-								style="border: 1px solid black; height: 200px;"></div>
-							<div class="col-md-6">긍정 부정 차트</div>
+								style="border: 1px solid black; height: 250px;"></div>
+							<div id="opinion_chart_1" class="col-md-6"></div>
 						</div>
 						게시글 작성자
 						<div id="writer_chart_1" class="col-md-12"
@@ -240,6 +246,8 @@ h2 a:hover {
 	<script src="https://www.amcharts.com/lib/4/charts.js"></script>
 	<script src="https://www.amcharts.com/lib/4/plugins/wordCloud.js"></script>
 	<script src="https://www.amcharts.com/lib/4/themes/animated.js"></script>
+
+
 
 	<!-- 워드클라우드 스크립트 -->
 	<script type="text/javascript">
@@ -279,7 +287,6 @@ h2 a:hover {
 		];
 	<%}%>
 	
-	console.log(wList);
 	am4core.ready(function() {
 		// Themes begin
 		am4core.useTheme(am4themes_animated);
@@ -304,6 +311,53 @@ h2 a:hover {
 			{section:'<%=tList.get(i).getWord()%>', count:<%=Integer.toString(tList.get(i).getCount())%>},
 		<%}%>
 		];
+	</script>
+	<!-- 오피니언 마이닝 -->
+	<script type="text/javascript">
+	var positive = <%=oList.get(0).getCount()%>
+	var negative = <%=oList.get(1).getCount()%>
+	var cal = (positive)/(positive+negative);
+	cal = cal*100;
+	am4core.ready(function() {
+
+		// Themes begin
+		am4core.useTheme(am4themes_animated);
+		// Themes end
+
+		// create chart
+		var chart = am4core.create("opinion_chart_1", am4charts.GaugeChart);
+		chart.hiddenState.properties.opacity = 0; // this makes initial fade in effect
+
+		chart.innerRadius = -25;
+
+		var axis = chart.xAxes.push(new am4charts.ValueAxis());
+		axis.min = 0;
+		axis.max = 100;
+		axis.strictMinMax = true;
+		axis.renderer.grid.template.stroke = new am4core.InterfaceColorSet().getFor("background");
+		axis.renderer.grid.template.strokeOpacity = 0.3;
+
+		var colorSet = new am4core.ColorSet();
+
+		var range0 = axis.axisRanges.create();
+		range0.value = 0;
+		range0.endValue = 50;
+		range0.axisFill.fillOpacity = 1;
+		range0.axisFill.fill = am4core.color("rgb(255,0,0)");
+		range0.axisFill.zIndex = - 1;
+
+		var range1 = axis.axisRanges.create();
+		range1.value = 50;
+		range1.endValue = 100;
+		range1.axisFill.fillOpacity = 1;
+		range1.axisFill.fill = am4core.color("rgb(0,255,0)");
+		range1.axisFill.zIndex = -1;
+
+		var hand = chart.hands.push(new am4charts.ClockHand());
+
+		hand.showValue(cal, 100, am4core.ease.cubicOut);
+
+		}); // end am4core.ready()
 	</script>
 	<script>
     $('.carousel').carousel({

@@ -157,12 +157,10 @@ public class CommuService implements ICommuService {
 
 		// R 연결 후 라이브러리 추가
 		RConnection c = new RConnection();
+		c.eval("negative <- readLines('c:\\\\word\\\\negative.txt', encoding = 'UTF-8')");
+		c.eval("positive <- readLines('c:\\\\word\\\\positive.txt', encoding = 'UTF-8')");
 
-		c.eval("library(KoNLP)");
-		c.eval("library(dplyr)");
-		c.eval("useNIADic()");
-		c.eval("library(reshape2)");
-		c.eval("library(stringr)");
+		
 		String colNm = "DcCom_" + DateUtil.getDateTime("yyyyMMddHH");
 
 		List<CommuDTO> rList = commuService.getData(colNm);
@@ -183,11 +181,19 @@ public class CommuService implements ICommuService {
 				time[i] = rList.get(i).getTime().substring(0, 15)+"0";
 			}
 			c.assign("title", title);
+			//형태소 분석
 			c.eval("m_df <- title %>% SimplePos09 %>% melt %>% as_tibble %>% select(3,1)");
 			c.eval("m_df <- m_df %>% mutate(noun=str_match(value, '([A-Z|a-z|0-9|가-힣]+)/N')[,2]) %>% na.omit %>% count(noun, sort = TRUE)");
+			c.eval("wordList <- m_df$noun");
 			c.eval("m_df <- filter(m_df,nchar(noun)>=2)");
 			c.eval("m_df <- filter(m_df,n>=2)");
-
+			//긍정 부정 분석
+			c.eval("wordList = unlist(wordList)");
+			c.eval("posM = match(wordList, positive)");
+			c.eval("posM = !is.na(posM)");
+			c.eval("negM = match(wordList, negative)");
+			c.eval("negM = !is.na(negM)");
+			
 			// 형태소 분석 결과 몽고DB에 넣기
 			REXP x = c.eval("m_df$noun");
 			REXP y = c.eval("m_df$n");
@@ -207,6 +213,34 @@ public class CommuService implements ICommuService {
 				pList.add(pDTO);
 				pDTO = null;
 			}
+			commuMapper.createCollection(colNm);
+			commuMapper.insertAnalysisData(pList, colNm);
+
+			pList = null;
+			
+			//긍정 부정 결과 몽고DB에 넣기
+			
+			colNm = "OpinionDcCom_" + DateUtil.getDateTime("yyyyMMddHH");
+			pList = new ArrayList<DataDTO>();
+			x = c.eval("sum(posM)");
+			y = c.eval("sum(negM)");
+			
+			pDTO = new DataDTO();
+			pDTO.setAnalysis_time(colNm);
+			pDTO.setCommu_name("컴퓨터 본체 갤러리");
+			pDTO.setWord("긍정");
+			pDTO.setCount(Integer.parseInt(x.asString()));
+			pList.add(pDTO);
+			pDTO = null;
+			
+			pDTO = new DataDTO();
+			pDTO.setAnalysis_time(colNm);
+			pDTO.setCommu_name("컴퓨터 본체 갤러리");
+			pDTO.setWord("부정");
+			pDTO.setCount(Integer.parseInt(y.asString()));
+			pList.add(pDTO);
+			pDTO = null;
+
 			commuMapper.createCollection(colNm);
 			commuMapper.insertAnalysisData(pList, colNm);
 
