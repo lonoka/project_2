@@ -2,7 +2,7 @@
 	pageEncoding="UTF-8"%>
 <div class="modal fade" id="contact_modal" tabindex="-1" role="dialog"
 	aria-labelledby="contactLabel" aria-hidden="true">
-	<div class="modal-dialog modal-lg">
+	<div class="modal-dialog modal-dialog-centered">
 		<div class="modal-content">
 			<div class="modal-header">
 				<h4 class="modal-title" id="contactLabel">Contact</h4>
@@ -15,7 +15,7 @@
 			<form action="/contactSend.do" class="" onsubmit="return check()"
 				method="post">
 				<div class="modal-body">
-					<div class="col-md-10" style="margin: auto;">
+					<div class="col-md-12" style="margin: auto;">
 						<div class="control-group form-group">
 							<div class="controls">
 								<label>Full Name:</label> <input class="form-control"

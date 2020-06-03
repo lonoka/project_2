@@ -108,7 +108,7 @@ public class CommuService implements ICommuService {
 		if (rList == null) {
 			rList = new ArrayList<DataDTO>();
 		}
-		log.info("rList size : "+rList.size());
+		log.info("rList size : " + rList.size());
 
 		log.info(this.getClass().getName() + " getData end!");
 
@@ -160,7 +160,6 @@ public class CommuService implements ICommuService {
 		c.eval("negative <- readLines('c:\\\\word\\\\negative.txt', encoding = 'UTF-8')");
 		c.eval("positive <- readLines('c:\\\\word\\\\positive.txt', encoding = 'UTF-8')");
 
-		
 		String colNm = "DcCom_" + DateUtil.getDateTime("yyyyMMddHH");
 
 		List<CommuDTO> rList = commuService.getData(colNm);
@@ -176,24 +175,24 @@ public class CommuService implements ICommuService {
 			String[] time = new String[rList.size()];
 			for (int i = 0; i < rList.size(); i++) {
 				String match = "[^\uAC00-\uD7A3xfe0-9a-zA-Z\\s]";
-				title[i] = rList.get(i).getTitle().replaceAll(match, "");
+				title[i] = rList.get(i).getTitle().replaceAll(match, "").toLowerCase();
 				writer[i] = rList.get(i).getWriter();
-				time[i] = rList.get(i).getTime().substring(0, 15)+"0";
+				time[i] = rList.get(i).getTime().substring(0, 15) + "0";
 			}
 			c.assign("title", title);
-			//형태소 분석
+			// 형태소 분석
 			c.eval("m_df <- title %>% SimplePos09 %>% melt %>% as_tibble %>% select(3,1)");
 			c.eval("m_df <- m_df %>% mutate(noun=str_match(value, '([A-Z|a-z|0-9|가-힣]+)/N')[,2]) %>% na.omit %>% count(noun, sort = TRUE)");
 			c.eval("wordList <- m_df$noun");
 			c.eval("m_df <- filter(m_df,nchar(noun)>=2)");
 			c.eval("m_df <- filter(m_df,n>=2)");
-			//긍정 부정 분석
+			// 긍정 부정 분석
 			c.eval("wordList = unlist(wordList)");
 			c.eval("posM = match(wordList, positive)");
 			c.eval("posM = !is.na(posM)");
 			c.eval("negM = match(wordList, negative)");
 			c.eval("negM = !is.na(negM)");
-			
+
 			// 형태소 분석 결과 몽고DB에 넣기
 			REXP x = c.eval("m_df$noun");
 			REXP y = c.eval("m_df$n");
@@ -217,14 +216,14 @@ public class CommuService implements ICommuService {
 			commuMapper.insertAnalysisData(pList, colNm);
 
 			pList = null;
-			
-			//긍정 부정 결과 몽고DB에 넣기
-			
+
+			// 긍정 부정 결과 몽고DB에 넣기
+
 			colNm = "OpinionDcCom_" + DateUtil.getDateTime("yyyyMMddHH");
 			pList = new ArrayList<DataDTO>();
 			x = c.eval("sum(posM)");
 			y = c.eval("sum(negM)");
-			
+
 			pDTO = new DataDTO();
 			pDTO.setAnalysis_time(colNm);
 			pDTO.setCommu_name("컴퓨터 본체 갤러리");
@@ -232,7 +231,7 @@ public class CommuService implements ICommuService {
 			pDTO.setCount(Integer.parseInt(x.asString()));
 			pList.add(pDTO);
 			pDTO = null;
-			
+
 			pDTO = new DataDTO();
 			pDTO.setAnalysis_time(colNm);
 			pDTO.setCommu_name("컴퓨터 본체 갤러리");
@@ -255,11 +254,11 @@ public class CommuService implements ICommuService {
 			List<Integer> writer_count = new ArrayList<Integer>();
 
 			for (int i = 0; i < writer.length; i++) {
-				if(!writer_name.contains(writer[i])) {
+				if (!writer_name.contains(writer[i])) {
 					writer_name.add(writer[i]);
 					int cnt = 0;
-					for(int j = i;j<writer.length;j++) {
-						if(writer[i].equals(writer[j])) {
+					for (int j = i; j < writer.length; j++) {
+						if (writer[i].equals(writer[j])) {
 							cnt++;
 						}
 					}
@@ -284,16 +283,16 @@ public class CommuService implements ICommuService {
 
 			colNm = "TimeDcCom_" + DateUtil.getDateTime("yyyyMMddHH");
 			pList = new ArrayList<DataDTO>();
-			
+
 			List<String> time_section = new ArrayList<String>();
 			List<Integer> time_count = new ArrayList<Integer>();
 
 			for (int i = 0; i < time.length; i++) {
-				if(!time_section.contains(time[i])) {
+				if (!time_section.contains(time[i])) {
 					time_section.add(time[i]);
 					int cnt = 0;
-					for(int j = i;j<time.length;j++) {
-						if(time[i].equals(time[j])) {
+					for (int j = i; j < time.length; j++) {
+						if (time[i].equals(time[j])) {
 							cnt++;
 						}
 					}

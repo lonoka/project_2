@@ -153,7 +153,11 @@ public class CommuMapper implements ICommuMapper {
 		log.info(this.getClass().getName() + " getAnalysisData Start!");
 		DBCollection rCol = mongodb.getCollection(colNm);
 
-		Iterator<DBObject> cursor = rCol.find();
+		BasicDBObject query = new BasicDBObject();
+        BasicDBObject sort = new BasicDBObject();
+        sort.put("count", -1);
+        
+		Iterator<DBObject> cursor = rCol.find(query).sort(sort);
 
 		List<DataDTO> rList = new ArrayList<DataDTO>();
 

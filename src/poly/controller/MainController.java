@@ -4,12 +4,15 @@ import java.util.List;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.apache.log4j.Logger;
+import org.rosuda.REngine.Rserve.RConnection;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import poly.dto.DataDTO;
 import poly.service.ICommuService;
@@ -23,6 +26,26 @@ public class MainController {
 	@Resource(name = "CommuService")
 	private ICommuService commuService;
 
+	// r 라이브러리 호출
+	@RequestMapping(value = "rConnection")
+	@ResponseBody
+	public String rConnection(HttpServletRequest request, HttpServletResponse response) throws Exception {
+
+		log.info(this.getClass().getName() + "rConnection start!");
+		RConnection c = new RConnection();
+		c.eval("library(tidyverse)");
+		c.eval("library(KoNLP)");
+		c.eval("useNIADic()");
+		c.eval("library(stringr)");
+		c.eval("library(reshape2)");
+		c.eval("library(dplyr)");
+		c.close();
+
+		log.info(this.getClass().getName() + "rConnection end!");
+
+		return "success";
+	}
+	
 	// 메인 페이지
 	@RequestMapping(value = "index")
 	public String index(HttpServletRequest request, Model model, HttpSession session) throws Exception {

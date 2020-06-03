@@ -59,7 +59,7 @@ public class RController {
 		String[] title = new String[rList.size()];
 		for (int i = 0; i < rList.size(); i++) {
 			String match = "[^\uAC00-\uD7A3xfe0-9a-zA-Z\\s]";
-			title[i] = rList.get(i).getTitle().replaceAll(match, "");
+			title[i] = rList.get(i).getTitle().replaceAll(match, "").toLowerCase();
 		}
 		
 		c.assign("title", title);
@@ -80,6 +80,7 @@ public class RController {
 		log.info(y.asString());
 		REXP z = c.eval("sum(negM)");
 		log.info(z.asString());
+		c.close();
 		return " ";
 
 	}

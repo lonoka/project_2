@@ -159,7 +159,7 @@ h2 a:hover {
 								<div class="carousel-item active">
 									<h2 style="font-family: Nanum Gothic">
 										<a href="javascript:void(0)" class="" data-toggle="modal"
-											data-target="#comu_modal_1"
+											data-target="#comu_modal_1" data-backdrop="static"
 											style="color: aliceblue !important;"><%=rList.get(0).getCommu_name()%></a>
 									</h2>
 									<div id="wordcloud_1" class=""
@@ -191,7 +191,7 @@ h2 a:hover {
 		<!-- 커뮤니티 모달 -->
 		<div class="modal fade" id="comu_modal_1" tabindex="-1" role="dialog"
 			aria-labelledby="contactLabel" aria-hidden="true">
-			<div class="modal-dialog modal-lg">
+			<div class="modal-dialog modal-lg modal-dialog-centered">
 				<div class="modal-content">
 					<div class="modal-header">
 						<h4 class="modal-title" id="contactLabel"><%=rList.get(0).getCommu_name()%></h4>
@@ -203,13 +203,14 @@ h2 a:hover {
 					</div>
 					<div class="modal-body">
 						<div class="row">
-							<div id="" class="col-md-6"
-								style="border: 1px solid black;"></div>
-							<div id="" class="col-md-6" style="text-align: center;">커뮤니티 긍정, 부정 정도 <br>(0에 가까울수록 부정적입니다.)</div>
+							<div id="" class="col-md-6" style="text-align: center;">시간대별 게시글 작성개수<br>(10분단위)</div>
+							<div id="" class="col-md-6" style="text-align: center;">
+								커뮤니티 긍정, 부정 정도 <br>(0에 가까울수록 부정적입니다.)
+							</div>
 						</div>
 						<div class="row">
 							<div id="time_chart_1" class="col-md-6"
-								style="border: 1px solid black; height: 250px;"></div>
+								style="height: 250px;"></div>
 							<div id="opinion_chart_1" class="col-md-6"></div>
 						</div>
 						게시글 작성자
@@ -273,9 +274,9 @@ h2 a:hover {
 	</script>
 	<!-- 작성자 차트 -->
 	<script type="text/javascript">
-	<%if (wList.size() > 100) {%>
+	<%if (wList.size() > 90) {%>
 		var wList = [
-		     		<%for (int i = 0; i < 100; i++) {%>
+		     		<%for (int i = 0; i < 90; i++) {%>
 		     			{writer:'<%=wList.get(i).getWord()%>', count:<%=wList.get(i).getCount()%>},
 		     		<%}%>
 		     		];
@@ -306,16 +307,60 @@ h2 a:hover {
 	</script>
 	<!-- 시간대별 차트 -->
 	<script type="text/javascript">
-	var tList = [
-		<%for (int i = 0; i < tList.size(); i++) {%>
-			{section:'<%=tList.get(i).getWord()%>', count:<%=Integer.toString(tList.get(i).getCount())%>},
-		<%}%>
-		];
+	am4core.ready(function() {
+	// Themes begin
+	am4core.useTheme(am4themes_animated);
+	// Themes end
+
+	var chart = am4core.create("time_chart_1", am4charts.XYChart);
+
+	var data = [];
+	var value = 0;
+	<%for (int i = 0; i < tList.size(); i++) {%>
+		
+		var date = new Date('<%=tList.get(i).getWord()%>');
+		value = '<%=tList.get(i).getCount()%>';
+		data.push({date:date, value: value});
+	<%}%>
+	console.log(data);
+	data.sort(function(a,b){
+		return a.date < b.date ? -1 : a.date > b.date ? 1:0;
+	});
+	console.log(data);
+	chart.data = data;
+
+	// Create axes
+	var dateAxis = chart.xAxes.push(new am4charts.DateAxis());
+	dateAxis.renderer.minGridDistance = 60;
+
+	var valueAxis = chart.yAxes.push(new am4charts.ValueAxis());
+
+	// Create series
+	var series = chart.series.push(new am4charts.LineSeries());
+	series.dataFields.valueY = "value";
+	series.dataFields.dateX = "date";
+	series.tooltipText = "{value}"
+
+	series.tooltip.pointerOrientation = "vertical";
+
+	chart.cursor = new am4charts.XYCursor();
+	chart.cursor.snapToSeries = series;
+	chart.cursor.xAxis = dateAxis;
+
+	//chart.scrollbarY = new am4core.Scrollbar();
+	chart.scrollbarX = new am4core.Scrollbar();
+
+	}); // end am4core.ready()
 	</script>
 	<!-- 오피니언 마이닝 -->
 	<script type="text/javascript">
+	<%if (oList.get(0).getWord().equals("긍정")) {%>
 	var positive = <%=oList.get(0).getCount()%>
 	var negative = <%=oList.get(1).getCount()%>
+	<%} else if (oList.get(0).getWord().equals("부정")) {%>
+	var positive = <%=oList.get(1).getCount()%>
+	var negative = <%=oList.get(0).getCount()%>
+	<%}%>
 	var cal = (positive)/(positive+negative);
 	cal = cal*100;
 	am4core.ready(function() {
@@ -343,14 +388,14 @@ h2 a:hover {
 		range0.value = 0;
 		range0.endValue = 50;
 		range0.axisFill.fillOpacity = 1;
-		range0.axisFill.fill = am4core.color("rgb(255,0,0)");
+		range0.axisFill.fill = am4core.color("#F7CAC9");
 		range0.axisFill.zIndex = - 1;
 
 		var range1 = axis.axisRanges.create();
 		range1.value = 50;
 		range1.endValue = 100;
 		range1.axisFill.fillOpacity = 1;
-		range1.axisFill.fill = am4core.color("rgb(0,255,0)");
+		range1.axisFill.fill = am4core.color("#92A8D1");
 		range1.axisFill.zIndex = -1;
 
 		var hand = chart.hands.push(new am4charts.ClockHand());
