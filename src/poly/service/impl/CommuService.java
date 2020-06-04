@@ -17,7 +17,6 @@ import org.springframework.stereotype.Service;
 
 import poly.dto.CommuDTO;
 import poly.dto.DataDTO;
-import poly.dto.MelonDTO;
 import poly.persistance.mongo.ICommuMapper;
 import poly.service.ICommuService;
 import poly.util.DateUtil;
@@ -55,6 +54,8 @@ public class CommuService implements ICommuService {
 				String title = postInfo.select("td.gall_tit a").eq(0).text();
 				String writer = postInfo.select("td.gall_writer").attr("data-nick");
 				String time = postInfo.select("td.gall_date").attr("title");
+				int views = Integer.parseInt(postInfo.select("td.gall_count").text());
+				String link = "https://gall.dcinside.com"+postInfo.select("td.gall_tit a").eq(0).attr("href");
 
 				postInfo = null;
 
@@ -65,6 +66,8 @@ public class CommuService implements ICommuService {
 				pDTO.setTime(time);
 				pDTO.setTitle(title);
 				pDTO.setWriter(writer);
+				pDTO.setViews(views);
+				pDTO.setLink(link);
 
 				pList.add(pDTO);
 			}

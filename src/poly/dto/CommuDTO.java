@@ -6,6 +6,9 @@ public class CommuDTO {
 	private String title;
 	private String writer;
 	private String time;
+	private int views;
+	private String link;
+	
 
 	public String getCollect_time() {
 		return collect_time;
@@ -46,5 +49,22 @@ public class CommuDTO {
 	public void setTime(String time) {
 		this.time = time;
 	}
+
+	public int getViews() {
+		return views;
+	}
+
+	public void setViews(int views) {
+		this.views = views;
+	}
+
+	public String getLink() {
+		return link;
+	}
+
+	public void setLink(String link) {
+		this.link = link;
+	}
+	
 
 }

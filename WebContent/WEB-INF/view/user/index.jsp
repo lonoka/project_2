@@ -203,14 +203,15 @@ h2 a:hover {
 					</div>
 					<div class="modal-body">
 						<div class="row">
-							<div id="" class="col-md-6" style="text-align: center;">시간대별 게시글 작성개수<br>(10분단위)</div>
+							<div id="" class="col-md-6" style="text-align: center;">
+								분석 게시글 시간대별 작성개수<br>(10분단위)
+							</div>
 							<div id="" class="col-md-6" style="text-align: center;">
 								커뮤니티 긍정, 부정 정도 <br>(0에 가까울수록 부정적입니다.)
 							</div>
 						</div>
 						<div class="row">
-							<div id="time_chart_1" class="col-md-6"
-								style="height: 250px;"></div>
+							<div id="time_chart_1" class="col-md-6" style="height: 250px;"></div>
 							<div id="opinion_chart_1" class="col-md-6"></div>
 						</div>
 						게시글 작성자

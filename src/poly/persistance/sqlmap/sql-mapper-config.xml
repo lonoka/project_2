@@ -4,8 +4,6 @@
 <configuration>
     <typeAliases>
     	<!-- 사용할 DTO 등록  -->
-    	<typeAlias type="poly.dto.MovieDTO" alias="MovieDTO"/>
-    	<typeAlias type="poly.dto.WeatherDTO" alias="WeatherDTO"/>
-    	<typeAlias type="poly.dto.MelonDTO" alias="MelonDTO"/>
+    	<typeAlias type="poly.dto.UserDTO" alias="UserDTO"/>
     </typeAliases>
 </configuration>

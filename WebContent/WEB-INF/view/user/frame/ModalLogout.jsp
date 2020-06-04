@@ -82,7 +82,7 @@
 							style="display: none; color: red; font-size: 12px;">사용하실 수
 							없는 아이디입니다.</div>
 						<div id="successId"
-							style="display: none; color: saddlebrown; font-size: 12px;">사용하실
+							style="display: none; color: dodgerblue; font-size: 12px;">사용하실
 							수 있는 아이디입니다.</div>
 					</div>
 					<div class="form-group">
@@ -117,14 +117,14 @@
 							style="display: none; color: red; font-size: 12px;">잘못된 이메일
 							형식입니다.</div>
 						<div id="successMail"
-							style="display: none; color: saddlebrown; font-size: 12px;">사용
+							style="display: none; color: dodgerblue; font-size: 12px;">사용
 							가능한 Email입니다.</div>
 						<div id="failMail"
 							style="display: none; color: red; font-size: 12px;">이미 등록된
 							Email입니다.</div>
 					</div>
 					<button id="submitbtn" type="submit"
-						class="btn btn-primary btn-user btn-block">회원 가입</button>
+						class="btn btn-primary btn-user btn-block" style="color: dodgerblue;">회원 가입</button>
 
 				</div>
 				<div class="modal-footer">
@@ -175,7 +175,7 @@
 							<input type="email" class="form-control form-control-user"
 								name="user_mail" placeholder="Email" required="required">
 						</div>
-						<button type="submit" class="btn btn-primary btn-user btn-block">아이디
+						<button type="submit" class="btn btn-primary btn-user btn-block" style="color: dodgerblue;">아이디
 							찾기</button>
 					</form>
 					<hr>
@@ -193,7 +193,7 @@
 							<input type="email" class="form-control form-control-user"
 								name="user_mail" placeholder="Email" required="required">
 						</div>
-						<button type="submit" class="btn btn-primary btn-user btn-block">비밀번호
+						<button type="submit" class="btn btn-primary btn-user btn-block" style="color: dodgerblue;">비밀번호
 							찾기</button>
 					</form>
 				</div>

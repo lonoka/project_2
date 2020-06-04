@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- JAVA와 연결할 Mapper 파일 설정 -->
+<mapper namespace="poly.persistance.mapper.IUserMapper">
+	<!-- 회원 가입하기 -->
+	<insert id="insertUserInfo" parameterType="UserDTO">
+		INSERT INTO USER_INFO
+		(
+		USER_ID,
+		USER_NAME,
+		PASSWORD,
+		USER_MAIL,
+		USER_AUTHOR,
+		REG_ID,
+		REG_DT,
+		CHG_ID,
+		CHG_DT
+		)
+		VALUES (
+		#{user_id},
+		#{user_name},
+		#{password},
+		#{user_mail},
+		0,
+		#{user_id},
+		SYSDATE(),
+		#{user_id},
+		SYSDATE()
+		)
+	</insert>
+	
+	<!-- 아이디 체크 -->
+	<select id="ckeckId" parameterType="UserDTO" resultType="int">
+		SELECT
+		COUNT(*)
+		FROM
+		USER_INFO
+		WHERE USER_ID=#{user_id}
+	</select>
+
+	<!-- 이메일 체크 -->
+	<select id="ckeckMail" parameterType="UserDTO" resultType="int">
+		SELECT COUNT(*)
+		FROM
+		USER_INFO
+		WHERE USER_MAIL=#{user_mail}
+	</select>
+
+	<!-- 로그인 -->
+	<select id="getLogin" parameterType="UserDTO"
+		resultType="UserDTO">
+		SELECT
+		USER_NAME,
+		USER_ID,
+		USER_AUTHOR
+		FROM
+		USER_INFO
+		WHERE
+		USER_ID = #{user_id} AND PASSWORD = #{password}
+	</select>
+</mapper>
