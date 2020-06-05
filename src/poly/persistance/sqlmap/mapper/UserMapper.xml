@@ -58,4 +58,37 @@
 		WHERE
 		USER_ID = #{user_id} AND PASSWORD = #{password}
 	</select>
+	
+	<!-- 아이디 정보 찾기 -->
+	<select id="getIdInfo" parameterType="UserDTO"
+		resultType="UserDTO">
+		SELECT
+		USER_ID as user_id
+		FROM
+		USER_INFO
+		WHERE
+		USER_NAME=#{user_name} AND USER_MAIL=#{user_mail}
+	</select>
+
+	<!-- 비밀번호 정보 찾기 -->
+	<select id="getPwInfo" parameterType="UserDTO"
+		resultType="UserDTO">
+		SELECT
+		PASSWORD as password
+		FROM
+		USER_INFO
+		WHERE
+		USER_NAME=#{user_name} AND USER_MAIL=#{user_mail} AND USER_ID =	#{user_id}
+	</select>
+	
+	<update id="updatePwInfo" parameterType="UserDTO">
+		UPDATE
+			USER_INFO
+		SET
+			PASSWORD = #{password}
+		WHERE
+			USER_ID=#{user_id}
+	</update>
+	
+	
 </mapper>

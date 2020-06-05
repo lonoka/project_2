@@ -39,6 +39,9 @@ public class MainController {
 		c.eval("library(stringr)");
 		c.eval("library(reshape2)");
 		c.eval("library(dplyr)");
+		c.eval("negative <- readLines('c:\\\\word\\\\negative.txt', encoding = 'UTF-8')");
+		c.eval("positive <- readLines('c:\\\\word\\\\positive.txt', encoding = 'UTF-8')");
+
 		c.close();
 
 		log.info(this.getClass().getName() + "rConnection end!");

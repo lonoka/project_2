@@ -160,9 +160,7 @@ public class CommuService implements ICommuService {
 
 		// R 연결 후 라이브러리 추가
 		RConnection c = new RConnection();
-		c.eval("negative <- readLines('c:\\\\word\\\\negative.txt', encoding = 'UTF-8')");
-		c.eval("positive <- readLines('c:\\\\word\\\\positive.txt', encoding = 'UTF-8')");
-
+		
 		String colNm = "DcCom_" + DateUtil.getDateTime("yyyyMMddHH");
 
 		List<CommuDTO> rList = commuService.getData(colNm);
