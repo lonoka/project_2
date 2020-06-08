@@ -1,4 +1,6 @@
 <%@page import="poly.dto.DataDTO"%>
+<%@page import="poly.dto.UserDTO"%>
+<%@page import="poly.util.EncryptUtil"%>
 <%@page import="java.util.List"%>
 <%@ page import="java.util.List"%>
 <%@ page import="java.util.ArrayList"%>
@@ -11,6 +13,7 @@
 	List<DataDTO> oList = (List<DataDTO>) request.getAttribute("oList");
 	String userId = (String) session.getAttribute("userId");
 	String userAuthor = (String) session.getAttribute("userAuthor");
+	UserDTO uDTO = (UserDTO)session.getAttribute("uDTO");
 %>
 <!DOCTYPE html>
 <html>

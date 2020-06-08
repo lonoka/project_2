@@ -52,7 +52,8 @@
 		SELECT
 		USER_NAME,
 		USER_ID,
-		USER_AUTHOR
+		USER_AUTHOR,
+		USER_MAIL
 		FROM
 		USER_INFO
 		WHERE
@@ -81,6 +82,7 @@
 		USER_NAME=#{user_name} AND USER_MAIL=#{user_mail} AND USER_ID =	#{user_id}
 	</select>
 	
+	<!-- 비밀번호 업데이트 -->
 	<update id="updatePwInfo" parameterType="UserDTO">
 		UPDATE
 			USER_INFO

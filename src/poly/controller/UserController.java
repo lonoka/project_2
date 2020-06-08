@@ -165,6 +165,10 @@ public class UserController {
 			session.setAttribute("userId", uDTO.getUser_id());
 			session.setAttribute("userName", uDTO.getUser_name());
 		}
+		log.info(uDTO.getUser_id());
+		log.info(uDTO.getUser_mail());
+		log.info(uDTO.getUser_name());
+		session.setAttribute("uDTO",uDTO);
 
 		return "/redirect";
 	}
