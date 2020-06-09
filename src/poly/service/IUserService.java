@@ -18,4 +18,8 @@ public interface IUserService {
 
 	int updatePwInfo(UserDTO pDTO) throws Exception;
 
+	int updateUserInfo(UserDTO pDTO) throws Exception;
+
+	UserDTO getUserInfo(UserDTO pDTO) throws Exception;
+
 }

@@ -83,4 +83,16 @@ public class UserService implements IUserService {
 		return userMapper.updatePwInfo(pDTO);
 	}
 
+	@Override
+	public int updateUserInfo(UserDTO pDTO) throws Exception {
+		// TODO Auto-generated method stub
+		return userMapper.updateUserInfo(pDTO);
+	}
+
+	@Override
+	public UserDTO getUserInfo(UserDTO pDTO) throws Exception {
+		// TODO Auto-generated method stub
+		return userMapper.getUserInfo(pDTO);
+	}
+
 }

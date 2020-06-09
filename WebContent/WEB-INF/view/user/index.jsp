@@ -13,7 +13,6 @@
 	List<DataDTO> oList = (List<DataDTO>) request.getAttribute("oList");
 	String userId = (String) session.getAttribute("userId");
 	String userAuthor = (String) session.getAttribute("userAuthor");
-	UserDTO uDTO = (UserDTO)session.getAttribute("uDTO");
 %>
 <!DOCTYPE html>
 <html>
@@ -142,6 +141,7 @@ h2 a:hover {
 			}
 		%>
 		<%@include file="/WEB-INF/view/user/frame/ModalContact.jsp"%>
+		<%@include file="/WEB-INF/view/user/frame/ModalAlert.jsp"%>
 
 
 		<div class="site-blocks-cover overlay"

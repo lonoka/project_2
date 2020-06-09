@@ -32,7 +32,8 @@ public class UserController {
 	/*
 	 * 회원가입 로직 처리
 	 */
-	@RequestMapping(value = "user/insertUserInfo", method = RequestMethod.POST)
+	@RequestMapping(value = "insertUserInfo", method = RequestMethod.POST)
+	@ResponseBody
 	public String insertUserInfo(HttpServletRequest request, HttpServletResponse response, ModelMap model)
 			throws Exception {
 		log.info(this.getClass().getName() + "insertUserInfo Start");
@@ -43,73 +44,55 @@ public class UserController {
 		// 웹에서 받는 정보를 저장할 변수
 		UserDTO pDTO = null;
 
-		try {
-			/*
-			 * 웹 에서 받는 정보를 String 변수에 저장 시작 무조건 웹으로 받는 정보는 DTO에 저장하기 위해 임시로 String에 저장
-			 */
-			String user_id = CmmUtil.nvl(request.getParameter("user_id"));
-			String user_name = CmmUtil.nvl(request.getParameter("user_name"));
-			String password = CmmUtil.nvl(request.getParameter("password"));
-			String user_mail = CmmUtil.nvl(request.getParameter("user_mail"));
-			String user_date = CmmUtil.nvl(request.getParameter("user_date"));
-			String user_gen = CmmUtil.nvl(request.getParameter("user_gen"));
-			/*
-			 * 웹 에서 받는 정보를 String 변수에 저장 끝 무조건 웹으로 받는 정보는 DTO에 저장하기 위해 임시로 String에 저장
-			 */
+		/*
+		 * 웹 에서 받는 정보를 String 변수에 저장 시작 무조건 웹으로 받는 정보는 DTO에 저장하기 위해 임시로 String에 저장
+		 */
+		String user_id = CmmUtil.nvl(request.getParameter("user_id"));
+		String user_name = CmmUtil.nvl(request.getParameter("user_name"));
+		String password = CmmUtil.nvl(request.getParameter("password"));
+		String user_mail = CmmUtil.nvl(request.getParameter("user_mail"));
+		/*
+		 * 웹 에서 받는 정보를 String 변수에 저장 끝 무조건 웹으로 받는 정보는 DTO에 저장하기 위해 임시로 String에 저장
+		 */
 
-			/*
-			 * 값을 받는 경우 반드시 로그를 찍어서 값이 들어오는지 확인
-			 */
-			log.info("user_id : " + user_id);
-			log.info("user_name : " + user_name);
-			log.info("password : " + password);
-			log.info("user_mail : " + user_mail);
-			log.info("user_date : " + user_date);
-			log.info("user_gen : " + user_gen);
+		/*
+		 * 값을 받는 경우 반드시 로그를 찍어서 값이 들어오는지 확인
+		 */
+		log.info("user_id : " + user_id);
+		log.info("user_name : " + user_name);
+		log.info("password : " + password);
+		log.info("user_mail : " + user_mail);
 
-			/*
-			 * 웹에서 받는 정보를 DTO에 저장하기 시작 무조건 웹으로 받는 정보는 DTO에 저장
-			 */
-			// 받는 정보를 저장할 변수를 메모리에 올리기
-			pDTO = new UserDTO();
-			pDTO.setUser_id(user_id);
-			pDTO.setUser_name(user_name);
+		/*
+		 * 웹에서 받는 정보를 DTO에 저장하기 시작 무조건 웹으로 받는 정보는 DTO에 저장
+		 */
+		// 받는 정보를 저장할 변수를 메모리에 올리기
+		pDTO = new UserDTO();
+		pDTO.setUser_id(user_id);
+		pDTO.setUser_name(user_name);
 
-			// 비밀번호는 절대적으로 복호화되지 않도록 해시 알고리즘으로 암호화함
-			pDTO.setPassword(EncryptUtil.encHashSHA256(password));
+		// 비밀번호는 절대적으로 복호화되지 않도록 해시 알고리즘으로 암호화함
+		pDTO.setPassword(EncryptUtil.encHashSHA256(password));
 
-			// 민감 정보인 이메일은 AES128-CBC로 암호화함
-			pDTO.setUser_mail(EncryptUtil.encAES128CBC(user_mail));
-			/*
-			 * 웹에서 받는 정보를 DTO에 저장하기 끝 무조건 웹으로 받는 정보는 DTO에 저장
-			 */
+		// 민감 정보인 이메일은 AES128-CBC로 암호화함
+		pDTO.setUser_mail(EncryptUtil.encAES128CBC(user_mail));
+		/*
+		 * 웹에서 받는 정보를 DTO에 저장하기 끝 무조건 웹으로 받는 정보는 DTO에 저장
+		 */
 
-			// 회원가입
-			int res = userService.insertUserInfo(pDTO);
+		// 회원가입
+		int res = userService.insertUserInfo(pDTO);
 
-			if (res == 1) {
-				msg = "회원가입되었습니다.";
-			} else if (res == 2) {
-				msg = "이미 가입된 회원입니다.";
-			} else {
-				msg = "오류로 인해 회원가입이 실패하였습니다.";
-			}
-		} catch (Exception e) {
-			// 실패시 사용자에게 보여줄 메시지
-			msg = "실패하였습니다. : " + e.toString();
-			log.info(e.toString());
-			e.printStackTrace();
-		} finally {
-			log.info(this.getClass().getName() + "insertUserInfo end");
-
-			// 회원가입 여부 결과 메시지 전달
-			model.addAttribute("msg", msg);
-			model.addAttribute("url", "/index.do");
-
-			// 변수 초기화(메모리 효율화 시키기 위해 사용)
-			pDTO = null;
+		if (res == 1) {
+			msg = "회원가입되었습니다.";
+			return "0";
+		} else if (res == 2) {
+			msg = "이미 가입된 회원입니다.";
+			return "1";
+		} else {
+			msg = "오류로 인해 회원가입이 실패하였습니다.";
+			return "2";
 		}
-		return "/redirect";
 	}
 
 	// ID 체크
@@ -165,10 +148,6 @@ public class UserController {
 			session.setAttribute("userId", uDTO.getUser_id());
 			session.setAttribute("userName", uDTO.getUser_name());
 		}
-		log.info(uDTO.getUser_id());
-		log.info(uDTO.getUser_mail());
-		log.info(uDTO.getUser_name());
-		session.setAttribute("uDTO",uDTO);
 
 		return "/redirect";
 	}
@@ -183,9 +162,35 @@ public class UserController {
 		return "/redirect";
 	}
 
+	// 사용자 정보 업데이트
+	@RequestMapping(value = "updateUserInfo", method = RequestMethod.POST)
+	@ResponseBody
+	public String userModifyProc(HttpServletRequest request, ModelMap model, HttpSession session) throws Exception {
+
+		String user_id = CmmUtil.nvl(request.getParameter("user_id"));
+		String user_name = CmmUtil.nvl(request.getParameter("user_name"));
+		String password = CmmUtil.nvl(request.getParameter("password"));
+
+		UserDTO pDTO = new UserDTO();
+		pDTO.setUser_id(user_id);
+		pDTO.setUser_name(user_name);
+
+		// 비밀번호는 절대적으로 복호화되지 않도록 해시 알고리즘으로 암호화함
+		pDTO.setPassword(EncryptUtil.encHashSHA256(password));
+
+		int res = userService.updateUserInfo(pDTO);
+
+		if (res == 1) {
+			return "1";
+		} else {
+			return "0";
+		}
+	}
+
 	// ID찾기
 	@RequestMapping(value = "findID", method = RequestMethod.POST)
-	public String findId(HttpServletRequest request, ModelMap model) throws Exception {
+	@ResponseBody
+	public UserDTO findId(HttpServletRequest request, ModelMap model) throws Exception {
 		String user_name = request.getParameter("user_name");// userName 은 DTO와 같게 지정 parameter값은 jsp의 name값이랑 같게 지정
 		String user_mail = request.getParameter("user_mail");
 
@@ -197,22 +202,24 @@ public class UserController {
 		pDTO = userService.getIdInfo(pDTO);
 
 		if (pDTO == null) {
-			model.addAttribute("msg", "가입된 아이디가 없습니다.");
-			model.addAttribute("url", "/index.do");
+			pDTO = new UserDTO();
+			return pDTO;
 		} else {
-			model.addAttribute("msg", "가입된 아이디는 " + pDTO.getUser_id() + " 입니다.");
-			model.addAttribute("url", "/index.do");
+			return pDTO;
 		}
 
-		return "/redirect";
 	}
 
 	// PW찾기 버튼 기능/
 	@RequestMapping(value = "findPW", method = RequestMethod.POST)
+	@ResponseBody
 	public String findPW(HttpServletRequest request, ModelMap model) throws Exception {
 		String user_name = request.getParameter("user_name");
 		String user_id = request.getParameter("user_id");
 		String user_mail = request.getParameter("user_mail");
+		log.info(user_name);
+		log.info(user_id);
+		log.info(user_mail);
 
 		UserDTO pDTO = new UserDTO();
 		pDTO.setUser_id(user_id);
@@ -222,9 +229,7 @@ public class UserController {
 		pDTO = userService.getPwInfo(pDTO);
 
 		if (pDTO == null) {
-			model.addAttribute("msg", "회원정보가 존재하지 않습니다.");
-			model.addAttribute("url", "/userLogin.do");
-			return "/redirect";
+			return "0";
 		} else {
 
 			// 10글자 짜리 비밀번호가 NewPw에 들어감
@@ -236,6 +241,7 @@ public class UserController {
 				result = userService.updatePwInfo(pDTO);
 			} catch (Exception e) {
 				e.printStackTrace();
+				return "1";
 			}
 
 			String title = "새로운 비밀번호";
@@ -257,17 +263,16 @@ public class UserController {
 			} else {
 				// 발송 실패 로그 찍기
 				log.info(this.getClass().getName() + "mail.sendMail fail!!!");
+				return "1";
 			}
-
-			model.addAttribute("msg", "새로운 비밀번호가 이메일로 발송되었습니다..");
-			model.addAttribute("url", "/index.do");
-			return "/redirect";
+			return "2";
 		}
 
 	}
 
 	// 고객문의 메일 발송
 	@RequestMapping(value = "contactSend", method = RequestMethod.POST)
+	@ResponseBody
 	public String contactSend(HttpServletRequest request, HttpServletResponse response, ModelMap model)
 			throws Exception {
 		// 로그 찍기
@@ -289,21 +294,42 @@ public class UserController {
 		// 메일 발송하기
 		int res = mailService.doSendContact(pDTO);
 
+		log.info(this.getClass().getName() + "mail.contactSend end!");
 		if (res == 1) {
 			// 발송 성공 로그 찍기
 			log.info(this.getClass().getName() + "mail.contactSend success!!!");
-			model.addAttribute("msg", "문의메일이 발송됬습니다.");
-			model.addAttribute("url", "/index.do");
+			return "1";
 		} else {
 			// 발송 실패 로그 찍기
 			log.info(this.getClass().getName() + "mail.contactSend fail!!!");
-			model.addAttribute("msg", "일시적 오류로 문의메일 발송에 실패했습니다. 나중에 다시 시도해주세요.");
-			model.addAttribute("url", "/index.do");
+			return "0";
 		}
 		// 로그 찍기
-		log.info(this.getClass().getName() + "mail.contactSend end!");
 
-		return "/redirect";
+	}
+
+	// 사용자 정보 조회
+	@RequestMapping(value = "getUserInfo")
+	@ResponseBody
+	public UserDTO getUserInfo(HttpServletRequest request) throws Exception {
+
+		String user_id = CmmUtil.nvl(request.getParameter("user_id"));
+		UserDTO pDTO = new UserDTO();
+
+		if (user_id.equals("")) {
+			pDTO.setUser_name("로그인오류");
+			return pDTO;
+		}
+
+		pDTO.setUser_id(user_id);
+
+		pDTO = userService.getUserInfo(pDTO);
+		if (pDTO == null) {
+			pDTO = new UserDTO();
+		} else {
+			pDTO.setUser_mail(EncryptUtil.decAES128CBC(pDTO.getUser_mail()));
+		}
+		return pDTO;
 	}
 
 	public String getNewPw() throws Exception {

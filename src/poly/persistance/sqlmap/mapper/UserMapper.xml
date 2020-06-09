@@ -28,7 +28,7 @@
 		SYSDATE()
 		)
 	</insert>
-	
+
 	<!-- 아이디 체크 -->
 	<select id="ckeckId" parameterType="UserDTO" resultType="int">
 		SELECT
@@ -59,7 +59,7 @@
 		WHERE
 		USER_ID = #{user_id} AND PASSWORD = #{password}
 	</select>
-	
+
 	<!-- 아이디 정보 찾기 -->
 	<select id="getIdInfo" parameterType="UserDTO"
 		resultType="UserDTO">
@@ -79,18 +79,44 @@
 		FROM
 		USER_INFO
 		WHERE
-		USER_NAME=#{user_name} AND USER_MAIL=#{user_mail} AND USER_ID =	#{user_id}
+		USER_NAME=#{user_name} AND USER_MAIL=#{user_mail} AND USER_ID =
+		#{user_id}
 	</select>
-	
+
 	<!-- 비밀번호 업데이트 -->
 	<update id="updatePwInfo" parameterType="UserDTO">
 		UPDATE
-			USER_INFO
+		USER_INFO
 		SET
-			PASSWORD = #{password}
+		PASSWORD = #{password}
 		WHERE
-			USER_ID=#{user_id}
+		USER_ID=#{user_id}
+	</update>
+
+	<!-- 회원정보 수정 -->
+	<update id="updateUserInfo" parameterType="UserDTO">
+		UPDATE
+		USER_INFO
+		SET
+		USER_NAME = #{user_name},
+		PASSWORD = #{password},
+		CHG_ID = #{user_id},
+		CHG_DT = SYSDATE()
+		WHERE
+		USER_ID = #{user_id}
 	</update>
 	
-	
+	<!-- 회원 정보 찾기 -->
+	<select id="getUserInfo" parameterType="UserDTO"
+		resultType="UserDTO">
+		SELECT
+		USER_ID,
+		USER_NAME,
+		USER_MAIL
+		FROM
+		USER_INFO
+		WHERE
+		USER_ID=#{user_id}
+	</select>
+
 </mapper>

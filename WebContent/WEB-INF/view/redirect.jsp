@@ -12,7 +12,6 @@
 <script src="http://code.jquery.com/jquery-1.10.2.js"></script>
 <script>
 window.onload = function(){
-	alert('<%=msg%>');
 	location.href='<%=url%>';
 };
 </script>
