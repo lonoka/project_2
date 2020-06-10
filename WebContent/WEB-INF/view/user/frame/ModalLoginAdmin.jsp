@@ -17,8 +17,8 @@
 				<div class="modal-body">
 					<div class="form-group">
 						<input type="text" class="form-control form-control-user"
-							id="user_mod_id" name="user_id" placeholder="ID" value="" readonly
-							required="required">
+							id="user_mod_id" name="user_id" placeholder="ID" value=""
+							readonly required="required">
 					</div>
 					<div class="form-group">
 						<input type="text" class="form-control form-control-user"
@@ -28,9 +28,9 @@
 					<div class="form-group row">
 						<div class="col-sm-6 mb-3 mb-sm-0">
 							<input type="password" class="form-control form-control-user"
-								id="user_mod_password" name="password" maxlength="16" oninput="checkPw()"
-								placeholder="비밀번호" style="ime-mode: disabled;"
-								required="required">
+								id="user_mod_password" name="password" maxlength="16"
+								oninput="checkPw()" placeholder="비밀번호"
+								style="ime-mode: disabled;" required="required">
 						</div>
 						<div class="col-sm-6">
 							<input type="password" class="form-control form-control-user"
@@ -47,7 +47,7 @@
 					</div>
 					<div class="form-group">
 						<input type="email" class="form-control form-control-user"
-							id="user_mail" name="user_mail" placeholder="Email" value=""
+							id="user_mod_mail" name="user_mail" placeholder="Email" value=""
 							readonly required="required">
 					</div>
 				</div>
@@ -167,3 +167,59 @@
 		return true;
 	}
 </script>
+
+<!-- crm -->
+<div class="modal fade" id="crm_modal" tabindex="-1" role="dialog"
+	aria-labelledby="crmLabel" aria-hidden="true">
+	<div class="modal-dialog modal-lg modal-dialog-centered">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h4 class="modal-title" id="crmLabel">CA. crm</h4>
+				<button type="button" class="close" data-dismiss="modal"
+					aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+
+			</div>
+			<div class="modal-body">
+				<div class="row" style="margin: 0; margin-bottom: 1em;">
+					<div class="select_box search_box">
+						<select name="searchSelect"
+							class="custom-select form-control search_form">
+							<option value="userId">회원ID</option>
+							<option value="userName">이름</option>
+						</select>
+					</div>
+					<div class="search_box">
+						<input name="searchCont" type="search"
+							class="form-control search_input" placeholder=""
+							aria-controls="dataTable" style="width: 175px">
+
+					</div>
+					<div class="search_box">
+						<button type="button" class="form-control btn btn-primary"
+							style="color: dodgerblue;">검색</button>
+					</div>
+				</div>
+				<div id="user_list_table">
+					<div class="div_content_container"
+						style="color: #666666; font-weight: bold;">
+						<div style="display: table-row;">
+							<div class="table_1st div_content_box"></div>
+							<div class="table_2nd div_content_box">회원ID</div>
+							<div class="table_3rd div_content_box">이름</div>
+							<div class="table_4th div_content_box">이메일</div>
+							<div class="table_5th div_content_box">권한</div>
+						</div>
+					</div>
+				</div>
+
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+				<button type="button" class="btn btn-primary"
+					style="color: dodgerblue;">커뮤니티 열기</button>
+			</div>
+		</div>
+	</div>
+</div>

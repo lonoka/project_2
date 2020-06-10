@@ -37,9 +37,39 @@
 <link rel="stylesheet" href="/fonts/flaticon/font/flaticon.css">
 <link rel="stylesheet" href="/css/aos.css">
 <link rel="stylesheet" href="/css/style.css">
+<link rel="stylesheet" href="/css/ionicons.min.css">
 <style type="text/css">
 h2 a:hover {
 	color: aliceblue !important;
+}
+.div_content_container {
+	display: table;
+	table-layout: fixed;
+	width: 100%;
+	border: 1px solid #dee2e6;
+}
+
+.div_content_box {
+	display: table-cell;
+	border: 1px solid #dee2e6;
+	text-overflow: ellipsis;
+	overflow: hidden;
+	white-space: nowrap;
+	padding-top: 5px;
+	padding-bottom: 5px;
+	text-align: center;
+}
+.search_box{
+	margin-right: 5px;
+}
+.table_1st{
+	width: 8%;
+}
+.table_3rd{
+	width: 15%;
+}
+.table_5th{
+	width: 10%;
 }
 </style>
 
