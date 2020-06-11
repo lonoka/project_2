@@ -1,9 +1,102 @@
 <%@page import="poly.util.EncryptUtil"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
+<!-- crm -->
+<div class="modal fade" id="crm_modal" tabindex="-1" role="dialog"
+	aria-labelledby="crmLabel" aria-hidden="true">
+	<div class="modal-dialog modal-lg modal-dialog-centered">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h4 class="modal-title" id="crmLabel">CA. crm</h4>
+				<button type="button" class="close" data-dismiss="modal"
+					aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+
+			</div>
+			<div class="modal-body">
+				<input id="pgNumValue" type="hidden" value=""> <input
+					id="pgSearchValue" type="hidden" value="">
+				<div class="row" style="margin: 0; margin-bottom: 1em;">
+					<div class="select_box search_box">
+						<select name="searchSelect"
+							class="custom-select form-control search_form">
+							<option value="userId">회원ID</option>
+							<option value="userName">이름</option>
+						</select>
+					</div>
+					<div class="search_box">
+						<input id="searchCont" name="searchCont" type="search"
+							class="form-control search_input" placeholder=""
+							aria-controls="dataTable" style="width: 175px">
+
+					</div>
+					<div class="search_box">
+						<button type="button" class="form-control btn btn-primary"
+							onclick="searchUserList()" style="color: dodgerblue;">검색</button>
+					</div>
+				</div>
+				<div id="user_list_table" style="border-collapse: collapse;">
+
+				</div>
+
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+				<button type="button" class="btn btn-primary"
+					style="color: dodgerblue;" onclick="getUser()">정보 수정</button>
+				<button type="button" class="btn btn-primary"
+					style="color: dodgerblue;">권한 변경</button>
+				<button type="button" class="btn btn-primary"
+					style="color: dodgerblue;">회원 탈퇴</button>
+			</div>
+		</div>
+	</div>
+</div>
+<script>
+	function getUser() {
+		
+		if (!$('input:radio[name=check_user]').is(':checked')) {
+			$('#alert_modal_body').html('사용자를 체크해주세요.');
+			$('#alert_modal').modal('show')
+		}else if($('input:radio[name=check_user]:checked').val()=='<%=userId%>'){
+			$('#alert_modal_body').html('mypage를 이용해주세요.');
+			$('#alert_modal').modal('show')
+		}else {
+			$.ajax({
+				url : "/getUserInfo.do",
+				type : "post",
+				dataType : "JSON",
+				data : {
+					'user_id' : $('input:radio[name=check_user]:checked').val()
+				},
+				success : function(json) {
+					if (json.user_id == '로그인오류') {
+
+					} else {
+						$('#mypage_modal').modal('show')
+						$('#user_mod_id').val(json.user_id);
+						$('#user_mod_name').val(json.user_name);
+						$('#user_mod_mail').val(json.user_mail);
+					}
+				}
+			})
+		}
+	}
+	function searchUserList() {
+		if ($('#searchCont').val() == '') {
+			$('#alert_modal_body').html('검색어를 입력해 주세요.');
+			$('#alert_modal').modal('show')
+		} else {
+			getUserList(1, $('#searchCont').val());
+		}
+	}
+</script>
+
+
 <!-- mypage -->
 <div class="modal fade" id="mypage_modal" tabindex="-1" role="dialog"
-	aria-labelledby="mypageLabel" aria-hidden="true">
+	data-backdrop="static" aria-labelledby="mypageLabel" aria-hidden="true">
 	<div class="modal-dialog modal-dialog-centered">
 		<div class="modal-content">
 			<div class="modal-header">
@@ -70,9 +163,9 @@
 	function reset_form() {
 		$('#wrongPw').hide();
 		$('#wrongPw2').hide();
-		$('#user_id').val('');
-		$('#user_name').val('');
-		$('#password').val('');
+		$('#user_mod_id').val('');
+		$('#user_mod_name').val('');
+		$('#user_mod_password').val('');
 		$('#RepeatPassword').val('');
 		$('#user_mail').val('');
 	}
@@ -109,16 +202,15 @@
 				},
 				success : function(a) {
 					console.log(a);
-					reset_form();
 					if (a == 1) {
 						$('#alert_modal_body').html('회원정보 수정에 성공하였습니다.');
 					} else if (a == 0) {
 						$('#alert_modal_body').html('회원정보 수정에 실패하였습니다.');
 					}
-
+					reset_form();
 					$('#alert_modal').modal('show')
 					$('#mypage_modal').modal('hide');
-
+					getUserList(1, $('#searchCont').val());
 				}
 			})
 		}
@@ -168,58 +260,3 @@
 	}
 </script>
 
-<!-- crm -->
-<div class="modal fade" id="crm_modal" tabindex="-1" role="dialog"
-	aria-labelledby="crmLabel" aria-hidden="true">
-	<div class="modal-dialog modal-lg modal-dialog-centered">
-		<div class="modal-content">
-			<div class="modal-header">
-				<h4 class="modal-title" id="crmLabel">CA. crm</h4>
-				<button type="button" class="close" data-dismiss="modal"
-					aria-label="Close">
-					<span aria-hidden="true">&times;</span>
-				</button>
-
-			</div>
-			<div class="modal-body">
-				<div class="row" style="margin: 0; margin-bottom: 1em;">
-					<div class="select_box search_box">
-						<select name="searchSelect"
-							class="custom-select form-control search_form">
-							<option value="userId">회원ID</option>
-							<option value="userName">이름</option>
-						</select>
-					</div>
-					<div class="search_box">
-						<input name="searchCont" type="search"
-							class="form-control search_input" placeholder=""
-							aria-controls="dataTable" style="width: 175px">
-
-					</div>
-					<div class="search_box">
-						<button type="button" class="form-control btn btn-primary"
-							style="color: dodgerblue;">검색</button>
-					</div>
-				</div>
-				<div id="user_list_table">
-					<div class="div_content_container"
-						style="color: #666666; font-weight: bold;">
-						<div style="display: table-row;">
-							<div class="table_1st div_content_box"></div>
-							<div class="table_2nd div_content_box">회원ID</div>
-							<div class="table_3rd div_content_box">이름</div>
-							<div class="table_4th div_content_box">이메일</div>
-							<div class="table_5th div_content_box">권한</div>
-						</div>
-					</div>
-				</div>
-
-			</div>
-			<div class="modal-footer">
-				<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-				<button type="button" class="btn btn-primary"
-					style="color: dodgerblue;">커뮤니티 열기</button>
-			</div>
-		</div>
-	</div>
-</div>

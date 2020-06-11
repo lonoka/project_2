@@ -1,6 +1,9 @@
 package poly.service;
 
+import java.util.List;
+
 import poly.dto.UserDTO;
+import poly.dto.UserListDTO;
 
 public interface IUserService {
 
@@ -21,5 +24,9 @@ public interface IUserService {
 	int updateUserInfo(UserDTO pDTO) throws Exception;
 
 	UserDTO getUserInfo(UserDTO pDTO) throws Exception;
+
+	List<UserDTO> getUserList(UserListDTO pDTO) throws Exception;
+
+	int getTotal() throws Exception;
 
 }

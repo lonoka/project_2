@@ -1,7 +1,10 @@
 package poly.persistance.mapper;
 
+import java.util.List;
+
 import config.Mapper;
 import poly.dto.UserDTO;
+import poly.dto.UserListDTO;
 
 @Mapper("UserMapper")
 public interface IUserMapper {
@@ -23,5 +26,9 @@ public interface IUserMapper {
 	int updateUserInfo(UserDTO pDTO) throws Exception;
 
 	UserDTO getUserInfo(UserDTO pDTO) throws Exception;
+
+	List<UserDTO> getUserList(UserListDTO pDTO) throws Exception;
+
+	int getTotal() throws Exception;
 
 }

@@ -39,6 +39,33 @@
 <link rel="stylesheet" href="/css/style.css">
 <link rel="stylesheet" href="/css/ionicons.min.css">
 <style type="text/css">
+.block-27 ul {
+	padding: 0;
+	margin: 0;
+}
+
+.block-27 ul li {
+	display: inline-block;
+	font-weight: 400;
+}
+
+.block-27 ul li a, .block-27 ul li span {
+	color: dodgerblue;
+	text-align: center;
+	display: inline-block;
+	width: 40px;
+	height: 40px;
+	line-height: 40px;
+	border-radius: 50%;
+	border: 1px solid #e6e6e6;
+}
+
+.block-27 ul li.active a, .block-27 ul li.active span {
+	background: #E3F1FF;
+	color: dodgerblue;
+	border: 1px solid #e6e6e6;
+}
+
 h2 a:hover {
 	color: aliceblue !important;
 }
@@ -47,6 +74,7 @@ h2 a:hover {
 	table-layout: fixed;
 	width: 100%;
 	border: 1px solid #dee2e6;
+	
 }
 
 .div_content_box {

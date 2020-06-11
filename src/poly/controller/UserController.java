@@ -1,5 +1,8 @@
 package poly.controller;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -14,6 +17,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import poly.dto.MailDTO;
 import poly.dto.UserDTO;
+import poly.dto.UserListDTO;
 import poly.service.IMailService;
 import poly.service.IUserService;
 import poly.util.CmmUtil;
@@ -326,9 +330,67 @@ public class UserController {
 		pDTO = userService.getUserInfo(pDTO);
 		if (pDTO == null) {
 			pDTO = new UserDTO();
+			pDTO.setUser_name("로그인오류");
+			return pDTO;
 		} else {
 			pDTO.setUser_mail(EncryptUtil.decAES128CBC(pDTO.getUser_mail()));
 		}
+		return pDTO;
+	}
+
+	// 사용자 정보 조회
+	@RequestMapping(value = "getUserList")
+	@ResponseBody
+	public UserListDTO getUserList(HttpServletRequest request) throws Exception {
+
+		String user_id = CmmUtil.nvl(request.getParameter("user_id"));
+		String user_author = CmmUtil.nvl(request.getParameter("user_author"));
+		String pgNum = CmmUtil.nvl(request.getParameter("pgNum"));
+		String searchCont = CmmUtil.nvl(request.getParameter("searchCont"));
+		String searchSelect = CmmUtil.nvl(request.getParameter("searchSelect"));
+		log.info(searchSelect);
+		log.info(searchCont);
+		
+		UserListDTO pDTO = new UserListDTO();
+
+		if (user_id.equals("")) {
+			pDTO.setCheckNum(0);
+			return pDTO;
+		}
+		if (user_author.equals("")) {
+			pDTO.setCheckNum(0);
+			return pDTO;
+		}
+		if (user_author.equals("0")) {
+			pDTO.setCheckNum(1);
+			return pDTO;
+		}
+		if(pgNum.equals("")) {
+			pgNum = "1";
+		}
+		int totalNum = userService.getTotal();
+		pDTO.setPgNum((Integer.parseInt(pgNum)-1)*10);
+		List<UserDTO> pList = userService.getUserList(pDTO);
+		if(pList==null) {
+			pList = new ArrayList<UserDTO>();
+		}else {
+			for(int i = 0; i<pList.size(); i++) {
+				pList.get(i).setUser_mail(EncryptUtil.decAES128CBC(pList.get(i).getUser_mail()));
+				if(pList.get(i).getUser_author().equals("0")) {
+					pList.get(i).setUser_author("사용자");
+				}else if(pList.get(i).getUser_author().equals("1")) {
+					pList.get(i).setUser_author("관리자");
+				}
+			}
+		}
+		pDTO.setPgNum(Integer.parseInt(pgNum));
+		pDTO.setStartPg(((Integer.parseInt(pgNum)-1)/5)*5+1);
+		pDTO.setCheckNum(2);
+		pDTO.setuList(pList);
+		pDTO.setTotalNum(totalNum);
+		pDTO.setTotalPg((totalNum-1)/10+1);
+
+
 		return pDTO;
 	}
 

@@ -1,10 +1,13 @@
 package poly.service.impl;
 
+import java.util.List;
+
 import javax.annotation.Resource;
 
 import org.springframework.stereotype.Service;
 
 import poly.dto.UserDTO;
+import poly.dto.UserListDTO;
 import poly.persistance.mapper.IUserMapper;
 import poly.service.IUserService;
 import poly.util.CmmUtil;
@@ -93,6 +96,18 @@ public class UserService implements IUserService {
 	public UserDTO getUserInfo(UserDTO pDTO) throws Exception {
 		// TODO Auto-generated method stub
 		return userMapper.getUserInfo(pDTO);
+	}
+
+	@Override
+	public List<UserDTO> getUserList(UserListDTO pDTO) throws Exception {
+		// TODO Auto-generated method stub
+		return userMapper.getUserList(pDTO);
+	}
+
+	@Override
+	public int getTotal() throws Exception {
+		// TODO Auto-generated method stub
+		return userMapper.getTotal();
 	}
 
 }

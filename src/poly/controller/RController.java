@@ -63,11 +63,10 @@ public class RController {
 		}
 		
 		c.assign("title", title);
-		c.eval("negative <- readLines('c:\\\\word\\\\negative.txt', encoding = 'UTF-8')");
-		c.eval("positive <- readLines('c:\\\\word\\\\positive.txt', encoding = 'UTF-8')");
 		c.eval("m_df <- title %>% SimplePos09 %>% melt %>% as_tibble %>% select(3,1)");
-		c.eval("m_df <- m_df %>% mutate(noun=str_match(value, '([A-Z|a-z|0-9|가-힣]+)/N')[,2]) %>% na.omit %>% count(noun, sort = TRUE)");
+		c.eval("m_df <- m_df %>% mutate(noun=str_match(value, '([A-Z|a-z|0-9|가-힣]+)/N')[,2]) %>% na.omit");
 		c.eval("wordList <- m_df$noun");
+		c.eval("m_df <- m_df %>% count(noun, sort = TRUE)");
 		c.eval("m_df <- filter(m_df,nchar(noun)>=2)");
 		c.eval("m_df <- filter(m_df,n>=2)");
 		c.eval("wordList = unlist(wordList)");
