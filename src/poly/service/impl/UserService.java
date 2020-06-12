@@ -110,4 +110,16 @@ public class UserService implements IUserService {
 		return userMapper.getTotal();
 	}
 
+	@Override
+	public int modifyAuthor(UserDTO pDTO) throws Exception {
+		// TODO Auto-generated method stub
+		return userMapper.modifyAuthor(pDTO);
+	}
+
+	@Override
+	public int deleteUserInfo(UserDTO pDTO) throws Exception {
+		// TODO Auto-generated method stub
+		return userMapper.deleteUserInfo(pDTO);
+	}
+
 }

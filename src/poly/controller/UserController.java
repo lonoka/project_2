@@ -127,33 +127,30 @@ public class UserController {
 
 	// 로그인 버튼
 	@RequestMapping(value = "Loginbtn", method = RequestMethod.POST)
+	@ResponseBody
 	public String Loginbtn(HttpServletRequest request, ModelMap model, HttpSession session) throws Exception {
-		String userId = request.getParameter("userId");
-		String userPassword = request.getParameter("userPassword");
+		String user_id = request.getParameter("user_id");
+		String password = request.getParameter("password");
 
 		UserDTO uDTO = new UserDTO();
-		uDTO.setUser_id(userId);
-		uDTO.setPassword(EncryptUtil.encHashSHA256(userPassword));
+		uDTO.setUser_id(user_id);
+		uDTO.setPassword(EncryptUtil.encHashSHA256(password));
 		uDTO = userService.getLogin(uDTO);
 
 		if (uDTO == null) {
-			model.addAttribute("msg", "없는 아이디 또는 잘못된 비밀번호 입니다.");
-			model.addAttribute("url", "/index.do");
+			return "0";
 		} else if (uDTO.getUser_author().equals("1")) {
-			model.addAttribute("msg", "관리자 로그인에 성공하셨습니다.");
-			model.addAttribute("url", "/index.do");
 			session.setAttribute("userAuthor", uDTO.getUser_author());
 			session.setAttribute("userId", uDTO.getUser_id());
 			session.setAttribute("userName", uDTO.getUser_name());
+			return "1";
 		} else {
-			model.addAttribute("msg", "로그인에 성공하셨습니다.");
-			model.addAttribute("url", "/index.do");
 			session.setAttribute("userAuthor", uDTO.getUser_author());
 			session.setAttribute("userId", uDTO.getUser_id());
 			session.setAttribute("userName", uDTO.getUser_name());
+			return "2";
 		}
 
-		return "/redirect";
 	}
 
 	// 로그아웃 버튼
@@ -338,6 +335,63 @@ public class UserController {
 		return pDTO;
 	}
 
+	// 사용자 권한 변경
+	@RequestMapping(value = "modifyAuthor")
+	@ResponseBody
+	public String modifyAuthor(HttpServletRequest request) throws Exception {
+
+		String user_id = CmmUtil.nvl(request.getParameter("user_id"));
+		UserDTO pDTO = new UserDTO();
+
+		if (user_id.equals("")) {
+			return "0";
+		}
+
+		pDTO.setUser_id(user_id);
+
+		pDTO = userService.getUserInfo(pDTO);
+		if (pDTO == null) {
+			return "0";
+		} else {
+			if (pDTO.getUser_author().equals("0")) {
+				int result = userService.modifyAuthor(pDTO);
+				if (result > 0) {
+					return "1";
+				} else {
+					return "0";
+				}
+			} else {
+				int result = userService.modifyAuthor(pDTO);
+				if (result > 0) {
+					return "2";
+				} else {
+					return "0";
+				}
+			}
+		}
+	}
+
+	// 사용자 권한 변경
+	@RequestMapping(value = "deleteUserInfo")
+	@ResponseBody
+	public String deleteUserInfo(HttpServletRequest request) throws Exception {
+
+		String user_id = CmmUtil.nvl(request.getParameter("user_id"));
+		UserDTO pDTO = new UserDTO();
+
+		if (user_id.equals("")) {
+			return "0";
+		}
+
+		pDTO.setUser_id(user_id);
+		int result = userService.deleteUserInfo(pDTO);
+		if(result>0) {
+			return "1";
+		}else {
+			return "0";
+		}
+	}
+
 	// 사용자 정보 조회
 	@RequestMapping(value = "getUserList")
 	@ResponseBody
@@ -350,7 +404,7 @@ public class UserController {
 		String searchSelect = CmmUtil.nvl(request.getParameter("searchSelect"));
 		log.info(searchSelect);
 		log.info(searchCont);
-		
+
 		UserListDTO pDTO = new UserListDTO();
 
 		if (user_id.equals("")) {
@@ -365,31 +419,30 @@ public class UserController {
 			pDTO.setCheckNum(1);
 			return pDTO;
 		}
-		if(pgNum.equals("")) {
+		if (pgNum.equals("")) {
 			pgNum = "1";
 		}
 		int totalNum = userService.getTotal();
-		pDTO.setPgNum((Integer.parseInt(pgNum)-1)*10);
+		pDTO.setPgNum((Integer.parseInt(pgNum) - 1) * 10);
 		List<UserDTO> pList = userService.getUserList(pDTO);
-		if(pList==null) {
+		if (pList == null) {
 			pList = new ArrayList<UserDTO>();
-		}else {
-			for(int i = 0; i<pList.size(); i++) {
+		} else {
+			for (int i = 0; i < pList.size(); i++) {
 				pList.get(i).setUser_mail(EncryptUtil.decAES128CBC(pList.get(i).getUser_mail()));
-				if(pList.get(i).getUser_author().equals("0")) {
+				if (pList.get(i).getUser_author().equals("0")) {
 					pList.get(i).setUser_author("사용자");
-				}else if(pList.get(i).getUser_author().equals("1")) {
+				} else if (pList.get(i).getUser_author().equals("1")) {
 					pList.get(i).setUser_author("관리자");
 				}
 			}
 		}
 		pDTO.setPgNum(Integer.parseInt(pgNum));
-		pDTO.setStartPg(((Integer.parseInt(pgNum)-1)/5)*5+1);
+		pDTO.setStartPg(((Integer.parseInt(pgNum) - 1) / 5) * 5 + 1);
 		pDTO.setCheckNum(2);
 		pDTO.setuList(pList);
 		pDTO.setTotalNum(totalNum);
-		pDTO.setTotalPg((totalNum-1)/10+1);
-
+		pDTO.setTotalPg((totalNum - 1) / 10 + 1);
 
 		return pDTO;
 	}

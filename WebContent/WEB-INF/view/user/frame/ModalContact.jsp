@@ -25,7 +25,7 @@
 						<div class="control-group form-group">
 							<div class="controls">
 								<label>Phone Number:</label> <input class="form-control"
-									id="contactTel" name="contactTel" required type="tel">
+									id="contactTel" name="contactTel" required type="tel" onkeyup="phoneNumberFormat(this)">
 							</div>
 						</div>
 						<div class="control-group form-group">
@@ -46,7 +46,7 @@
 				</div>
 				<div class="modal-footer">
 					<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-					<button type="button" id = "contact_btn" onclick="sendContact()"
+					<button type="button" id="contact_btn" onclick="sendContact()"
 						class="btn btn-primary" style="color: dodgerblue;">Send
 						Message</button>
 				</div>
@@ -56,6 +56,61 @@
 </div>
 
 <script>
+	function phoneNumberFormat(obj) {
+		obj.value = obj.value.replace(/[^0-9\-]/g, "");
+		var number = obj.value.replace(/[^0-9]/g, "");
+		var tel = "";
+
+		// 서울 지역번호(02)가 들어오는 경우
+		if (number.substring(0, 2).indexOf('02') == 0) {
+			$("#user_tel").attr("maxlength", "12")
+			if (number.length < 3) {
+				return number;
+			} else if (number.length < 6) {
+				tel += number.substr(0, 2);
+				tel += "-";
+				tel += number.substr(2);
+			} else if (number.length < 10) {
+				tel += number.substr(0, 2);
+				tel += "-";
+				tel += number.substr(2, 3);
+				tel += "-";
+				tel += number.substr(5);
+			} else {
+				tel += number.substr(0, 2);
+				tel += "-";
+				tel += number.substr(2, 4);
+				tel += "-";
+				tel += number.substr(6);
+			}
+
+			// 서울 지역번호(02)가 아닌경우
+		} else {
+			$("#user_tel").attr("maxlength", "13")
+			if (number.length < 4) {
+				return number;
+			} else if (number.length < 7) {
+				tel += number.substr(0, 3);
+				tel += "-";
+				tel += number.substr(3);
+			} else if (number.length < 11) {
+				tel += number.substr(0, 3);
+				tel += "-";
+				tel += number.substr(3, 3);
+				tel += "-";
+				tel += number.substr(6);
+			} else {
+				tel += number.substr(0, 3);
+				tel += "-";
+				tel += number.substr(3, 4);
+				tel += "-";
+				tel += number.substr(7);
+			}
+		}
+
+		obj.value = tel;
+		$(obj).focusout();
+	}
 	function sendContact() {
 		if ($('#contactName').val() == '') {
 			$('#alert_modal_body').html('이름을 입력해주세요.');

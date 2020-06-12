@@ -46,16 +46,16 @@
 				<button type="button" class="btn btn-primary"
 					style="color: dodgerblue;" onclick="getUser()">정보 수정</button>
 				<button type="button" class="btn btn-primary"
-					style="color: dodgerblue;">권한 변경</button>
+					style="color: dodgerblue;" onclick="modifyAuthor()">권한 변경</button>
 				<button type="button" class="btn btn-primary"
-					style="color: dodgerblue;">회원 탈퇴</button>
+					style="color: dodgerblue;" onclick="setDeleteConfirm()">회원
+					탈퇴</button>
 			</div>
 		</div>
 	</div>
 </div>
 <script>
 	function getUser() {
-		
 		if (!$('input:radio[name=check_user]').is(':checked')) {
 			$('#alert_modal_body').html('사용자를 체크해주세요.');
 			$('#alert_modal').modal('show')
@@ -82,6 +82,70 @@
 				}
 			})
 		}
+	}
+	function modifyAuthor() {
+		if (!$('input:radio[name=check_user]').is(':checked')) {
+			$('#alert_modal_body').html('사용자를 체크해주세요.');
+			$('#alert_modal').modal('show')
+		}else if($('input:radio[name=check_user]:checked').val()=='<%=userId%>'){
+			$('#alert_modal_body').html('본인의 권한은 변경하실 수 없습니다.');
+			$('#alert_modal').modal('show')
+		}else {
+			$.ajax({
+				url : "/modifyAuthor.do",
+				type : "post",
+				data : {
+					'user_id' : $('input:radio[name=check_user]:checked').val()
+				},
+				success : function(a) {
+					if(a == '0'){
+						$('#alert_modal_body').html('일시적 오류가 발생하였습니다. 나중에 다시 시도해주세요.');	
+					}else if(a=='1'){
+						$('#alert_modal_body').html('관리자로 변경되었습니다.');
+					}else if(a=='2'){
+						$('#alert_modal_body').html('사용자로 변경되었습니다.');
+					}
+					
+					$('#alert_modal').modal('show')
+					getUserList(1, $('#searchCont').val());
+					
+				}
+			})
+		}
+	}
+	function setDeleteConfirm(){
+		if (!$('input:radio[name=check_user]').is(':checked')) {
+			$('#alert_modal_body').html('사용자를 체크해주세요.');
+			$('#alert_modal').modal('show')
+		}else if($('input:radio[name=check_user]:checked').val()=='<%=userId%>') {
+			$('#alert_modal_body').html('본인은 탈퇴시킬 수 없습니다.');
+			$('#alert_modal').modal('show')
+		} else {
+			$('#confirm_modal_body').html('회원을 탈퇴 시키시겠습니까?.');
+			$('#confirm_btn').attr('onclick', 'deleteUser();');
+			$('#confirm_modal').modal('show')
+		}
+	}
+	function deleteUser() {
+		$.ajax({
+			url : "/deleteUserInfo.do",
+			type : "post",
+			data : {
+				'user_id' : $('input:radio[name=check_user]:checked').val()
+			},
+			success : function(a) {
+				if (a == '0') {
+					$('#alert_modal_body').html(
+							'일시적 오류가 발생하였습니다. 나중에 다시 시도해주세요.');
+				} else if (a == '1') {
+					$('#alert_modal_body').html('회원이 삭제되었습니다.');
+				}
+
+				$('#alert_modal').modal('show')
+				getUserList(1, $('#searchCont').val());
+
+			}
+		})
 	}
 	function searchUserList() {
 		if ($('#searchCont').val() == '') {
@@ -147,6 +211,8 @@
 				<div class="modal-footer">
 					<button type="button" class="btn btn-default" data-dismiss="modal"
 						onclick="reset_form()">Close</button>
+					<button type="button" onclick="setDeleteInfoConfirm()"
+						class="btn btn_alert" style="color: #fff;">회원 탈퇴</button>
 					<button type="button" onclick="UserModify()"
 						class="btn btn-primary" style="color: dodgerblue;">회원정보
 						수정</button>
@@ -257,6 +323,34 @@
 			return false;
 		}
 		return true;
+	}
+	function setDeleteInfoConfirm(){
+		$('#confirm_modal_body').html('탈퇴하시겠습니까??.');
+		$('#confirm_btn').attr('onclick', 'deleteUserInfo();');
+		$('#confirm_modal').modal('show')
+	}
+	function deleteUserInfo() {
+		$.ajax({
+			url : "/deleteUserInfo.do",
+			type : "post",
+			data : {
+				'user_id' : $('#user_mod_id').val()
+			},
+			success : function(a) {
+				if (a == '0') {
+					$('#alert_modal_body').html(
+							'일시적 오류가 발생하였습니다. 나중에 다시 시도해주세요.');
+				} else if (a == '1') {
+					$('#alert_modal_body').html('회원이 삭제되었습니다.');
+				}
+				$('#mypage_modal').modal('hide');
+				$('#alert_modal').modal('show');
+				$('#alert_modal').on('hide.bs.modal', function (e) {
+					location.href="/Logoutbtn.do";
+				});
+				
+			}
+		})
 	}
 </script>
 

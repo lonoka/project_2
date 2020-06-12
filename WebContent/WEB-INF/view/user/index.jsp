@@ -44,6 +44,15 @@
 	margin: 0;
 }
 
+.btn_alert{
+	background-color: #F7CAC9;
+	border-color: #F7CAC9;
+}
+.btn_alert:hover{
+	background-color: #f7b6b5!important;
+	border-color: #f7b6b5!important;
+}
+
 .block-27 ul li {
 	display: inline-block;
 	font-weight: 400;

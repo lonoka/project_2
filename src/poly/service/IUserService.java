@@ -29,4 +29,8 @@ public interface IUserService {
 
 	int getTotal() throws Exception;
 
+	int modifyAuthor(UserDTO pDTO) throws Exception;
+
+	int deleteUserInfo(UserDTO pDTO) throws Exception;
+
 }

@@ -17,14 +17,14 @@
 
 			</div>
 			<div class="modal-body">
-				<form class="user" action="Loginbtn.do" method="post">
+				<form class="user" id="login_form">
 					<div class="form-group">
 						<input type="text" class="form-control form-control-user"
-							name="userId" placeholder="ID" required="required">
+							id="user_login_id" name="user_id" placeholder="ID" required="required">
 					</div>
 					<div class="form-group">
 						<input type="password" class="form-control form-control-user"
-							name="userPassword" placeholder="Password"
+							id="user_login_password" name="password" placeholder="Password"
 							style="ime-mode: disabled;" required="required">
 					</div>
 					<div class="form-group">
@@ -34,7 +34,7 @@
 								class="custom-control-label" for="customCheck">ID 기억하기</label>
 						</div>
 					</div>
-					<button type="submit" class="btn btn-primary btn-user btn-block"
+					<button type="button" onclick="loginUser()" class="btn btn-primary btn-user btn-block"
 						style="color: dodgerblue;">Login</button>
 				</form>
 			</div>
@@ -55,6 +55,50 @@
 		</div>
 	</div>
 </div>
+<script>
+	function loginUser() {
+		if (doModifyUserCheck(document.getElementById('login_form'))) {
+			$.ajax({
+				url : "/Loginbtn.do",
+				type : "post",
+				data : {
+					'user_id' : $('#user_login_id').val(),
+					'password' : $('#user_login_password').val()
+				},
+				success : function(a) {
+					console.log(a);
+					if (a == 1) {
+						$('#alert_modal_body').html('관리자 로그인에 성공하였습니다.');
+					} else if (a == 0) {
+						$('#alert_modal_body').html('없는 아이디 또는 잘못된 비밀번호입니다.');
+					} else if (a==2){
+						$('#alert_modal_body').html('로그인되었습니다.');
+					}
+
+					$('#alert_modal').modal('show')
+					$('#login_modal').modal('hide');
+					$('#alert_modal').on('hide.bs.modal', function (e) {
+						location.href="/index.do";
+					});
+
+				}
+			})
+		}
+	}
+	function doModifyUserCheck(f) {
+		if (f.user_id.value == "") {
+			$('#alert_modal_body').html('아이디를 입력하세요.');
+			$('#alert_modal').modal('show')
+			return false;
+		}
+		if (f.password.value == "") {
+			$('#alert_modal_body').html('비밀번호를 입력하세요.');
+			$('#alert_modal').modal('show')
+			return false;
+		}
+		return true;
+	}
+</script>
 
 
 
@@ -279,7 +323,8 @@
 						$('#alert_modal').modal('show');
 						reset_reg_form();
 					} else if (a == 2) {
-						$('#alert_modal_body').html('일시적 오류가 발생하였습니다. 나중에 다시 시도해주세요.');
+						$('#alert_modal_body').html(
+								'일시적 오류가 발생하였습니다. 나중에 다시 시도해주세요.');
 						$('#alert_modal').modal('show');
 						reset_reg_form();
 					}
@@ -505,16 +550,16 @@
 <script>
 	window.onload = function() {
 		var userInputId = getCookie("userInputId");//저장된 쿠기값 가져오기
-		$('input[name=userId]').val(userInputId);
+		$('input[name=user_id]').val(userInputId);
 
-		if ($('input[name=userId]').val() != "") { // 그 전에 ID를 저장해서 처음 페이지 로딩
+		if ($('input[name=user_id]').val() != "") { // 그 전에 ID를 저장해서 처음 페이지 로딩
 			// 아이디 저장하기 체크되어있을 시,
 			$('input[name=userCheck]').attr("checked", true); // ID 저장하기를 체크 상태로 두기.
 		}
 
 		$('input[name=userCheck]').change(function() { // 체크박스에 변화가 발생시
 			if ($('input[name=userCheck]').is(":checked")) { // ID 저장하기 체크했을 때,
-				var userInputId = $('input[name=userId]').val();
+				var userInputId = $('input[name=user_id]').val();
 				setCookie("userInputId", userInputId, 7); // 7일 동안 쿠키 보관
 			} else { // ID 저장하기 체크 해제 시,
 				deleteCookie("userInputId");
@@ -522,9 +567,9 @@
 		});
 
 		// ID 저장하기를 체크한 상태에서 ID를 입력하는 경우, 이럴 때도 쿠키 저장.
-		$('input[name=userId]').keyup(function() { // ID 입력 칸에 ID를 입력할 때,
+		$('input[name=user_id]').keyup(function() { // ID 입력 칸에 ID를 입력할 때,
 			if ($('input[name=userCheck]').is(":checked")) { // ID 저장하기를 체크한 상태라면,
-				var userInputId = $('input[name=userId]').val();
+				var userInputId = $('input[name=user_id]').val();
 				setCookie("userInputId", userInputId, 7); // 7일 동안 쿠키 보관
 			}
 		});
