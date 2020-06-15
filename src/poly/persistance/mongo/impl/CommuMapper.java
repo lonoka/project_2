@@ -82,10 +82,10 @@ public class CommuMapper implements ICommuMapper {
 	public List<CommuDTO> getData(String colNm) throws Exception {
 		log.info(this.getClass().getName() + " getData Start!");
 		DBCollection rCol = mongodb.getCollection(colNm);
-		 BasicDBObject query = new BasicDBObject();
-         BasicDBObject sort = new BasicDBObject();
-         sort.put("views", -1);
-
+		BasicDBObject query = new BasicDBObject();
+		BasicDBObject sort = new BasicDBObject();
+		sort.put("views", -1);
+		
 		Iterator<DBObject> cursor = rCol.find(query).sort(sort);
 
 		List<CommuDTO> rList = new ArrayList<CommuDTO>();
@@ -102,7 +102,7 @@ public class CommuMapper implements ICommuMapper {
 			String title = CmmUtil.nvl((String) current.get("title"));
 			String writer = CmmUtil.nvl((String) current.get("writer"));
 			String link = CmmUtil.nvl((String) current.get("link"));
-			int views = (int)current.get("views");
+			int views = (int) current.get("views");
 
 			rDTO.setCollect_time(collect_time);
 			rDTO.setCommu_name(commu_name);
@@ -151,7 +151,7 @@ public class CommuMapper implements ICommuMapper {
 		log.info(this.getClass().getName() + " insertAnalysisData end!");
 
 		return res;
-		
+
 	}
 
 	@Override
@@ -160,9 +160,9 @@ public class CommuMapper implements ICommuMapper {
 		DBCollection rCol = mongodb.getCollection(colNm);
 
 		BasicDBObject query = new BasicDBObject();
-        BasicDBObject sort = new BasicDBObject();
-        sort.put("count", -1);
-        
+		BasicDBObject sort = new BasicDBObject();
+		sort.put("count", -1);
+
 		Iterator<DBObject> cursor = rCol.find(query).sort(sort);
 
 		List<DataDTO> rList = new ArrayList<DataDTO>();

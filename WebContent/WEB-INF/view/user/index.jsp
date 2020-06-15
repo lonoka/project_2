@@ -1,16 +1,15 @@
 <%@page import="poly.dto.DataDTO"%>
 <%@page import="poly.dto.UserDTO"%>
+<%@page import="poly.dto.CommuDTO"%>
 <%@page import="poly.util.EncryptUtil"%>
 <%@page import="java.util.List"%>
 <%@ page import="java.util.List"%>
+<%@ page import="java.util.Map"%>
 <%@ page import="java.util.ArrayList"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <%
-	List<DataDTO> rList = (List<DataDTO>) request.getAttribute("rList");
-	List<DataDTO> wList = (List<DataDTO>) request.getAttribute("wList");
-	List<DataDTO> tList = (List<DataDTO>) request.getAttribute("tList");
-	List<DataDTO> oList = (List<DataDTO>) request.getAttribute("oList");
+	List<Map> pList = (List<Map>) request.getAttribute("pList");
 	String userId = (String) session.getAttribute("userId");
 	String userAuthor = (String) session.getAttribute("userAuthor");
 %>
@@ -84,6 +83,29 @@ h2 a:hover {
 	width: 100%;
 	border: 1px solid #dee2e6;
 	
+}
+.linkbody_content_container {
+	display: table;
+	table-layout: fixed;
+	width: 100%;
+	border-bottom: 1px solid #666666;
+}
+.linkheader_content_container {
+	display: table;
+	table-layout: fixed;
+	width: 100%;
+	border-top: 1px solid #666666;
+	border-bottom: 1px solid #666666;
+}
+.linkdiv_content_box {
+	display: table-cell;
+	text-overflow: ellipsis;
+	overflow: hidden;
+	white-space: nowrap;
+	text-align: center;
+}
+.link_1st{
+	width : 70%;
 }
 
 .div_content_box {
@@ -222,19 +244,32 @@ h2 a:hover {
 					<div class="col-md-12 mt-lg-5 text-center">
 						<div id="slider" class="carousel slide" data-ride="carousel">
 							<ol class="carousel-indicators">
-								<li data-target="#slider" data-slide-to="0" class="active"></li>
-
+							<%for(int i = 0; i<pList.size();i++){ %>
+								<%if(i==0){ %>
+								<li data-target="#slider" data-slide-to="<%=i%>" class="active"></li>
+								<%}else{ %>
+								<li data-target="#slider" data-slide-to="<%=i%>"></li>
+								<%} %>
+							<%} %>
 							</ol>
 							<div class="carousel-inner">
+								<%for(int i = 0; i<pList.size();i++){ 
+									List<DataDTO> rList = (List<DataDTO>)pList.get(i).get("rList");	
+								%>
+								<%if(i==0){ %>
 								<div class="carousel-item active">
+								<%}else{ %>
+								<div class="carousel-item">
+								<%} %>
 									<h2 style="font-family: Nanum Gothic">
 										<a href="javascript:void(0)" class="" data-toggle="modal"
-											data-target="#comu_modal_1" data-backdrop="static"
+											data-target="#comu_modal_<%=i%>" data-backdrop="static"
 											style="color: aliceblue !important;"><%=rList.get(0).getCommu_name()%></a>
 									</h2>
-									<div id="wordcloud_1" class=""
+									<div id="wordcloud_<%=i%>" class=""
 										style="height: 600px; width: 100%"></div>
 								</div>
+							<%} %>
 							</div>
 						</div>
 						<br>
@@ -259,7 +294,11 @@ h2 a:hover {
 
 		</div>
 		<!-- 커뮤니티 모달 -->
-		<div class="modal fade" id="comu_modal_1" tabindex="-1" role="dialog"
+		<%for(int i = 0; i <pList.size();i++){
+			List<DataDTO> rList = (List<DataDTO>)pList.get(i).get("rList");
+			List<CommuDTO> bList = (List<CommuDTO>)pList.get(i).get("bList");
+		%>
+		<div class="modal fade" id="comu_modal_<%=i%>" tabindex="-1" role="dialog"
 			aria-labelledby="contactLabel" aria-hidden="true">
 			<div class="modal-dialog modal-lg modal-dialog-centered">
 				<div class="modal-content">
@@ -272,21 +311,53 @@ h2 a:hover {
 
 					</div>
 					<div class="modal-body">
-						<div class="row">
+						<div class="row" style="font-weight: bold;">
 							<div id="" class="col-md-6" style="text-align: center;">
-								분석 게시글 시간대별 작성개수<br>(10분단위)
+								게시글 분석 개수 : <%=bList.size() %>
 							</div>
+							<div id="time_section_<%=i%>" class="col-md-6" style="text-align: center;">
+								
+							</div>
+						</div>
+						<div class="row">
 							<div id="" class="col-md-6" style="text-align: center;">
 								커뮤니티 긍정, 부정 정도 <br>(0에 가까울수록 부정적입니다.)
 							</div>
+							<div id="" class="col-md-6" style="text-align: center;">
+								분석 게시글 시간대별 작성개수<br>(10분단위)
+							</div>
 						</div>
 						<div class="row">
-							<div id="time_chart_1" class="col-md-6" style="height: 250px;"></div>
-							<div id="opinion_chart_1" class="col-md-6"></div>
+							<div id="opinion_chart_<%=i%>" class="col-md-6"></div>
+							<div id="time_chart_<%=i%>" class="col-md-6" style="height: 250px;"></div>	
 						</div>
-						게시글 작성자
-						<div id="writer_chart_1" class="col-md-12"
+						<div class="row">
+							<div id="" class="col-md-3" style="text-align: center;">
+								게시글 작성자
+							</div>
+							<div id="" class="col-md-9" style="text-align: center;">
+								조회수 많은 게시글
+							</div>
+						</div>
+						
+						<div class="row">
+						<div id="writer_div_<%=i%>" class="col-md-3"
 							style="margin: auto; height: 300px"></div>
+						<div class="col-md-9"
+							style="margin: auto; height: 300px">
+							<div style="width: 100%">
+								<div class="linkheader_content_container">
+									<div style="display: table-row;">
+										<div class="linkdiv_content_box link_1st">제목</div>
+										<div class="linkdiv_content_box">작성자</div>
+										<div class="linkdiv_content_box">조회수</div>
+									</div>
+								</div>
+								<div id="link_div_<%=i%>" class="linkbody_content_container">
+								</div>
+							</div>
+							</div>
+						</div>
 					</div>
 					<div class="modal-footer">
 						<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
@@ -298,6 +369,7 @@ h2 a:hover {
 				</div>
 			</div>
 		</div>
+		<%} %>
 
 	</div>
 	<!-- .site-wrap -->
@@ -322,8 +394,12 @@ h2 a:hover {
 
 
 	<!-- 워드클라우드 스크립트 -->
+	<%for(int j = 0; j<pList.size();j++){
+		List<DataDTO>rList = (List<DataDTO>)pList.get(j).get("rList");
+	%>
 	<script type="text/javascript">
-	var rList = [
+		
+	var rList<%=j%> = [
 		<%for (int i = 0; i < rList.size(); i++) {%>
 			{word:'<%=rList.get(i).getWord()%>', count:<%=Integer.toString(rList.get(i).getCount())%>},
 		<%}%>
@@ -332,74 +408,88 @@ h2 a:hover {
 	// Themes begin
 	am4core.useTheme(am4themes_animated);
 	// Themes end
-	var chart = am4core.create("wordcloud_1", am4plugins_wordCloud.WordCloud);
+	var chart = am4core.create("wordcloud_<%=j%>", am4plugins_wordCloud.WordCloud);
 	var series = chart.series.push(new am4plugins_wordCloud.WordCloudSeries());
 	series.randomness = 0.1;
 	series.labels.template.tooltipText = "{word}: {value}";
 	series.fontFamily = "Courier New";
-	series.data = rList
+	series.data = rList<%=j%>;
 	series.dataFields.word = "word";
 	series.dataFields.value = "count";
 
 	}); // end am4core.ready()
 	</script>
-	<!-- 작성자 차트 -->
-	<script type="text/javascript">
-	<%if (wList.size() > 90) {%>
-		var wList = [
-		     		<%for (int i = 0; i < 90; i++) {%>
-		     			{writer:'<%=wList.get(i).getWord()%>', count:<%=wList.get(i).getCount()%>},
-		     		<%}%>
-		     		];
-	<%} else {%>
-	var wList = [
-		<%for (int i = 0; i < wList.size(); i++) {%>
-			{writer:'<%=wList.get(i).getWord()%>', count:<%=Integer.toString(wList.get(i).getCount())%>},
-		<%}%>
-		];
 	<%}%>
-	
-	am4core.ready(function() {
-		// Themes begin
-		am4core.useTheme(am4themes_animated);
-		// Themes end
-		var chart = am4core.create("writer_chart_1", am4plugins_wordCloud.WordCloud);
-		var series = chart.series.push(new am4plugins_wordCloud.WordCloudSeries());
-		series.randomness = 0.8;
-		series.minFontSize = 15;
-		series.maxFontSize = 80;
-		series.labels.template.tooltipText = "{word}: {value}";
-		series.fontFamily = "Courier New";
-		series.data = wList
-		series.dataFields.word = "writer";
-		series.dataFields.value = "count";
-
-		});
+	<!-- 작성자 div -->
+	<%for(int j = 0; j<pList.size();j++){
+		List<DataDTO>wList = (List<DataDTO>)pList.get(j).get("wList");
+	%>
+	<script type="text/javascript">
+	var str = '<div style="width:100%; height:27px; overflow:hidden;"></div>';
+	<%if (wList.size() > 10) {%>
+	   	<%for (int i = 0; i < 10; i++) {%>
+	   		str += '<div style="width:100%; height:27px; overflow:hidden;">'+(<%=i%>+1)+". <%=wList.get(i).getWord()%> : <%=wList.get(i).getCount()%></div>";
+	  	<%}%>	
+	<%} else {%>
+		<%for (int i = 0; i < wList.size(); i++) {%>
+			str += '<div style="width:100%; height:27px; overflow:hidden;">'+(<%=i%>+1)+". <%=wList.get(i).getWord()%> : <%=wList.get(i).getCount()%></div>";
+		<%}%>
+	<%}%>
+	$("#writer_div_<%=j%>").html(str);
 	</script>
+	<%}%>
+	<!-- 게시글 div -->
+	<%for(int j = 0; j<pList.size();j++){
+		List<CommuDTO>bList = (List<CommuDTO>)pList.get(j).get("bList");
+	%>
+	<script type="text/javascript">
+	var str = "";
+	<%if (bList.size() > 10) {%>
+	   	<%for (int i = 0; i < 10; i++) {%>
+		   	str += '<div style="display: table-row;">';
+		   	str += '<div class="linkdiv_content_box link_1st"><a href="<%=bList.get(i).getLink()%>" target="_blank"><%=bList.get(i).getTitle()%></a></div>';
+	   		str += '<div class="linkdiv_content_box"><%=bList.get(i).getWriter()%></div>';
+	   		str += '<div class="linkdiv_content_box"><%=bList.get(i).getViews()%></div>';
+	   		str += '</div>'
+	   	<%}%>	
+	<%} else {%>
+		<%for (int i = 0; i < bList.size(); i++) {%>
+		   	str += '<div style="display: table-row;">';
+		   	str += '<div class="linkdiv_content_box link_1st"><%=bList.get(i).getTitle()%></div>';
+   			str += '<div class="linkdiv_content_box"><%=bList.get(i).getWriter()%></div>';
+   			str += '<div class="linkdiv_content_box"><%=bList.get(i).getViews()%></div>';
+   			str += '</div>'
+		<%}%>
+	<%}%>
+	$("#link_div_<%=j%>").html(str);
+	</script>
+	<%}%>
 	<!-- 시간대별 차트 -->
+	<%for(int j = 0; j<pList.size();j++){
+		List<DataDTO>tList = (List<DataDTO>)pList.get(j).get("tList");
+	%>
 	<script type="text/javascript">
 	am4core.ready(function() {
 	// Themes begin
 	am4core.useTheme(am4themes_animated);
 	// Themes end
 
-	var chart = am4core.create("time_chart_1", am4charts.XYChart);
+	var chart = am4core.create("time_chart_<%=j%>", am4charts.XYChart);
 
-	var data = [];
+	var data<%=j%> = [];
+	var str<%=j%> = "";
 	var value = 0;
 	<%for (int i = 0; i < tList.size(); i++) {%>
-		
 		var date = new Date('<%=tList.get(i).getWord()%>');
 		value = '<%=tList.get(i).getCount()%>';
-		data.push({date:date, value: value});
+		data<%=j%>.push({date:date, value: value});
 	<%}%>
-	console.log(data);
-	data.sort(function(a,b){
+	data<%=j%>.sort(function(a,b){
 		return a.date < b.date ? -1 : a.date > b.date ? 1:0;
 	});
-	console.log(data);
-	chart.data = data;
-
+	chart.data = data<%=j%>;
+	var str<%=j%> = data<%=j%>[0].date.format('yyyy-MM-dd HH:mm') +' ~ '+data<%=j%>[data<%=j%>.length-1].date.format('yyyy-MM-dd HH:mm');
+	$("#time_section_<%=j%>").html(str<%=j%>);
 	// Create axes
 	var dateAxis = chart.xAxes.push(new am4charts.DateAxis());
 	dateAxis.renderer.minGridDistance = 60;
@@ -423,16 +513,20 @@ h2 a:hover {
 
 	}); // end am4core.ready()
 	</script>
+	<%}%>
 	<!-- 오피니언 마이닝 -->
+	<%for(int j = 0; j<pList.size();j++){
+		List<DataDTO>oList = (List<DataDTO>)pList.get(j).get("oList");
+	%>
 	<script type="text/javascript">
 	<%if (oList.get(0).getWord().equals("긍정")) {%>
-	var positive = <%=oList.get(0).getCount()%>
-	var negative = <%=oList.get(1).getCount()%>
+	var positive<%=j%> = <%=oList.get(0).getCount()%>
+	var negative<%=j%> = <%=oList.get(1).getCount()%>
 	<%} else if (oList.get(0).getWord().equals("부정")) {%>
-	var positive = <%=oList.get(1).getCount()%>
-	var negative = <%=oList.get(0).getCount()%>
+	var positive<%=j%> = <%=oList.get(1).getCount()%>
+	var negative<%=j%> = <%=oList.get(0).getCount()%>
 	<%}%>
-	var cal = (positive)/(positive+negative);
+	var cal = (positive<%=j%>)/(positive<%=j%>+negative<%=j%>);
 	cal = cal*100;
 	am4core.ready(function() {
 
@@ -441,7 +535,7 @@ h2 a:hover {
 		// Themes end
 
 		// create chart
-		var chart = am4core.create("opinion_chart_1", am4charts.GaugeChart);
+		var chart = am4core.create("opinion_chart_<%=j%>", am4charts.GaugeChart);
 		chart.hiddenState.properties.opacity = 0; // this makes initial fade in effect
 
 		chart.innerRadius = -25;
@@ -474,8 +568,40 @@ h2 a:hover {
 		hand.showValue(cal, 100, am4core.ease.cubicOut);
 
 		}); // end am4core.ready()
+
 	</script>
+	<%}%>
 	<script>
+	Date.prototype.format = function (f) {
+	    if (!this.valueOf()) return " ";
+	    var weekKorName = ["일요일", "월요일", "화요일", "수요일", "목요일", "금요일", "토요일"];
+	    var weekKorShortName = ["일", "월", "화", "수", "목", "금", "토"];
+	    var weekEngName = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+	    var weekEngShortName = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+	    var d = this;
+	    return f.replace(/(yyyy|yy|MM|dd|KS|KL|ES|EL|HH|hh|mm|ss|a\/p)/gi, function ($1) {
+	        switch ($1) {
+	            case "yyyy": return d.getFullYear(); // 년 (4자리)
+	            case "yy": return (d.getFullYear() % 1000).zf(2); // 년 (2자리)
+	            case "MM": return (d.getMonth() + 1).zf(2); // 월 (2자리)
+	            case "dd": return d.getDate().zf(2); // 일 (2자리)
+	            case "KS": return weekKorShortName[d.getDay()]; // 요일 (짧은 한글)
+	            case "KL": return weekKorName[d.getDay()]; // 요일 (긴 한글)
+	            case "ES": return weekEngShortName[d.getDay()]; // 요일 (짧은 영어)
+	            case "EL": return weekEngName[d.getDay()]; // 요일 (긴 영어)
+	            case "HH": return d.getHours().zf(2); // 시간 (24시간 기준, 2자리)
+	            case "hh": return ((h = d.getHours() % 12) ? h : 12).zf(2); // 시간 (12시간 기준, 2자리)
+	            case "mm": return d.getMinutes().zf(2); // 분 (2자리)
+	            case "ss": return d.getSeconds().zf(2); // 초 (2자리)
+	            case "a/p": return d.getHours() < 12 ? "오전" : "오후"; // 오전/오후 구분
+	            default: return $1;
+	        }
+	    });
+	};
+	String.prototype.string = function (len) { var s = '', i = 0; while (i++ < len) { s += this; } return s; };
+	String.prototype.zf = function (len) { return "0".string(len - this.length) + this; };
+	Number.prototype.zf = function (len) { return this.toString().zf(len);
+	};
     $('.carousel').carousel({
   interval: 10000
 })  
@@ -497,6 +623,9 @@ h2 a:hover {
 			window.open('https://gall.dcinside.com/board/lists/?id=pridepc_new3','_blank');
 			break;
 
+		case "SLR클럽":
+			window.open('http://www.slrclub.com/bbs/zboard.php?id=free','_blank');
+			break;
 		default:
 			break;
 		}

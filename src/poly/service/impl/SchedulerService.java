@@ -1,5 +1,8 @@
 package poly.service.impl;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.annotation.Resource;
 
 import org.apache.log4j.Logger;
@@ -22,10 +25,14 @@ public class SchedulerService implements ISchedulerService {
 	@Scheduled(cron = "0 0 0/1 * * ?")
 	@Override
 	public void sCrawlling() throws Exception {
-		
-		log.info(this.getClass().getName() + " test!!!");
 		commuService.collectDcComData();
-		commuService.AnalysisData();
+		commuService.collectSlrData();
+		List<String> sList = new ArrayList<String>();
+		sList.add("DcCom_");
+		sList.add("Slr_");
+		for(int i = 0; i <sList.size();i++) {
+			commuService.AnalysisData(sList.get(i));
+		}
 	}
 
 }

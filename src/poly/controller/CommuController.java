@@ -71,20 +71,4 @@ public class CommuController {
 
 		return rList;
 	}
-	/**
-	 * 크롤링 데이터 분석하기
-	 */
-	@RequestMapping(value = "Data/AnalysisData")
-	@ResponseBody
-	public String AnalysisData(HttpServletRequest request, HttpServletResponse response) throws Exception {
-
-		log.info(this.getClass().getName() + " AnalysisData start!");
-
-		commuService.AnalysisData();
-
-		log.info(this.getClass().getName() + " AnalysisData end!");
-
-		return "success";
-	}
-
 }

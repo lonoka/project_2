@@ -27,18 +27,12 @@ public class RController {
 	@Resource(name = "CommuService")
 	private ICommuService commuService;
 
-	@RequestMapping(value = "rtest")
+	@RequestMapping(value = "cTest")
 	@ResponseBody
-	public String rtest(HttpServletRequest request, Model model, HttpSession session) throws Exception {
-		RConnection c = new RConnection();
-		String a = "이것은";
-		String b = "정말";
-		String d = "귀찮타";
-		c.assign("pList", a);
-		REXP x = c.eval("pList");
-		System.out.println(x.asString());
-		return x.asString();
-
+	public String cTest(HttpServletRequest request, Model model, HttpSession session) throws Exception {
+		
+		commuService.collectSlrData();
+		return "success";
 	}
 
 	@RequestMapping(value = "rtest2")
@@ -81,6 +75,7 @@ public class RController {
 		log.info(z.asString());
 		c.close();
 		return " ";
-
 	}
+	
+	
 }

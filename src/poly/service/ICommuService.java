@@ -7,7 +7,11 @@ import poly.dto.DataDTO;
 
 public interface ICommuService {
 	// 크롤링 하기
+	public int collectSlrData() throws Exception;
+	// 크롤링 하기
 	public int collectDcComData() throws Exception;
+	// 크롤링 하기
+	public int collectPpomData() throws Exception;
 
 	// 크롤링 데이터 가져오기
 	public List<CommuDTO> getData(String colNm) throws Exception;
@@ -22,6 +26,8 @@ public interface ICommuService {
 	public int checkAnalysisData() throws Exception;
 
 	// 데이터 분석
-	public int AnalysisData() throws Exception;
+	public int AnalysisData(String str) throws Exception;
+
+	public void cTest() throws Exception;
 
 }
