@@ -121,11 +121,17 @@
 	</select>
 
 	<!-- 회원 리스트 전체 -->
-	<select id="getTotal" resultType="int">
+	<select id="getTotal" parameterType="UserListDTO" resultType="int">
 		SELECT
 		COUNT(*)
 		FROM
 		USER_INFO
+		<if test='searchSelect.equals("userId")'>
+		WHERE USER_ID LIKE CONCAT('%', #{searchCont}, '%')
+		</if>
+		<if test='searchSelect.equals("userName")'>
+		WHERE USER_NAME LIKE CONCAT('%', #{searchCont}, '%')
+		</if>
 	</select>
 
 	<!-- 회원 리스트 -->
@@ -138,6 +144,12 @@
 		USER_AUTHOR
 		FROM
 		USER_INFO
+		<if test='searchSelect.equals("userId")'>
+		WHERE USER_ID LIKE CONCAT('%', #{searchCont}, '%')
+		</if>
+		<if test='searchSelect.equals("userName")'>
+		WHERE USER_NAME LIKE CONCAT('%', #{searchCont}, '%')
+		</if>
 		Limit #{pgNum} , 10
 	</select>
 	

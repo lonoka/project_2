@@ -422,7 +422,14 @@ public class UserController {
 		if (pgNum.equals("")) {
 			pgNum = "1";
 		}
-		int totalNum = userService.getTotal();
+		if(!searchCont.equals("")) {
+			pDTO.setSearchCont(searchCont);
+			pDTO.setSearchSelect(searchSelect);
+		}else {
+			pDTO.setSearchCont("");
+			pDTO.setSearchSelect("");
+		}
+		int totalNum = userService.getTotal(pDTO);
 		pDTO.setPgNum((Integer.parseInt(pgNum) - 1) * 10);
 		List<UserDTO> pList = userService.getUserList(pDTO);
 		if (pList == null) {

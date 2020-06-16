@@ -43,13 +43,14 @@
 	margin: 0;
 }
 
-.btn_alert{
+.btn_alert {
 	background-color: #F7CAC9;
 	border-color: #F7CAC9;
 }
-.btn_alert:hover{
-	background-color: #f7b6b5!important;
-	border-color: #f7b6b5!important;
+
+.btn_alert:hover {
+	background-color: #f7b6b5 !important;
+	border-color: #f7b6b5 !important;
 }
 
 .block-27 ul li {
@@ -77,19 +78,21 @@
 h2 a:hover {
 	color: aliceblue !important;
 }
+
 .div_content_container {
 	display: table;
 	table-layout: fixed;
 	width: 100%;
 	border: 1px solid #dee2e6;
-	
 }
+
 .linkbody_content_container {
 	display: table;
 	table-layout: fixed;
 	width: 100%;
 	border-bottom: 1px solid #666666;
 }
+
 .linkheader_content_container {
 	display: table;
 	table-layout: fixed;
@@ -97,6 +100,7 @@ h2 a:hover {
 	border-top: 1px solid #666666;
 	border-bottom: 1px solid #666666;
 }
+
 .linkdiv_content_box {
 	display: table-cell;
 	text-overflow: ellipsis;
@@ -104,8 +108,9 @@ h2 a:hover {
 	white-space: nowrap;
 	text-align: center;
 }
-.link_1st{
-	width : 70%;
+
+.link_1st {
+	width: 70%;
 }
 
 .div_content_box {
@@ -118,16 +123,20 @@ h2 a:hover {
 	padding-bottom: 5px;
 	text-align: center;
 }
-.search_box{
+
+.search_box {
 	margin-right: 5px;
 }
-.table_1st{
+
+.table_1st {
 	width: 8%;
 }
-.table_3rd{
+
+.table_3rd {
 	width: 15%;
 }
-.table_5th{
+
+.table_5th {
 	width: 10%;
 }
 </style>
@@ -244,13 +253,13 @@ h2 a:hover {
 					<div class="col-md-12 mt-lg-5 text-center">
 						<div id="slider" class="carousel slide" data-ride="carousel">
 							<ol class="carousel-indicators">
-							<%for(int i = 0; i<pList.size();i++){ %>
+								<%for(int i = 0; i<pList.size();i++){ %>
 								<%if(i==0){ %>
 								<li data-target="#slider" data-slide-to="<%=i%>" class="active"></li>
 								<%}else{ %>
 								<li data-target="#slider" data-slide-to="<%=i%>"></li>
 								<%} %>
-							<%} %>
+								<%} %>
 							</ol>
 							<div class="carousel-inner">
 								<%for(int i = 0; i<pList.size();i++){ 
@@ -258,150 +267,155 @@ h2 a:hover {
 								%>
 								<%if(i==0){ %>
 								<div class="carousel-item active">
-								<%}else{ %>
-								<div class="carousel-item">
-								<%} %>
-									<h2 style="font-family: Nanum Gothic">
-										<a href="javascript:void(0)" class="" data-toggle="modal"
-											data-target="#comu_modal_<%=i%>" data-backdrop="static"
-											style="color: aliceblue !important;"><%=rList.get(0).getCommu_name()%></a>
-									</h2>
-									<div id="wordcloud_<%=i%>" class=""
-										style="height: 600px; width: 100%"></div>
-								</div>
-							<%} %>
-							</div>
-						</div>
-						<br>
-						<div class="col-md-8" style="margin: 0 auto">
-							<div class="form-row">
-								<div class="col-12 col-md-9 mb-2 mb-md-0">
-									<input type="email" class="form-control form-control-lg"
-										placeholder="검색어를 입력하세요">
-								</div>
-								<div class="col-12 col-md-3">
-									<button type="submit" class="btn btn-block btn-lg btn-primary"
-										style="padding-top: 8.5px; padding-bottom: 8.5px; color: dodgerblue;">검색</button>
+									<%}else{ %>
+									<div class="carousel-item">
+										<%} %>
+										<h2 style="font-family: Nanum Gothic">
+											<a href="javascript:void(0)" class="" data-toggle="modal"
+												data-target="#comu_modal_<%=i%>" data-backdrop="static"
+												style="color: aliceblue !important;"><%=rList.get(0).getCommu_name()%></a>
+										</h2>
+										<div id="wordcloud_<%=i%>" class=""
+											style="height: 600px; width: 100%"></div>
+									</div>
+									<%} %>
 								</div>
 							</div>
+							<br>
+							<div class="col-md-8" style="margin: 0 auto">
+								<div class="form-row">
+									<div class="col-12 col-md-9 mb-2 mb-md-0">
+										<input type="email" class="form-control form-control-lg"
+											placeholder="검색어를 입력하세요">
+									</div>
+									<div class="col-12 col-md-3">
+										<button type="submit" class="btn btn-block btn-lg btn-primary"
+											style="padding-top: 8.5px; padding-bottom: 8.5px; color: dodgerblue;">검색</button>
+									</div>
+								</div>
+							</div>
 						</div>
+
 					</div>
+
 
 				</div>
 
-
 			</div>
-
-		</div>
-		<!-- 커뮤니티 모달 -->
-		<%for(int i = 0; i <pList.size();i++){
+			<!-- 커뮤니티 모달 -->
+			<%for(int i = 0; i <pList.size();i++){
 			List<DataDTO> rList = (List<DataDTO>)pList.get(i).get("rList");
 			List<CommuDTO> bList = (List<CommuDTO>)pList.get(i).get("bList");
 		%>
-		<div class="modal fade" id="comu_modal_<%=i%>" tabindex="-1" role="dialog"
-			aria-labelledby="contactLabel" aria-hidden="true">
-			<div class="modal-dialog modal-lg modal-dialog-centered">
-				<div class="modal-content">
-					<div class="modal-header">
-						<h4 class="modal-title" id="contactLabel"><%=rList.get(0).getCommu_name()%></h4>
-						<button type="button" class="close" data-dismiss="modal"
-							aria-label="Close">
-							<span aria-hidden="true">&times;</span>
-						</button>
+			<div class="modal fade" id="comu_modal_<%=i%>" tabindex="-1"
+				role="dialog" aria-labelledby="contactLabel" aria-hidden="true">
+				<div class="modal-dialog modal-lg modal-dialog-centered">
+					<div class="modal-content">
+						<div class="modal-header">
+							<h4 class="modal-title" id="contactLabel"><%=rList.get(0).getCommu_name()%></h4>
+							<button type="button" class="close" data-dismiss="modal"
+								aria-label="Close">
+								<span aria-hidden="true">&times;</span>
+							</button>
 
-					</div>
-					<div class="modal-body">
-						<div class="row" style="font-weight: bold;">
-							<div id="" class="col-md-6" style="text-align: center;">
-								게시글 분석 개수 : <%=bList.size() %>
-							</div>
-							<div id="time_section_<%=i%>" class="col-md-6" style="text-align: center;">
-								
-							</div>
 						</div>
-						<div class="row">
-							<div id="" class="col-md-6" style="text-align: center;">
-								커뮤니티 긍정, 부정 정도 <br>(0에 가까울수록 부정적입니다.)
+						<div class="modal-body">
+							<div class="row" style="font-weight: bold;">
+								<div id="" class="col-md-6" style="text-align: center;">
+									게시글 분석 개수 :
+									<%=bList.size() %>
+								</div>
+								<div id="time_section_<%=i%>" class="col-md-6"
+									style="text-align: center;"></div>
 							</div>
-							<div id="" class="col-md-6" style="text-align: center;">
-								분석 게시글 시간대별 작성개수<br>(10분단위)
+							<div class="row">
+								<div id="" class="col-md-6" style="text-align: center;">
+									커뮤니티 긍정, 부정 정도 <br>(0에 가까울수록 부정적입니다.)
+								</div>
+								<div id="" class="col-md-6" style="text-align: center;">
+									분석 게시글 시간대별 작성개수<br>(10분단위)
+								</div>
 							</div>
-						</div>
-						<div class="row">
-							<div id="opinion_chart_<%=i%>" class="col-md-6"></div>
-							<div id="time_chart_<%=i%>" class="col-md-6" style="height: 250px;"></div>	
-						</div>
-						<div class="row">
-							<div id="" class="col-md-3" style="text-align: center;">
-								게시글 작성자
+							<div class="row">
+								<div id="opinion_chart_<%=i%>" class="col-md-6"></div>
+								<div id="time_chart_<%=i%>" class="col-md-6"
+									style="height: 250px;"></div>
 							</div>
-							<div id="" class="col-md-9" style="text-align: center;">
-								조회수 많은 게시글
+							<div class="row">
+								<div id="" class="col-md-3" style="text-align: center;">
+									게시글 작성자</div>
+								<div id="" class="col-md-9" style="text-align: center;">
+									조회수 많은 게시글</div>
 							</div>
-						</div>
-						
-						<div class="row">
-						<div id="writer_div_<%=i%>" class="col-md-3"
-							style="margin: auto; height: 300px"></div>
-						<div class="col-md-9"
-							style="margin: auto; height: 300px">
-							<div style="width: 100%">
-								<div class="linkheader_content_container">
-									<div style="display: table-row;">
-										<div class="linkdiv_content_box link_1st">제목</div>
-										<div class="linkdiv_content_box">작성자</div>
-										<div class="linkdiv_content_box">조회수</div>
+
+							<div class="row">
+								<div id="writer_div_<%=i%>" class="col-md-3"
+									style="margin: auto; height: 300px"></div>
+								<div class="col-md-9" style="margin: auto; height: 300px">
+									<div style="width: 100%">
+										<div class="linkheader_content_container">
+											<div style="display: table-row;">
+												<div class="linkdiv_content_box link_1st">제목</div>
+												<div class="linkdiv_content_box">작성자</div>
+												<div class="linkdiv_content_box">조회수</div>
+											</div>
+										</div>
+										<div id="link_div_<%=i%>" class="linkbody_content_container">
+										</div>
 									</div>
 								</div>
-								<div id="link_div_<%=i%>" class="linkbody_content_container">
-								</div>
-							</div>
 							</div>
 						</div>
-					</div>
-					<div class="modal-footer">
-						<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-						<button type="button"
-							onclick="open_comu('<%=rList.get(0).getCommu_name()%>')"
-							class="btn btn-primary" style="color: dodgerblue;">커뮤니티
-							열기</button>
+						<div class="modal-footer">
+							<button type="button" class="btn btn-default"
+								data-dismiss="modal">Close</button>
+							<button type="button"
+								onclick="open_comu('<%=rList.get(0).getCommu_name()%>')"
+								class="btn btn-primary" style="color: dodgerblue;">커뮤니티
+								열기</button>
+						</div>
 					</div>
 				</div>
 			</div>
+			<%} %>
+
 		</div>
-		<%} %>
+		<!-- .site-wrap -->
+		<script src="/js/jquery-3.5.0.min.js"></script>
+		<script src="/js/jquery-ui.js"></script>
+		<script src="/js/popper.min.js"></script>
+		<script src="/js/bootstrap.min.js"></script>
+		<script src="/js/owl.carousel.min.js"></script>
+		<script src="/js/jquery.countdown.min.js"></script>
+		<script src="/js/jquery.easing.1.3.js"></script>
+		<script src="/js/aos.js"></script>
+		<script src="/js/jquery.fancybox.min.js"></script>
+		<script src="/js/jquery.sticky.js"></script>
+		<script src="/js/isotope.pkgd.min.js"></script>
+		<script src="/js/main.js"></script>
 
-	</div>
-	<!-- .site-wrap -->
-	<script src="/js/jquery-3.5.0.min.js"></script>
-	<script src="/js/jquery-ui.js"></script>
-	<script src="/js/popper.min.js"></script>
-	<script src="/js/bootstrap.min.js"></script>
-	<script src="/js/owl.carousel.min.js"></script>
-	<script src="/js/jquery.countdown.min.js"></script>
-	<script src="/js/jquery.easing.1.3.js"></script>
-	<script src="/js/aos.js"></script>
-	<script src="/js/jquery.fancybox.min.js"></script>
-	<script src="/js/jquery.sticky.js"></script>
-	<script src="/js/isotope.pkgd.min.js"></script>
-	<script src="/js/main.js"></script>
-
-	<script src="https://www.amcharts.com/lib/4/core.js"></script>
-	<script src="https://www.amcharts.com/lib/4/charts.js"></script>
-	<script src="https://www.amcharts.com/lib/4/plugins/wordCloud.js"></script>
-	<script src="https://www.amcharts.com/lib/4/themes/animated.js"></script>
+		<script src="https://www.amcharts.com/lib/4/core.js"></script>
+		<script src="https://www.amcharts.com/lib/4/charts.js"></script>
+		<script src="https://www.amcharts.com/lib/4/plugins/wordCloud.js"></script>
+		<script src="https://www.amcharts.com/lib/4/themes/animated.js"></script>
 
 
 
-	<!-- 워드클라우드 스크립트 -->
-	<%for(int j = 0; j<pList.size();j++){
+		<!-- 워드클라우드 스크립트 -->
+		<%for(int j = 0; j<pList.size();j++){
 		List<DataDTO>rList = (List<DataDTO>)pList.get(j).get("rList");
 	%>
-	<script type="text/javascript">
+		<script type="text/javascript">
 		
 	var rList<%=j%> = [
-		<%for (int i = 0; i < rList.size(); i++) {%>
+		<%if(rList.size()>200){%>
+		<%for (int i = 0; i < 200; i++) {%>
 			{word:'<%=rList.get(i).getWord()%>', count:<%=Integer.toString(rList.get(i).getCount())%>},
+		<%}%>
+		<%}else{%>
+		<%for (int i = 0; i < rList.size(); i++) {%>
+		{word:'<%=rList.get(i).getWord()%>', count:<%=Integer.toString(rList.get(i).getCount())%>},
+		<%}%>
 		<%}%>
 	];
 	am4core.ready(function() {
@@ -418,13 +432,16 @@ h2 a:hover {
 	series.dataFields.value = "count";
 
 	}); // end am4core.ready()
+	function numberWithCommas(x) {
+    	return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+	}
 	</script>
-	<%}%>
-	<!-- 작성자 div -->
-	<%for(int j = 0; j<pList.size();j++){
+		<%}%>
+		<!-- 작성자 div -->
+		<%for(int j = 0; j<pList.size();j++){
 		List<DataDTO>wList = (List<DataDTO>)pList.get(j).get("wList");
 	%>
-	<script type="text/javascript">
+		<script type="text/javascript">
 	var str = '<div style="width:100%; height:27px; overflow:hidden;"></div>';
 	<%if (wList.size() > 10) {%>
 	   	<%for (int i = 0; i < 10; i++) {%>
@@ -437,38 +454,49 @@ h2 a:hover {
 	<%}%>
 	$("#writer_div_<%=j%>").html(str);
 	</script>
-	<%}%>
-	<!-- 게시글 div -->
-	<%for(int j = 0; j<pList.size();j++){
+		<%}%>
+		
+		<!-- 게시글 div -->
+		<%for(int j = 0; j<pList.size();j++){
 		List<CommuDTO>bList = (List<CommuDTO>)pList.get(j).get("bList");
 	%>
-	<script type="text/javascript">
+		<script type="text/javascript">
 	var str = "";
 	<%if (bList.size() > 10) {%>
 	   	<%for (int i = 0; i < 10; i++) {%>
+			var timediv = '<%=bList.get(i).getViews()%></div>';
 		   	str += '<div style="display: table-row;">';
-		   	str += '<div class="linkdiv_content_box link_1st"><a href="<%=bList.get(i).getLink()%>" target="_blank"><%=bList.get(i).getTitle()%></a></div>';
+		   	str += '<div class="linkdiv_content_box link_1st">';
+		   	str += '<a href="<%=bList.get(i).getLink()%>" target="_blank">';
+		   	str += '<%=bList.get(i).getTitle()%></a></div>';
 	   		str += '<div class="linkdiv_content_box"><%=bList.get(i).getWriter()%></div>';
-	   		str += '<div class="linkdiv_content_box"><%=bList.get(i).getViews()%></div>';
+	   		str += '<div class="linkdiv_content_box">'+numberWithCommas(timediv)+'</div>';
 	   		str += '</div>'
 	   	<%}%>	
 	<%} else {%>
 		<%for (int i = 0; i < bList.size(); i++) {%>
+			var timediv = '<%=bList.get(i).getViews()%></div>';
 		   	str += '<div style="display: table-row;">';
-		   	str += '<div class="linkdiv_content_box link_1st"><%=bList.get(i).getTitle()%></div>';
+		   	str += '<div class="linkdiv_content_box link_1st">';
+		   	str += '<a href="<%=bList.get(i).getLink()%>" target="_blank">';
+		   	str += '<%=bList.get(i).getTitle()%></a></div>';
    			str += '<div class="linkdiv_content_box"><%=bList.get(i).getWriter()%></div>';
-   			str += '<div class="linkdiv_content_box"><%=bList.get(i).getViews()%></div>';
+   			str += '<div class="linkdiv_content_box">'+numberWithCommas(timediv)+'</div>';
    			str += '</div>'
 		<%}%>
 	<%}%>
 	$("#link_div_<%=j%>").html(str);
 	</script>
-	<%}%>
-	<!-- 시간대별 차트 -->
-	<%for(int j = 0; j<pList.size();j++){
-		List<DataDTO>tList = (List<DataDTO>)pList.get(j).get("tList");
-	%>
-	<script type="text/javascript">
+		<%
+			}
+		%>
+		
+		<!-- 시간대별 차트 -->
+		<%
+			for (int j = 0; j < pList.size(); j++) {
+				List<DataDTO> tList = (List<DataDTO>) pList.get(j).get("tList");
+		%>
+		<script type="text/javascript">
 	am4core.ready(function() {
 	// Themes begin
 	am4core.useTheme(am4themes_animated);
@@ -513,12 +541,16 @@ h2 a:hover {
 
 	}); // end am4core.ready()
 	</script>
-	<%}%>
-	<!-- 오피니언 마이닝 -->
-	<%for(int j = 0; j<pList.size();j++){
-		List<DataDTO>oList = (List<DataDTO>)pList.get(j).get("oList");
-	%>
-	<script type="text/javascript">
+		<%
+			}
+		%>
+		
+		<!-- 오피니언 마이닝 -->
+		<%
+			for (int j = 0; j < pList.size(); j++) {
+				List<DataDTO> oList = (List<DataDTO>) pList.get(j).get("oList");
+		%>
+		<script type="text/javascript">
 	<%if (oList.get(0).getWord().equals("긍정")) {%>
 	var positive<%=j%> = <%=oList.get(0).getCount()%>
 	var negative<%=j%> = <%=oList.get(1).getCount()%>
@@ -526,8 +558,8 @@ h2 a:hover {
 	var positive<%=j%> = <%=oList.get(1).getCount()%>
 	var negative<%=j%> = <%=oList.get(0).getCount()%>
 	<%}%>
-	var cal = (positive<%=j%>)/(positive<%=j%>+negative<%=j%>);
-	cal = cal*100;
+	var cal<%=j%> = (positive<%=j%>)/(positive<%=j%>+negative<%=j%>);
+	cal<%=j%> = cal<%=j%>*100;
 	am4core.ready(function() {
 
 		// Themes begin
@@ -565,13 +597,15 @@ h2 a:hover {
 
 		var hand = chart.hands.push(new am4charts.ClockHand());
 
-		hand.showValue(cal, 100, am4core.ease.cubicOut);
+		hand.showValue(cal<%=j%>, 100, am4core.ease.cubicOut);
 
 		}); // end am4core.ready()
 
 	</script>
-	<%}%>
-	<script>
+		<%
+			}
+		%>
+		<script>
 	Date.prototype.format = function (f) {
 	    if (!this.valueOf()) return " ";
 	    var weekKorName = ["일요일", "월요일", "화요일", "수요일", "목요일", "금요일", "토요일"];
@@ -606,7 +640,7 @@ h2 a:hover {
   interval: 10000
 })  
 </script>
-	<script>
+		<script>
 	$('body').on('click', '.topbar_link', function(e) {
 		var $this = $(this);
 		e.preventDefault();
@@ -615,23 +649,29 @@ h2 a:hover {
 			$('body').removeClass('offcanvas-menu');
 			$this.removeClass('active');
 		}
-	}) 
+	})
 	function open_comu(e){
 		var str = e;
 		switch (e) {
 		case "컴퓨터 본체 갤러리":
 			window.open('https://gall.dcinside.com/board/lists/?id=pridepc_new3','_blank');
 			break;
-
 		case "SLR클럽":
 			window.open('http://www.slrclub.com/bbs/zboard.php?id=free','_blank');
+			break;
+		case "뽐뿌":
+			window.open('http://www.ppomppu.co.kr/','_blank');
+			break;
+		case "82쿡":
+			window.open('https://www.82cook.com/','_blank');
+			break;
+		case "MLBPARK":
+			window.open('http://mlbpark.donga.com/mp','_blank');
 			break;
 		default:
 			break;
 		}
 	}
 </script>
-
-
 </body>
 </html>

@@ -10,6 +10,8 @@ public class UserListDTO {
 	private int checkNum;
 	private int startPg;
 	private int totalPg;
+	private String searchCont;
+	private String searchSelect;
 	
 	public int getPgNum() {
 		return pgNum;
@@ -46,6 +48,18 @@ public class UserListDTO {
 	}
 	public void setTotalPg(int totalPg) {
 		this.totalPg = totalPg;
+	}
+	public String getSearchCont() {
+		return searchCont;
+	}
+	public void setSearchCont(String searchCont) {
+		this.searchCont = searchCont;
+	}
+	public String getSearchSelect() {
+		return searchSelect;
+	}
+	public void setSearchSelect(String searchSelect) {
+		this.searchSelect = searchSelect;
 	}
 	
 }

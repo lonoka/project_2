@@ -105,9 +105,9 @@ public class UserService implements IUserService {
 	}
 
 	@Override
-	public int getTotal() throws Exception {
+	public int getTotal(UserListDTO pDTO) throws Exception {
 		// TODO Auto-generated method stub
-		return userMapper.getTotal();
+		return userMapper.getTotal(pDTO);
 	}
 
 	@Override

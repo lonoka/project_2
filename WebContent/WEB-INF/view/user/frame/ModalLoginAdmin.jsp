@@ -8,7 +8,7 @@
 		<div class="modal-content">
 			<div class="modal-header">
 				<h4 class="modal-title" id="crmLabel">CA. crm</h4>
-				<button type="button" class="close" data-dismiss="modal"
+				<button type="button" class="close" data-dismiss="modal" onclick="crm_reset()"
 					aria-label="Close">
 					<span aria-hidden="true">&times;</span>
 				</button>
@@ -42,7 +42,7 @@
 
 			</div>
 			<div class="modal-footer">
-				<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+				<button type="button" class="btn btn-default" data-dismiss="modal" onclick="crm_reset()">Close</button>
 				<button type="button" class="btn btn-primary"
 					style="color: dodgerblue;" onclick="getUser()">정보 수정</button>
 				<button type="button" class="btn btn-primary"
@@ -55,6 +55,9 @@
 	</div>
 </div>
 <script>
+	function crm_reset(){
+		$('#searchCont').val('');
+	}
 	function getUser() {
 		if (!$('input:radio[name=check_user]').is(':checked')) {
 			$('#alert_modal_body').html('사용자를 체크해주세요.');
@@ -233,7 +236,7 @@
 		$('#user_mod_name').val('');
 		$('#user_mod_password').val('');
 		$('#RepeatPassword').val('');
-		$('#user_mail').val('');
+		$('#user_mod_mail').val('');
 	}
 	function checkPw() {
 		var inputed = f.password.value;

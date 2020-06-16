@@ -27,9 +27,15 @@ public class SchedulerService implements ISchedulerService {
 	public void sCrawlling() throws Exception {
 		commuService.collectDcComData();
 		commuService.collectSlrData();
+		commuService.collectPpomData();
+		commuService.collect82CookData();
+		commuService.collectMPData();
 		List<String> sList = new ArrayList<String>();
 		sList.add("DcCom_");
 		sList.add("Slr_");
+		sList.add("Ppom_");
+		sList.add("82Cook_");
+		sList.add("Mlb_");
 		for(int i = 0; i <sList.size();i++) {
 			commuService.AnalysisData(sList.get(i));
 		}

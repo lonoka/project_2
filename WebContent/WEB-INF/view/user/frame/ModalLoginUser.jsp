@@ -46,7 +46,7 @@
 					</div>
 					<div class="form-group">
 						<input type="email" class="form-control form-control-user"
-							id="user_mail" name="user_mail" placeholder="Email" value=""
+							id="user_mod_mail" name="user_mail" placeholder="Email" value=""
 							readonly required="required">
 					</div>
 				</div>
@@ -69,11 +69,11 @@
 	function reset_form() {
 		$('#wrongPw').hide();
 		$('#wrongPw2').hide();
-		$('#user_id').val('');
-		$('#user_name').val('');
-		$('#password').val('');
+		$('#user_mod_id').val('');
+		$('#user_mod_name').val('');
+		$('#user_mod_password').val('');
 		$('#RepeatPassword').val('');
-		$('#user_mail').val('');
+		$('#user_mod_mail').val('');
 	}
 	function checkPw() {
 		var inputed = f.password.value;
@@ -114,7 +114,7 @@
 					} else if (a == 0) {
 						$('#alert_modal_body').html('회원정보 수정에 실패하였습니다.');
 					}
-
+					reset_form();
 					$('#alert_modal').modal('show')
 					$('#mypage_modal').modal('hide');
 

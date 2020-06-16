@@ -58,13 +58,17 @@ public class MainController {
 	public String index(HttpServletRequest request, Model model, HttpSession session) throws Exception {
 		log.info(this.getClass().getName() + " index start!");
 		int result = 0;
-		// 값 있는지 확인
-		result = commuService.checkCrawlingData();
-		result = commuService.checkAnalysisData();
-
 		List<String> sList = new ArrayList<String>();
 		sList.add("DcCom_");
 		sList.add("Slr_");
+		sList.add("Ppom_");
+		sList.add("82Cook_");
+		sList.add("Mlb_");
+		// 값 있는지 확인
+		result = commuService.checkCrawlingData(sList);
+		result = commuService.checkAnalysisData(sList);
+
+		
 		List<Map> pList = new ArrayList<Map>();
 		Map<String, Object> pMap = new HashMap();
 		String colNm = "";

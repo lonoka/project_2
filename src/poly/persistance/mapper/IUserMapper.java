@@ -29,7 +29,7 @@ public interface IUserMapper {
 
 	List<UserDTO> getUserList(UserListDTO pDTO) throws Exception;
 
-	int getTotal() throws Exception;
+	int getTotal(UserListDTO pDTO) throws Exception;
 
 	int modifyAuthor(UserDTO pDTO) throws Exception;
 

@@ -2,6 +2,8 @@ package poly.service.impl;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -23,6 +25,7 @@ import poly.dto.CommuDTO;
 import poly.dto.DataDTO;
 import poly.persistance.mongo.ICommuMapper;
 import poly.service.ICommuService;
+import poly.util.CmmUtil;
 import poly.util.DateUtil;
 
 @Service("CommuService")
@@ -70,7 +73,7 @@ public class CommuService implements ICommuService {
 				pDTO.setCollect_time(DateUtil.getDateTime("yyyyMMddHHmmss"));
 				pDTO.setCommu_name("컴퓨터 본체 갤러리");
 				pDTO.setTime(time);
-				pDTO.setTitle(title.replaceAll("'", "&#39;"));
+				pDTO.setTitle(title.replaceAll("'", "&#39;").replaceAll("&nbsp", " "));
 				pDTO.setWriter(writer);
 				pDTO.setViews(views);
 				pDTO.setLink(link);
@@ -113,7 +116,6 @@ public class CommuService implements ICommuService {
 					String time = postInfo.select("td.list_date").text();
 
 					if (time.contains(":")) {
-						log.info(tmp);
 						if (tmp.equals("")) {
 							tmp = time.substring(0, 2);
 						} else {
@@ -146,7 +148,7 @@ public class CommuService implements ICommuService {
 					pDTO.setCollect_time(DateUtil.getDateTime("yyyyMMddHHmmss"));
 					pDTO.setCommu_name("SLR클럽");
 					pDTO.setTime(time);
-					pDTO.setTitle(title.replaceAll("'", "&#39;"));
+					pDTO.setTitle(title.replaceAll("'", "&#39;").replaceAll("&nbsp", " "));
 					pDTO.setWriter(writer);
 					pDTO.setViews(views);
 					pDTO.setLink(link);
@@ -164,12 +166,14 @@ public class CommuService implements ICommuService {
 		return res;
 	}
 
-	// 뽐뿌 만드는중~
+	// 뽐뿌
 	@Override
 	public int collectPpomData() throws Exception {
 		int res = 0;
 		List<CommuDTO> pList = new ArrayList<CommuDTO>();
+
 		for (int i = 1; i <= 20; i++) {
+
 			String url = "http://www.ppomppu.co.kr/zboard/zboard.php?id=freeboard&page=";
 			url = url + Integer.toString(i);
 
@@ -177,38 +181,305 @@ public class CommuService implements ICommuService {
 
 			doc = Jsoup.connect(url).get();
 
-			Elements element = doc.select("table#revolution_main_table > table").eq(0);
+			Elements element = doc.select("table#revolution_main_table > tbody");
 
 			Iterator<Element> postList = element.select("tr").iterator();
 			while (postList.hasNext()) {
 				Element postInfo = postList.next();
-				if(postInfo.select("td").eq(0).hasClass("list_vspace")) {
-					
+				if (postInfo.select("td").eq(0).hasClass("list_vspace")) {
+					String title = postInfo.select("td").eq(2).select("a").text();
+					String writer = "";
+					if (postInfo.select("td").eq(1).select("a").hasText()) {
+						writer = postInfo.select("td").eq(1).select("span.list_name").text();
+					} else {
+						writer = postInfo.select("td").eq(1).select("img").attr("alt");
+					}
+					String time = postInfo.select("td").eq(3).attr("title");
+					int views = Integer.parseInt(postInfo.select("td").eq(5).text());
+					String link = "http://www.ppomppu.co.kr/zboard/"
+							+ postInfo.select("td").eq(2).select("a").attr("href");
+
+					postInfo = null;
+
+					CommuDTO pDTO = new CommuDTO();
+
+					pDTO.setCollect_time(DateUtil.getDateTime("yyyyMMddHHmmss"));
+					pDTO.setCommu_name("뽐뿌");
+					pDTO.setTime("20" + time.replaceAll("\\.", "\\-"));
+					pDTO.setTitle(title.replaceAll("'", "&#39;").replaceAll("&nbsp", " "));
+					pDTO.setWriter(writer);
+					pDTO.setViews(views);
+					pDTO.setLink(link);
+
+					pList.add(pDTO);
 				}
-				String title = postInfo.select("td.gall_tit a").eq(0).text();
-				String writer = postInfo.select("td.gall_writer").attr("data-nick");
-				String time = postInfo.select("td.gall_date").attr("title");
-				int views = Integer.parseInt(postInfo.select("td.gall_count").text());
-				String link = "https://gall.dcinside.com" + postInfo.select("td.gall_tit a").eq(0).attr("href");
-
-				postInfo = null;
-
-				CommuDTO pDTO = new CommuDTO();
-
-				pDTO.setCollect_time(DateUtil.getDateTime("yyyyMMddHHmmss"));
-				pDTO.setCommu_name("컴퓨터 본체 갤러리");
-				pDTO.setTime(time);
-				pDTO.setTitle(title.replaceAll("'", "&#39;"));
-				pDTO.setWriter(writer);
-				pDTO.setViews(views);
-				pDTO.setLink(link);
-
-				pList.add(pDTO);
 			}
 		}
+
+		for (int i = 1; i <= 20; i++) {
+
+			String url = "http://www.ppomppu.co.kr/zboard/zboard.php?id=issue&page=";
+			url = url + Integer.toString(i);
+
+			Document doc = null;
+
+			doc = Jsoup.connect(url).get();
+
+			Elements element = doc.select("table#revolution_main_table > tbody");
+
+			Iterator<Element> postList = element.select("tr").iterator();
+			while (postList.hasNext()) {
+				Element postInfo = postList.next();
+				if (postInfo.select("td").eq(0).hasClass("list_vspace")) {
+					String title = postInfo.select("td").eq(2).select("a").text();
+					String writer = "";
+					if (postInfo.select("td").eq(1).select("a").hasText()) {
+						writer = postInfo.select("td").eq(1).select("span.list_name").text();
+					} else {
+						writer = postInfo.select("td").eq(1).select("img").attr("alt");
+					}
+					String time = postInfo.select("td").eq(3).attr("title");
+					int views = Integer.parseInt(postInfo.select("td").eq(5).text());
+					String link = "http://www.ppomppu.co.kr/zboard/"
+							+ postInfo.select("td").eq(2).select("a").attr("href");
+
+					postInfo = null;
+
+					CommuDTO pDTO = new CommuDTO();
+
+					pDTO.setCollect_time(DateUtil.getDateTime("yyyyMMddHHmmss"));
+					pDTO.setCommu_name("뽐뿌");
+					pDTO.setTime("20" + time.replaceAll("\\.", "\\-"));
+					pDTO.setTitle(title.replaceAll("'", "&#39;").replaceAll("&nbsp", " "));
+					pDTO.setWriter(writer);
+					pDTO.setViews(views);
+					pDTO.setLink(link);
+
+					pList.add(pDTO);
+				}
+			}
+		}
+
+		Collections.sort(pList, new Comparator<CommuDTO>() {
+			@Override
+			public int compare(CommuDTO pDTO, CommuDTO rDTO) {
+				if (pDTO.getTime().compareTo(rDTO.getTime()) < 0) {
+					return 1;
+				} else if (pDTO.getTime().compareTo(rDTO.getTime()) > 0) {
+					return -1;
+				}
+				return 0;
+			}
+		});
+		if (pList.size() > 600) {
+			pList = pList.subList(0, 600);
+		}
+
+		String colNm = "Ppom_" + DateUtil.getDateTime("yyyyMMddHH");
+		commuMapper.createCollection(colNm);
+		commuMapper.insertData(pList, colNm);
+
+		return res;
+	}
+
+	// 82쿡
+	@Override
+	public int collect82CookData() throws Exception {
+		int res = 0;
+		List<CommuDTO> pList = new ArrayList<CommuDTO>();
+		for (int i = 1; i <= 20; i++) {
+			String url = "https://www.82cook.com/entiz/enti.php?bn=15&page=";
+			url = url + Integer.toString(i);
+
+			Document doc = null;
+
+			doc = Jsoup.connect(url).get();
+
+			Elements element = doc.select("form#bbs > table > tbody");
+
+			Iterator<Element> postList = element.select("tr").iterator();
+			while (postList.hasNext()) {
+				Element postInfo = postList.next();
+				if (postInfo.select("td").eq(0).hasClass("numbers")) {
+					String title = postInfo.select("td.title a").text();
+					String writer = postInfo.select("td.user_function").text();
+					String time = postInfo.select("td.regdate").attr("title");
+					int views = Integer.parseInt(StringReplace(postInfo.select("td").eq(4).text()));
+					String link = "https://www.82cook.com/entiz/" + postInfo.select("td.title a").attr("href");
+
+					postInfo = null;
+
+					CommuDTO pDTO = new CommuDTO();
+
+					pDTO.setCollect_time(DateUtil.getDateTime("yyyyMMddHHmmss"));
+					pDTO.setCommu_name("82쿡");
+					pDTO.setTime(time);
+					pDTO.setTitle(title.replaceAll("'", "&#39;").replaceAll("&nbsp", " "));
+					pDTO.setWriter(writer);
+					pDTO.setViews(views);
+					pDTO.setLink(link);
+
+					pList.add(pDTO);
+				}
+			}
+		}
+
+		String colNm = "82Cook_" + DateUtil.getDateTime("yyyyMMddHH");
+		commuMapper.createCollection(colNm);
+		commuMapper.insertData(pList, colNm);
+
+		return res;
+	}
+
+	// MLBPARK
+	@Override
+	public int collectMPData() throws Exception {
+		int res = 0;
+		List<CommuDTO> pList = new ArrayList<CommuDTO>();
+
+		for (int i = 1; i <= 20; i++) {
+
+			String url = "http://mlbpark.donga.com/mp/b.php?b=kbotown&p=";
+			url = url + Integer.toString((i-1)*3)+"1";
+
+			Document doc = null;
+			String tmp = "";
+			Calendar cal = Calendar.getInstance();
+
+			doc = Jsoup.connect(url).get();
+
+			Elements element = doc.select("table.tbl_type01 > tbody");
+
+			Iterator<Element> postList = element.select("tr").iterator();
+			while (postList.hasNext()) {
+				Element postInfo = postList.next();
+				if (!postInfo.select("td").eq(0).text().equals("공지")) {
+					String title = CmmUtil.nvl(postInfo.select("span.word").text())+postInfo.select("a").attr("title");
+					String writer = postInfo.select("span.nick").text();
+					String time = postInfo.select("span.date").text();
+					int views = Integer.parseInt(StringReplace(postInfo.select("span.viewV").text()));
+					String link = postInfo.select("a").attr("href");
+
+					postInfo = null;
+					
+					if (time.contains(":")) {
+						if (tmp.equals("")) {
+							tmp = time.substring(0, 2);
+						} else {
+							if (Integer.parseInt(tmp) < Integer.parseInt(time.substring(0, 2))) {
+								cal.add(Calendar.DATE, -1);
+							}
+						}
+						int year = cal.get(cal.YEAR);
+						int month = (cal.get(cal.MONTH) + 1);
+						int date = cal.get(cal.DATE);
+						if (month < 10) {
+							time = Integer.toString(year) + "-0" + Integer.toString(month) + "-"
+									+ Integer.toString(date) + " " + time;
+						} else {
+							time = Integer.toString(year) + "-" + Integer.toString(month) + "-" + Integer.toString(date)
+									+ " " + time;
+						}
+
+					} else {
+						time = time + " 00:00:00";
+					}
+
+					CommuDTO pDTO = new CommuDTO();
+
+					pDTO.setCollect_time(DateUtil.getDateTime("yyyyMMddHHmmss"));
+					pDTO.setCommu_name("MLBPARK");
+					pDTO.setTime(time.replaceAll("\\.", "\\-"));
+					pDTO.setTitle(title.replaceAll("'", "&#39;").replaceAll("&nbsp", " "));
+					pDTO.setWriter(writer);
+					pDTO.setViews(views);
+					pDTO.setLink(link);
+
+					pList.add(pDTO);
+				}
+			}
+		}
+		for (int i = 1; i <= 20; i++) {
+
+			String url = "http://mlbpark.donga.com/mp/b.php?b=bullpen&p=";
+			url = url + Integer.toString((i-1)*3)+"1";
+
+			Document doc = null;
+			String tmp = "";
+			Calendar cal = Calendar.getInstance();
+
+			doc = Jsoup.connect(url).get();
+
+			Elements element = doc.select("table.tbl_type01 > tbody");
+
+			Iterator<Element> postList = element.select("tr").iterator();
+			while (postList.hasNext()) {
+				Element postInfo = postList.next();
+				if (!postInfo.select("td").eq(0).text().equals("공지")) {
+					String title = postInfo.select("a").attr("title");
+					String writer = postInfo.select("span.nick").text();
+					String time = postInfo.select("span.date").text();
+					int views = Integer.parseInt(StringReplace(postInfo.select("span.viewV").text()));
+					String link = postInfo.select("a").attr("href");
+
+					postInfo = null;
+					
+					if (time.contains(":")) {
+						if (tmp.equals("")) {
+							tmp = time.substring(0, 2);
+						} else {
+							if (Integer.parseInt(tmp) < Integer.parseInt(time.substring(0, 2))) {
+								cal.add(Calendar.DATE, -1);
+							}
+						}
+						int year = cal.get(cal.YEAR);
+						int month = (cal.get(cal.MONTH) + 1);
+						int date = cal.get(cal.DATE);
+						if (month < 10) {
+							time = Integer.toString(year) + "-0" + Integer.toString(month) + "-"
+									+ Integer.toString(date) + " " + time;
+						} else {
+							time = Integer.toString(year) + "-" + Integer.toString(month) + "-" + Integer.toString(date)
+									+ " " + time;
+						}
+
+					} else {
+						time = time + " 00:00:00";
+					}
+
+					CommuDTO pDTO = new CommuDTO();
+
+					pDTO.setCollect_time(DateUtil.getDateTime("yyyyMMddHHmmss"));
+					pDTO.setCommu_name("MLBPARK");
+					pDTO.setTime(time.replaceAll("\\.", "\\-"));
+					pDTO.setTitle(title.replaceAll("'", "&#39;").replaceAll("&nbsp", " "));
+					pDTO.setWriter(writer);
+					pDTO.setViews(views);
+					pDTO.setLink(link);
+
+					pList.add(pDTO);
+				}
+			}
+		}
+
 		
 
-		String colNm = "DcCom_" + DateUtil.getDateTime("yyyyMMddHH");
+		Collections.sort(pList, new Comparator<CommuDTO>() {
+			@Override
+			public int compare(CommuDTO pDTO, CommuDTO rDTO) {
+				if (pDTO.getTime().compareTo(rDTO.getTime()) < 0) {
+					return 1;
+				} else if (pDTO.getTime().compareTo(rDTO.getTime()) > 0) {
+					return -1;
+				}
+				return 0;
+			}
+		});
+		if (pList.size() > 600) {
+			pList = pList.subList(0, 600);
+		}
+
+		String colNm = "Mlb_" + DateUtil.getDateTime("yyyyMMddHH");
 		commuMapper.createCollection(colNm);
 		commuMapper.insertData(pList, colNm);
 
@@ -240,38 +511,42 @@ public class CommuService implements ICommuService {
 	// 크롤링 데이터 있는지 없는지 확인
 	// 커뮤니티 전체
 	@Override
-	public int checkCrawlingData() throws Exception {
-		// 컴본갤
-		String colNm = "DcCom_" + DateUtil.getDateTime("yyyyMMddHH");
-		List<CommuDTO> rList = commuMapper.getData(colNm);
+	public int checkCrawlingData(List<String> sList) throws Exception {
+		for (int i = 0; i < sList.size(); i++) {
+			String colNm = sList.get(i) + DateUtil.getDateTime("yyyyMMddHH");
+			List<CommuDTO> rList = commuMapper.getData(colNm);
 
-		if (rList == null) {
-			rList = new ArrayList<CommuDTO>();
-		}
-		if (rList.size() == 0) {
-			commuService.collectDcComData();
-		}
-		rList = null;
-		// Slr
-		colNm = "Slr_" + DateUtil.getDateTime("yyyyMMddHH");
-		rList = new ArrayList<CommuDTO>();
-		rList = commuMapper.getData(colNm);
-
-		if (rList == null) {
-			rList = new ArrayList<CommuDTO>();
-		}
-		if (rList.size() == 0) {
-			commuService.collectSlrData();
+			if (rList == null) {
+				rList = new ArrayList<CommuDTO>();
+			}
+			if (rList.size() == 0) {
+				switch (sList.get(i)) {
+				case "DcCom_":
+					commuService.collectDcComData();
+					break;
+				case "Slr_":
+					commuService.collectSlrData();
+					break;
+				case "Ppom_":
+					commuService.collectPpomData();
+					break;
+				case "82Cook_":
+					commuService.collect82CookData();
+					break;
+				case "Mlb_":
+					commuService.collectMPData();
+					break;
+				}
+			}
+			rList = null;
 		}
 		return 1;
 	}
 
 	// 분석 데이터 있는지 없는지 확인
 	@Override
-	public int checkAnalysisData() throws Exception {
-		List<String> sList = new ArrayList<String>();
-		sList.add("DcCom_");
-		sList.add("Slr_");
+	public int checkAnalysisData(List<String> sList) throws Exception {
+
 		for (int i = 0; i < sList.size(); i++) {
 			String colNm = "Analysis" + sList.get(i) + DateUtil.getDateTime("yyyyMMddHH");
 			List<DataDTO> rList = commuMapper.getAnalysisData(colNm);
@@ -279,7 +554,6 @@ public class CommuService implements ICommuService {
 			if (rList == null) {
 				rList = new ArrayList<DataDTO>();
 			}
-			log.info(rList.size());
 			if (rList.size() == 0) {
 				commuService.AnalysisData(sList.get(i));
 			}
@@ -298,6 +572,15 @@ public class CommuService implements ICommuService {
 			break;
 		case "Slr_":
 			comu = "SLR클럽";
+			break;
+		case "Ppom_":
+			comu = "뽐뿌";
+			break;
+		case "82Cook_":
+			comu = "82쿡";
+			break;
+		case "Mlb_":
+			comu = "MLBPARK";
 			break;
 		}
 
@@ -504,4 +787,9 @@ public class CommuService implements ICommuService {
 		log.info(doc);
 	}
 
+	public static String StringReplace(String str) {
+		String match = "[^\uAC00-\uD7A3xfe0-9a-zA-Z\\s]";
+		str = str.replaceAll(match, "");
+		return str;
+	}
 }
