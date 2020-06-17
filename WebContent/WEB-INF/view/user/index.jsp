@@ -445,11 +445,11 @@ h2 a:hover {
 	var str = '<div style="width:100%; height:27px; overflow:hidden;"></div>';
 	<%if (wList.size() > 10) {%>
 	   	<%for (int i = 0; i < 10; i++) {%>
-	   		str += '<div style="width:100%; height:27px; overflow:hidden;">'+(<%=i%>+1)+". <%=wList.get(i).getWord()%> : <%=wList.get(i).getCount()%></div>";
+	   		str += '<div style="width:100%; height:27px; overflow:hidden;">'+(<%=i%>+1)+'. <%=wList.get(i).getWord()%> : <%=wList.get(i).getCount()%></div>';
 	  	<%}%>	
 	<%} else {%>
 		<%for (int i = 0; i < wList.size(); i++) {%>
-			str += '<div style="width:100%; height:27px; overflow:hidden;">'+(<%=i%>+1)+". <%=wList.get(i).getWord()%> : <%=wList.get(i).getCount()%></div>";
+			str += '<div style="width:100%; height:27px; overflow:hidden;">'+(<%=i%>+1)+'. <%=wList.get(i).getWord()%> : <%=wList.get(i).getCount()%></div>';
 		<%}%>
 	<%}%>
 	$("#writer_div_<%=j%>").html(str);
@@ -465,22 +465,24 @@ h2 a:hover {
 	<%if (bList.size() > 10) {%>
 	   	<%for (int i = 0; i < 10; i++) {%>
 			var timediv = '<%=bList.get(i).getViews()%></div>';
+			var writer = '<%=bList.get(i).getWriter()%>'
 		   	str += '<div style="display: table-row;">';
 		   	str += '<div class="linkdiv_content_box link_1st">';
 		   	str += '<a href="<%=bList.get(i).getLink()%>" target="_blank">';
 		   	str += '<%=bList.get(i).getTitle()%></a></div>';
-	   		str += '<div class="linkdiv_content_box"><%=bList.get(i).getWriter()%></div>';
+	   		str += '<div class="linkdiv_content_box">'+writer+'</div>';
 	   		str += '<div class="linkdiv_content_box">'+numberWithCommas(timediv)+'</div>';
 	   		str += '</div>'
 	   	<%}%>	
 	<%} else {%>
 		<%for (int i = 0; i < bList.size(); i++) {%>
 			var timediv = '<%=bList.get(i).getViews()%></div>';
+			var writer = '<%=bList.get(i).getWriter()%>'
 		   	str += '<div style="display: table-row;">';
 		   	str += '<div class="linkdiv_content_box link_1st">';
 		   	str += '<a href="<%=bList.get(i).getLink()%>" target="_blank">';
 		   	str += '<%=bList.get(i).getTitle()%></a></div>';
-   			str += '<div class="linkdiv_content_box"><%=bList.get(i).getWriter()%></div>';
+	   		str += '<div class="linkdiv_content_box">'+writer+'</div>';
    			str += '<div class="linkdiv_content_box">'+numberWithCommas(timediv)+'</div>';
    			str += '</div>'
 		<%}%>

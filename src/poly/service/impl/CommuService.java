@@ -74,7 +74,7 @@ public class CommuService implements ICommuService {
 				pDTO.setCommu_name("컴퓨터 본체 갤러리");
 				pDTO.setTime(time);
 				pDTO.setTitle(title.replaceAll("'", "&#39;").replaceAll("&nbsp", " "));
-				pDTO.setWriter(writer);
+				pDTO.setWriter(writer.replaceAll("'", "&#39;"));
 				pDTO.setViews(views);
 				pDTO.setLink(link);
 
@@ -95,13 +95,13 @@ public class CommuService implements ICommuService {
 		Document odoc = Jsoup.connect("http://www.slrclub.com/bbs/zboard.php?id=free&page=1").get();
 		String page = odoc.select("span#actpg").text();
 		int res = 0;
+		String tmp = "";
+		Calendar cal = Calendar.getInstance();
 		List<CommuDTO> pList = new ArrayList<CommuDTO>();
 		for (int i = 0; i <= 19; i++) {
 			String url = "http://www.slrclub.com/bbs/zboard.php?id=free&page=";
 			url = url + Integer.toString(Integer.parseInt(page) - i);
 			Document doc = null;
-			String tmp = "";
-			Calendar cal = Calendar.getInstance();
 			doc = Jsoup.connect(url).get();
 
 			Elements element = doc.select("table#bbs_list");
@@ -118,21 +118,28 @@ public class CommuService implements ICommuService {
 					if (time.contains(":")) {
 						if (tmp.equals("")) {
 							tmp = time.substring(0, 2);
+						}
+						if (tmp.equals("00") && time.substring(0, 2).equals("23")) {
+							cal.add(Calendar.DATE, -1);
+							tmp = time.substring(0, 2);
 						} else {
-							if (Integer.parseInt(tmp) < Integer.parseInt(time.substring(0, 2))) {
-								cal.add(Calendar.DATE, -1);
-							}
+							tmp = time.substring(0, 2);
 						}
 						int year = cal.get(cal.YEAR);
 						int month = (cal.get(cal.MONTH) + 1);
 						int date = cal.get(cal.DATE);
+						String datetime = "";
 						if (month < 10) {
-							time = Integer.toString(year) + "-0" + Integer.toString(month) + "-"
-									+ Integer.toString(date) + " " + time;
+							datetime = Integer.toString(year) + "-0" + Integer.toString(month) + "-";
 						} else {
-							time = Integer.toString(year) + "-" + Integer.toString(month) + "-" + Integer.toString(date)
-									+ " " + time;
+							datetime = Integer.toString(year) + "-" + Integer.toString(month) + "-";
 						}
+						if (date < 10) {
+							datetime = datetime + "0" + Integer.toString(date) + " ";
+						} else {
+							datetime = datetime + Integer.toString(date) + " ";
+						}
+						time = datetime + time;
 
 					} else {
 						time = time + " 00:00:00";
@@ -149,7 +156,7 @@ public class CommuService implements ICommuService {
 					pDTO.setCommu_name("SLR클럽");
 					pDTO.setTime(time);
 					pDTO.setTitle(title.replaceAll("'", "&#39;").replaceAll("&nbsp", " "));
-					pDTO.setWriter(writer);
+					pDTO.setWriter(writer.replaceAll("'", "&#39;"));
 					pDTO.setViews(views);
 					pDTO.setLink(link);
 
@@ -207,11 +214,12 @@ public class CommuService implements ICommuService {
 					pDTO.setCommu_name("뽐뿌");
 					pDTO.setTime("20" + time.replaceAll("\\.", "\\-"));
 					pDTO.setTitle(title.replaceAll("'", "&#39;").replaceAll("&nbsp", " "));
-					pDTO.setWriter(writer);
+					pDTO.setWriter(writer.replaceAll("'", "&#39;"));
 					pDTO.setViews(views);
 					pDTO.setLink(link);
 
 					pList.add(pDTO);
+					pDTO = null;
 				}
 			}
 		}
@@ -251,11 +259,12 @@ public class CommuService implements ICommuService {
 					pDTO.setCommu_name("뽐뿌");
 					pDTO.setTime("20" + time.replaceAll("\\.", "\\-"));
 					pDTO.setTitle(title.replaceAll("'", "&#39;").replaceAll("&nbsp", " "));
-					pDTO.setWriter(writer);
+					pDTO.setWriter(writer.replaceAll("'", "&#39;"));
 					pDTO.setViews(views);
 					pDTO.setLink(link);
 
 					pList.add(pDTO);
+					pDTO = null;
 				}
 			}
 		}
@@ -315,7 +324,7 @@ public class CommuService implements ICommuService {
 					pDTO.setCommu_name("82쿡");
 					pDTO.setTime(time);
 					pDTO.setTitle(title.replaceAll("'", "&#39;").replaceAll("&nbsp", " "));
-					pDTO.setWriter(writer);
+					pDTO.setWriter(writer.replaceAll("'", "&#39;"));
 					pDTO.setViews(views);
 					pDTO.setLink(link);
 
@@ -336,15 +345,17 @@ public class CommuService implements ICommuService {
 	public int collectMPData() throws Exception {
 		int res = 0;
 		List<CommuDTO> pList = new ArrayList<CommuDTO>();
+		String tmp1 = "";
+		Calendar cal1 = Calendar.getInstance();
+		String tmp2 = "";
+		Calendar cal2 = Calendar.getInstance();
 
 		for (int i = 1; i <= 20; i++) {
 
 			String url = "http://mlbpark.donga.com/mp/b.php?b=kbotown&p=";
-			url = url + Integer.toString((i-1)*3)+"1";
+			url = url + Integer.toString((i - 1) * 3) + "1";
 
 			Document doc = null;
-			String tmp = "";
-			Calendar cal = Calendar.getInstance();
 
 			doc = Jsoup.connect(url).get();
 
@@ -353,33 +364,42 @@ public class CommuService implements ICommuService {
 			Iterator<Element> postList = element.select("tr").iterator();
 			while (postList.hasNext()) {
 				Element postInfo = postList.next();
-				if (!postInfo.select("td").eq(0).text().equals("공지")) {
-					String title = CmmUtil.nvl(postInfo.select("span.word").text())+postInfo.select("a").attr("title");
+				if (!postInfo.select("td").eq(0).text().equals("공지")
+						&& !postInfo.select("span.date").text().contains("-")) {
+					String title = CmmUtil.nvl(postInfo.select("span.word").text())
+							+ postInfo.select("a").attr("title");
 					String writer = postInfo.select("span.nick").text();
 					String time = postInfo.select("span.date").text();
 					int views = Integer.parseInt(StringReplace(postInfo.select("span.viewV").text()));
 					String link = postInfo.select("a").attr("href");
 
 					postInfo = null;
-					
+
 					if (time.contains(":")) {
-						if (tmp.equals("")) {
-							tmp = time.substring(0, 2);
-						} else {
-							if (Integer.parseInt(tmp) < Integer.parseInt(time.substring(0, 2))) {
-								cal.add(Calendar.DATE, -1);
-							}
+						if (tmp1.equals("")) {
+							tmp1 = time.substring(0, 2);
 						}
-						int year = cal.get(cal.YEAR);
-						int month = (cal.get(cal.MONTH) + 1);
-						int date = cal.get(cal.DATE);
+						if (tmp1.equals("00") && time.substring(0, 2).equals("23")) {
+							cal1.add(Calendar.DATE, -1);
+							tmp1 = time.substring(0, 2);
+						} else {
+							tmp1 = time.substring(0, 2);
+						}
+						int year = cal1.get(cal1.YEAR);
+						int month = (cal1.get(cal1.MONTH) + 1);
+						int date = cal1.get(cal1.DATE);
+						String datetime = "";
 						if (month < 10) {
-							time = Integer.toString(year) + "-0" + Integer.toString(month) + "-"
-									+ Integer.toString(date) + " " + time;
+							datetime = Integer.toString(year) + "-0" + Integer.toString(month) + "-";
 						} else {
-							time = Integer.toString(year) + "-" + Integer.toString(month) + "-" + Integer.toString(date)
-									+ " " + time;
+							datetime = Integer.toString(year) + "-" + Integer.toString(month) + "-";
 						}
+						if (date < 10) {
+							datetime = datetime + "0" + Integer.toString(date) + " ";
+						} else {
+							datetime = datetime + Integer.toString(date) + " ";
+						}
+						time = datetime + time;
 
 					} else {
 						time = time + " 00:00:00";
@@ -391,7 +411,7 @@ public class CommuService implements ICommuService {
 					pDTO.setCommu_name("MLBPARK");
 					pDTO.setTime(time.replaceAll("\\.", "\\-"));
 					pDTO.setTitle(title.replaceAll("'", "&#39;").replaceAll("&nbsp", " "));
-					pDTO.setWriter(writer);
+					pDTO.setWriter(writer.replaceAll("'", "&#39;"));
 					pDTO.setViews(views);
 					pDTO.setLink(link);
 
@@ -402,11 +422,9 @@ public class CommuService implements ICommuService {
 		for (int i = 1; i <= 20; i++) {
 
 			String url = "http://mlbpark.donga.com/mp/b.php?b=bullpen&p=";
-			url = url + Integer.toString((i-1)*3)+"1";
+			url = url + Integer.toString((i - 1) * 3) + "1";
 
 			Document doc = null;
-			String tmp = "";
-			Calendar cal = Calendar.getInstance();
 
 			doc = Jsoup.connect(url).get();
 
@@ -423,25 +441,32 @@ public class CommuService implements ICommuService {
 					String link = postInfo.select("a").attr("href");
 
 					postInfo = null;
-					
+
 					if (time.contains(":")) {
-						if (tmp.equals("")) {
-							tmp = time.substring(0, 2);
-						} else {
-							if (Integer.parseInt(tmp) < Integer.parseInt(time.substring(0, 2))) {
-								cal.add(Calendar.DATE, -1);
-							}
+						if (tmp2.equals("")) {
+							tmp2 = time.substring(0, 2);
 						}
-						int year = cal.get(cal.YEAR);
-						int month = (cal.get(cal.MONTH) + 1);
-						int date = cal.get(cal.DATE);
+						if (tmp2.equals("00") && time.substring(0, 2).equals("23")) {
+							cal2.add(Calendar.DATE, -1);
+							tmp2 = time.substring(0, 2);
+						} else {
+							tmp2 = time.substring(0, 2);
+						}
+						int year = cal2.get(cal2.YEAR);
+						int month = (cal2.get(cal2.MONTH) + 1);
+						int date = cal2.get(cal2.DATE);
+						String datetime = "";
 						if (month < 10) {
-							time = Integer.toString(year) + "-0" + Integer.toString(month) + "-"
-									+ Integer.toString(date) + " " + time;
+							datetime = Integer.toString(year) + "-0" + Integer.toString(month) + "-";
 						} else {
-							time = Integer.toString(year) + "-" + Integer.toString(month) + "-" + Integer.toString(date)
-									+ " " + time;
+							datetime = Integer.toString(year) + "-" + Integer.toString(month) + "-";
 						}
+						if (date < 10) {
+							datetime = datetime + "0" + Integer.toString(date) + " ";
+						} else {
+							datetime = datetime + Integer.toString(date) + " ";
+						}
+						time = datetime + time;
 
 					} else {
 						time = time + " 00:00:00";
@@ -453,7 +478,7 @@ public class CommuService implements ICommuService {
 					pDTO.setCommu_name("MLBPARK");
 					pDTO.setTime(time.replaceAll("\\.", "\\-"));
 					pDTO.setTitle(title.replaceAll("'", "&#39;").replaceAll("&nbsp", " "));
-					pDTO.setWriter(writer);
+					pDTO.setWriter(writer.replaceAll("'", "&#39;"));
 					pDTO.setViews(views);
 					pDTO.setLink(link);
 
@@ -461,8 +486,6 @@ public class CommuService implements ICommuService {
 				}
 			}
 		}
-
-		
 
 		Collections.sort(pList, new Comparator<CommuDTO>() {
 			@Override
@@ -759,8 +782,6 @@ public class CommuService implements ICommuService {
 		header.put("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8");
 		header.put("Accept-Encoding", "gzip, deflate, br");
 		header.put("Accept-Language", "ko-KR,ko;q=0.9,en-US;q=0.8,en;q=0.7");
-		header.put("origin", "http://www.slrclub.com");
-		header.put("origin", "http://www.slrclub.com");
 		Map<String, String> data = new HashMap<String, String>();
 		data.put("user_id", "lonoka");
 		data.put("password", "scarlet14!");
@@ -787,6 +808,7 @@ public class CommuService implements ICommuService {
 		log.info(doc);
 	}
 
+	// 특수기호 제거 함수
 	public static String StringReplace(String str) {
 		String match = "[^\uAC00-\uD7A3xfe0-9a-zA-Z\\s]";
 		str = str.replaceAll(match, "");
