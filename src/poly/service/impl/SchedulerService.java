@@ -22,23 +22,44 @@ public class SchedulerService implements ISchedulerService {
 	@Resource(name = "CommuService")
 	private ICommuService commuService;
 	
+	
+
 	@Scheduled(cron = "0 0 0/1 * * ?")
 	@Override
-	public void sCrawlling() throws Exception {
-		commuService.collectDcComData();
-		commuService.collectSlrData();
+	public void sDcComCrawlling() throws Exception {
+		//commuService.collectDcComData();
+		//commuService.AnalysisData("DcCom_");
+	}
+
+	@Scheduled(cron = "0 0 0/1 * * ?")
+	@Override
+	public void sSlrCrawlling() throws Exception {
+		//commuService.collectSlrData();
+		//commuService.AnalysisData("Slr_");
+	}
+
+	@Scheduled(cron = "10 0 0/1 * * ?")
+	@Override
+	public void sPpomCrawlling() throws Exception {
 		commuService.collectPpomData();
-		commuService.collect82CookData();
-		commuService.collectMPData();
-		List<String> sList = new ArrayList<String>();
-		sList.add("DcCom_");
-		sList.add("Slr_");
-		sList.add("Ppom_");
-		sList.add("82Cook_");
-		sList.add("Mlb_");
-		for(int i = 0; i <sList.size();i++) {
-			commuService.AnalysisData(sList.get(i));
-		}
+		commuService.AnalysisData("Ppom_");
+		
+	}
+
+	@Scheduled(cron = "0 0 0/1 * * ?")
+	@Override
+	public void s82CookCrawlling() throws Exception {
+		//commuService.collect82CookData();
+		//commuService.AnalysisData("82Cook_");
+		
+	}
+
+	@Scheduled(cron = "0 0 0/1 * * ?")
+	@Override
+	public void sMlbCrawlling() throws Exception {
+		//commuService.collectMPData();
+		//commuService.AnalysisData("Mlb_");
+		
 	}
 
 }

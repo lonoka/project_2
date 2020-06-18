@@ -180,14 +180,14 @@ public class CommuService implements ICommuService {
 		List<CommuDTO> pList = new ArrayList<CommuDTO>();
 
 		for (int i = 1; i <= 20; i++) {
-
+			
 			String url = "http://www.ppomppu.co.kr/zboard/zboard.php?id=freeboard&page=";
 			url = url + Integer.toString(i);
-
+			log.info(i+"번 자유 url : "+url);
 			Document doc = null;
 
 			doc = Jsoup.connect(url).get();
-
+			
 			Elements element = doc.select("table#revolution_main_table > tbody");
 
 			Iterator<Element> postList = element.select("tr").iterator();
@@ -219,15 +219,16 @@ public class CommuService implements ICommuService {
 					pDTO.setLink(link);
 
 					pList.add(pDTO);
-					pDTO = null;
 				}
 			}
+			Thread.sleep(100);
 		}
 
-		for (int i = 1; i <= 20; i++) {
+		for (int i = 1; i <= 5; i++) {
 
 			String url = "http://www.ppomppu.co.kr/zboard/zboard.php?id=issue&page=";
 			url = url + Integer.toString(i);
+			log.info(i+"번 이슈 url : "+url);
 
 			Document doc = null;
 
@@ -264,11 +265,10 @@ public class CommuService implements ICommuService {
 					pDTO.setLink(link);
 
 					pList.add(pDTO);
-					pDTO = null;
 				}
 			}
 		}
-
+		log.info("pList size : "+pList.size());
 		Collections.sort(pList, new Comparator<CommuDTO>() {
 			@Override
 			public int compare(CommuDTO pDTO, CommuDTO rDTO) {
@@ -329,6 +329,7 @@ public class CommuService implements ICommuService {
 					pDTO.setLink(link);
 
 					pList.add(pDTO);
+					pDTO = null;
 				}
 			}
 		}
@@ -433,7 +434,8 @@ public class CommuService implements ICommuService {
 			Iterator<Element> postList = element.select("tr").iterator();
 			while (postList.hasNext()) {
 				Element postInfo = postList.next();
-				if (!postInfo.select("td").eq(0).text().equals("공지")) {
+				if (!postInfo.select("td").eq(0).text().equals("공지")
+						&& !postInfo.select("span.date").text().contains("-")) {
 					String title = postInfo.select("a").attr("title");
 					String writer = postInfo.select("span.nick").text();
 					String time = postInfo.select("span.date").text();
