@@ -24,21 +24,21 @@ public class SchedulerService implements ISchedulerService {
 	
 	
 
-	@Scheduled(cron = "0 0 0/1 * * ?")
+	@Scheduled(cron = "0 5 0/1 * * ?")
 	@Override
 	public void sDcComCrawlling() throws Exception {
-		//commuService.collectDcComData();
-		//commuService.AnalysisData("DcCom_");
+		commuService.collectDcComData();
+		commuService.AnalysisData("DcCom_");
 	}
 
-	@Scheduled(cron = "0 0 0/1 * * ?")
+	@Scheduled(cron = "0 5 0/1 * * ?")
 	@Override
 	public void sSlrCrawlling() throws Exception {
-		//commuService.collectSlrData();
-		//commuService.AnalysisData("Slr_");
+		commuService.collectSlrData();
+		commuService.AnalysisData("Slr_");
 	}
 
-	@Scheduled(cron = "10 0 0/1 * * ?")
+	@Scheduled(cron = "0 5 0/1 * * ?")
 	@Override
 	public void sPpomCrawlling() throws Exception {
 		commuService.collectPpomData();
@@ -46,19 +46,19 @@ public class SchedulerService implements ISchedulerService {
 		
 	}
 
-	@Scheduled(cron = "0 0 0/1 * * ?")
+	@Scheduled(cron = "0 5 0/1 * * ?")
 	@Override
 	public void s82CookCrawlling() throws Exception {
-		//commuService.collect82CookData();
-		//commuService.AnalysisData("82Cook_");
+		commuService.collect82CookData();
+		commuService.AnalysisData("82Cook_");
 		
 	}
 
-	@Scheduled(cron = "0 0 0/1 * * ?")
+	@Scheduled(cron = "0 5 0/1 * * ?")
 	@Override
 	public void sMlbCrawlling() throws Exception {
-		//commuService.collectMPData();
-		//commuService.AnalysisData("Mlb_");
+		commuService.collectMPData();
+		commuService.AnalysisData("Mlb_");
 		
 	}
 

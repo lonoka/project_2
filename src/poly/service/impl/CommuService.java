@@ -73,7 +73,7 @@ public class CommuService implements ICommuService {
 				pDTO.setCollect_time(DateUtil.getDateTime("yyyyMMddHHmmss"));
 				pDTO.setCommu_name("컴퓨터 본체 갤러리");
 				pDTO.setTime(time);
-				pDTO.setTitle(title.replaceAll("'", "&#39;").replaceAll("&nbsp", " "));
+				pDTO.setTitle(title.replaceAll("'", "&#39;").replaceAll("&nbsp", " ").replaceAll("\n", ""));
 				pDTO.setWriter(writer.replaceAll("'", "&#39;"));
 				pDTO.setViews(views);
 				pDTO.setLink(link);
@@ -155,7 +155,7 @@ public class CommuService implements ICommuService {
 					pDTO.setCollect_time(DateUtil.getDateTime("yyyyMMddHHmmss"));
 					pDTO.setCommu_name("SLR클럽");
 					pDTO.setTime(time);
-					pDTO.setTitle(title.replaceAll("'", "&#39;").replaceAll("&nbsp", " "));
+					pDTO.setTitle(title.replaceAll("'", "&#39;").replaceAll("&nbsp", " ").replaceAll("\n", ""));
 					pDTO.setWriter(writer.replaceAll("'", "&#39;"));
 					pDTO.setViews(views);
 					pDTO.setLink(link);
@@ -183,7 +183,6 @@ public class CommuService implements ICommuService {
 			
 			String url = "http://www.ppomppu.co.kr/zboard/zboard.php?id=freeboard&page=";
 			url = url + Integer.toString(i);
-			log.info(i+"번 자유 url : "+url);
 			Document doc = null;
 
 			doc = Jsoup.connect(url).get();
@@ -213,7 +212,7 @@ public class CommuService implements ICommuService {
 					pDTO.setCollect_time(DateUtil.getDateTime("yyyyMMddHHmmss"));
 					pDTO.setCommu_name("뽐뿌");
 					pDTO.setTime("20" + time.replaceAll("\\.", "\\-"));
-					pDTO.setTitle(title.replaceAll("'", "&#39;").replaceAll("&nbsp", " "));
+					pDTO.setTitle(title.replaceAll("'", "&#39;").replaceAll("&nbsp", " ").replaceAll("\n", ""));
 					pDTO.setWriter(writer.replaceAll("'", "&#39;"));
 					pDTO.setViews(views);
 					pDTO.setLink(link);
@@ -221,14 +220,12 @@ public class CommuService implements ICommuService {
 					pList.add(pDTO);
 				}
 			}
-			Thread.sleep(100);
 		}
 
 		for (int i = 1; i <= 5; i++) {
 
 			String url = "http://www.ppomppu.co.kr/zboard/zboard.php?id=issue&page=";
 			url = url + Integer.toString(i);
-			log.info(i+"번 이슈 url : "+url);
 
 			Document doc = null;
 
@@ -259,7 +256,7 @@ public class CommuService implements ICommuService {
 					pDTO.setCollect_time(DateUtil.getDateTime("yyyyMMddHHmmss"));
 					pDTO.setCommu_name("뽐뿌");
 					pDTO.setTime("20" + time.replaceAll("\\.", "\\-"));
-					pDTO.setTitle(title.replaceAll("'", "&#39;").replaceAll("&nbsp", " "));
+					pDTO.setTitle(title.replaceAll("'", "&#39;").replaceAll("&nbsp", " ").replaceAll("\n", ""));
 					pDTO.setWriter(writer.replaceAll("'", "&#39;"));
 					pDTO.setViews(views);
 					pDTO.setLink(link);
@@ -268,7 +265,6 @@ public class CommuService implements ICommuService {
 				}
 			}
 		}
-		log.info("pList size : "+pList.size());
 		Collections.sort(pList, new Comparator<CommuDTO>() {
 			@Override
 			public int compare(CommuDTO pDTO, CommuDTO rDTO) {
@@ -290,7 +286,7 @@ public class CommuService implements ICommuService {
 
 		return res;
 	}
-
+	
 	// 82쿡
 	@Override
 	public int collect82CookData() throws Exception {
@@ -323,7 +319,7 @@ public class CommuService implements ICommuService {
 					pDTO.setCollect_time(DateUtil.getDateTime("yyyyMMddHHmmss"));
 					pDTO.setCommu_name("82쿡");
 					pDTO.setTime(time);
-					pDTO.setTitle(title.replaceAll("'", "&#39;").replaceAll("&nbsp", " "));
+					pDTO.setTitle(title.replaceAll("'", "&#39;").replaceAll("&nbsp", " ").replaceAll("\n", ""));
 					pDTO.setWriter(writer.replaceAll("'", "&#39;"));
 					pDTO.setViews(views);
 					pDTO.setLink(link);
@@ -411,7 +407,7 @@ public class CommuService implements ICommuService {
 					pDTO.setCollect_time(DateUtil.getDateTime("yyyyMMddHHmmss"));
 					pDTO.setCommu_name("MLBPARK");
 					pDTO.setTime(time.replaceAll("\\.", "\\-"));
-					pDTO.setTitle(title.replaceAll("'", "&#39;").replaceAll("&nbsp", " "));
+					pDTO.setTitle(title.replaceAll("'", "&#39;").replaceAll("&nbsp", " ").replaceAll("\n", ""));
 					pDTO.setWriter(writer.replaceAll("'", "&#39;"));
 					pDTO.setViews(views);
 					pDTO.setLink(link);
@@ -479,7 +475,7 @@ public class CommuService implements ICommuService {
 					pDTO.setCollect_time(DateUtil.getDateTime("yyyyMMddHHmmss"));
 					pDTO.setCommu_name("MLBPARK");
 					pDTO.setTime(time.replaceAll("\\.", "\\-"));
-					pDTO.setTitle(title.replaceAll("'", "&#39;").replaceAll("&nbsp", " "));
+					pDTO.setTitle(title.replaceAll("'", "&#39;").replaceAll("&nbsp", " ").replaceAll("\n", ""));
 					pDTO.setWriter(writer.replaceAll("'", "&#39;"));
 					pDTO.setViews(views);
 					pDTO.setLink(link);
