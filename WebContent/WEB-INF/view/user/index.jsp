@@ -1,3 +1,4 @@
+<%@page import="poly.util.CmmUtil"%>
 <%@page import="poly.dto.DataDTO"%>
 <%@page import="poly.dto.UserDTO"%>
 <%@page import="poly.dto.CommuDTO"%>
@@ -12,6 +13,7 @@
 	List<Map> pList = (List<Map>) request.getAttribute("pList");
 	String userId = (String) session.getAttribute("userId");
 	String userAuthor = (String) session.getAttribute("userAuthor");
+	String sValue = CmmUtil.nvl((String) request.getAttribute("sValue"));
 %>
 <!DOCTYPE html>
 <html>
@@ -273,7 +275,13 @@ h2 a:hover {
 										<h2 style="font-family: Nanum Gothic">
 											<a href="javascript:void(0)" class="" data-toggle="modal"
 												data-target="#comu_modal_<%=i%>" data-backdrop="static"
-												style="color: aliceblue !important;"><%=rList.get(0).getCommu_name()%></a>
+												style="color: aliceblue !important;">
+												<%if(sValue.equals("")){ %>
+												<%=rList.get(0).getCommu_name()%>
+												<%}else{ %>
+												<%=rList.get(0).getCommu_name()%> : '<%=sValue %>' 검색결과
+												<%} %>
+												</a>
 										</h2>
 										<div id="wordcloud_<%=i%>" class=""
 											style="height: 600px; width: 100%"></div>
@@ -285,15 +293,19 @@ h2 a:hover {
 							<div class="col-md-8" style="margin: 0 auto">
 								<div class="form-row">
 									<div class="col-12 col-md-9 mb-2 mb-md-0">
-										<input type="email" class="form-control form-control-lg"
+										<input id="searchTitle" type="text" class="form-control form-control-lg"
 											placeholder="검색어를 입력하세요">
 									</div>
 									<div class="col-12 col-md-3">
-										<button type="submit" class="btn btn-block btn-lg btn-primary"
+										<button type="button" class="btn btn-block btn-lg btn-primary" onclick="searchComu()"
 											style="padding-top: 8.5px; padding-bottom: 8.5px; color: dodgerblue;">검색</button>
 									</div>
 								</div>
 							</div>
+							<form id = "searchForm" method="post" action="/searchPage.do">
+								<input type="hidden" id = "searchValue" name="searchValue">
+								<input type="hidden" name="checkNum" value="1">
+							</form>
 						</div>
 
 					</div>
@@ -333,7 +345,7 @@ h2 a:hover {
 									커뮤니티 긍정, 부정 정도 <br>(0에 가까울수록 부정적입니다.)
 								</div>
 								<div id="" class="col-md-6" style="text-align: center;">
-									분석 게시글 시간대별 작성개수<br>(10분단위)
+									분석 게시글 시간대별 작성개수<br><%if(sValue.equals("")) {%>(10분단위)<%}else{ %>(일 단위)<%} %>
 								</div>
 							</div>
 							<div class="row">
@@ -406,7 +418,7 @@ h2 a:hover {
 		List<DataDTO>rList = (List<DataDTO>)pList.get(j).get("rList");
 	%>
 		<script type="text/javascript">
-		
+		console.log('<%=sValue%>');
 	var rList<%=j%> = [
 		<%if(rList.size()>200){%>
 		<%for (int i = 0; i < 200; i++) {%>
@@ -642,7 +654,7 @@ h2 a:hover {
   interval: 10000
 })  
 </script>
-		<script>
+<script>
 	$('body').on('click', '.topbar_link', function(e) {
 		var $this = $(this);
 		e.preventDefault();
@@ -673,6 +685,48 @@ h2 a:hover {
 		default:
 			break;
 		}
+	}
+    // 특수문자 정규식 변수(공백 미포함)
+    var replaceChar = /[~!@\#$%^&*\()\-=+_'\;<>\/.\`:\"\\,\[\]?|{}]/gi;
+ 
+    // 완성형 아닌 한글 정규식
+    var replaceNotFullKorean = /[ㄱ-ㅎㅏ-ㅣ]/gi;
+
+	 $(document).ready(function(){
+        
+        $("#searchTitle").on("focusout", function() {
+            var x = $(this).val();
+            if (x.length > 0) {
+                if (x.match(replaceChar) || x.match(replaceNotFullKorean)) {
+                    x = x.replace(replaceChar, "").replace(replaceNotFullKorean, "");
+                }
+                $(this).val(x);
+            }
+            }).on("keyup", function() {
+                $(this).val($(this).val().replace(replaceChar, ""));
+
+       });
+
+    });  
+	function searchComu(){
+		<%if(userId==null){%>
+		$('#alert_modal_body').html('로그인이 필요한 서비스 입니다.');
+		$('#searchTitle').val('');
+		$('#alert_modal').modal('show')
+		<%}else{%>
+		$('#search_modal').modal('show')
+		$('#searchValue').val($('#searchTitle').val());
+		$.ajax({
+			url : "/searchCheck.do",
+			type : "post",
+			data : {
+				'searchTitle' : $('#searchTitle').val()
+			},
+			success : function(a){
+				$('#searchForm').submit();
+			}
+		})
+		<%}%>
 	}
 </script>
 </body>

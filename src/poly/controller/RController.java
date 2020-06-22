@@ -31,7 +31,7 @@ public class RController {
 	@ResponseBody
 	public String cTest(HttpServletRequest request, Model model, HttpSession session) throws Exception {
 		
-		//commuService.collectPpomData();
+		commuService.SearchDcComData("폴리텍");
 		return "success";
 	}
 

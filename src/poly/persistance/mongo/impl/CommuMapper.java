@@ -5,6 +5,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.apache.log4j.Logger;
+import org.bson.Document;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.stereotype.Component;
@@ -13,10 +14,12 @@ import com.mongodb.BasicDBObject;
 import com.mongodb.DBCollection;
 import com.mongodb.DBObject;
 
+import poly.dto.CheckDTO;
 import poly.dto.CommuDTO;
 import poly.dto.DataDTO;
 import poly.persistance.mongo.ICommuMapper;
 import poly.util.CmmUtil;
+import poly.util.DateUtil;
 
 @Component("CommuMapper")
 public class CommuMapper implements ICommuMapper {
@@ -192,6 +195,59 @@ public class CommuMapper implements ICommuMapper {
 		log.info(this.getClass().getName() + " getAnalysisData end!");
 
 		return rList;
+	}
+
+	@Override
+	public boolean checkData(String string) {
+		log.info(this.getClass().getName() + " checkData Start!");
+		
+		String str = string + DateUtil.getDateTime("yyyyMMddHH");
+		DBCollection rCol = mongodb.getCollection("checkCollection");
+		BasicDBObject query = new BasicDBObject();
+        query.put("keyword", str);
+        
+		Iterator<DBObject> cursor = rCol.find(query);
+
+		while (cursor.hasNext()) {
+			final DBObject current = cursor.next();
+
+			boolean check = (boolean) current.get("check");
+
+			if(check==false) {
+				return false;
+			}
+		}
+		log.info(this.getClass().getName() + " checkData end!");
+
+		return true;
+	}
+
+	@Override
+	public int insertCheckData(String colNm) {
+		log.info(this.getClass().getName() + " insertCheckData Start!");
+		int res = 0;
+		CheckDTO pDTO = new CheckDTO();
+		pDTO.setCollect_time(DateUtil.getDateTime("yyyyMMddHH"));
+		pDTO.setKeyword(colNm);
+		pDTO.setCheck(false);
+		
+		mongodb.insert(pDTO, "checkCollection");
+		
+		log.info(this.getClass().getName() + " insertCheckData Start!");
+		return res;
+	}
+
+	@Override
+	public int updateCheckData(String colNm) {
+		log.info(this.getClass().getName() + " updateCheckData Start!");
+		DBCollection rCol = mongodb.getCollection("checkCollection");
+		BasicDBObject query = new BasicDBObject();
+        query.put("keyword", colNm);
+		BasicDBObject update = new BasicDBObject();
+		update.put("$set", new BasicDBObject().append("check", true));
+        rCol.update(query, update);
+		log.info(this.getClass().getName() + " updateCheckData Start!");
+		return 0;
 	}
 
 }

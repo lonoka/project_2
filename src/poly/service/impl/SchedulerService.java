@@ -22,43 +22,65 @@ public class SchedulerService implements ISchedulerService {
 	@Resource(name = "CommuService")
 	private ICommuService commuService;
 	
-	
-
 	@Scheduled(cron = "0 5 0/1 * * ?")
 	@Override
 	public void sDcComCrawlling() throws Exception {
-		commuService.collectDcComData();
-		commuService.AnalysisData("DcCom_");
+		List<String> sList = new ArrayList<String>();
+		sList.add("DcCom_");
+		boolean crawling = commuService.checkCrawling(sList);
+		if(crawling==true) {
+			commuService.checkCrawlingData(sList);
+			commuService.checkAnalysisData(sList);
+		}
 	}
 
 	@Scheduled(cron = "0 5 0/1 * * ?")
 	@Override
 	public void sSlrCrawlling() throws Exception {
-		commuService.collectSlrData();
-		commuService.AnalysisData("Slr_");
+		List<String> sList = new ArrayList<String>();
+		sList.add("Slr_");
+		boolean crawling = commuService.checkCrawling(sList);
+		if(crawling==true) {
+			commuService.checkCrawlingData(sList);
+			commuService.checkAnalysisData(sList);
+		}
 	}
 
 	@Scheduled(cron = "0 5 0/1 * * ?")
 	@Override
 	public void sPpomCrawlling() throws Exception {
-		commuService.collectPpomData();
-		commuService.AnalysisData("Ppom_");
-		
+		List<String> sList = new ArrayList<String>();
+		sList.add("Ppom_");
+		boolean crawling = commuService.checkCrawling(sList);
+		if(crawling==true) {
+			commuService.checkCrawlingData(sList);
+			commuService.checkAnalysisData(sList);
+		}
 	}
 
 	@Scheduled(cron = "0 5 0/1 * * ?")
 	@Override
 	public void s82CookCrawlling() throws Exception {
-		commuService.collect82CookData();
-		commuService.AnalysisData("82Cook_");
+		List<String> sList = new ArrayList<String>();
+		sList.add("82Cook_");
+		boolean crawling = commuService.checkCrawling(sList);
+		if(crawling==true) {
+			commuService.checkCrawlingData(sList);
+			commuService.checkAnalysisData(sList);
+		}
 		
 	}
 
 	@Scheduled(cron = "0 5 0/1 * * ?")
 	@Override
 	public void sMlbCrawlling() throws Exception {
-		commuService.collectMPData();
-		commuService.AnalysisData("Mlb_");
+		List<String> sList = new ArrayList<String>();
+		sList.add("Mlb_");
+		boolean crawling = commuService.checkCrawling(sList);
+		if(crawling==true) {
+			commuService.checkCrawlingData(sList);
+			commuService.checkAnalysisData(sList);
+		}
 		
 	}
 

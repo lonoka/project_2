@@ -21,6 +21,7 @@ import org.rosuda.REngine.REXP;
 import org.rosuda.REngine.Rserve.RConnection;
 import org.springframework.stereotype.Service;
 
+import poly.dto.CheckDTO;
 import poly.dto.CommuDTO;
 import poly.dto.DataDTO;
 import poly.persistance.mongo.ICommuMapper;
@@ -46,6 +47,7 @@ public class CommuService implements ICommuService {
 	@Override
 	public int collectDcComData() throws Exception {
 		int res = 0;
+		String colNm = "DcCom_" + DateUtil.getDateTime("yyyyMMddHH");
 		List<CommuDTO> pList = new ArrayList<CommuDTO>();
 		for (int i = 1; i <= 20; i++) {
 			String url = "https://gall.dcinside.com/board/lists/?id=pridepc_new3&list_num=30&page=";
@@ -82,7 +84,6 @@ public class CommuService implements ICommuService {
 			}
 		}
 
-		String colNm = "DcCom_" + DateUtil.getDateTime("yyyyMMddHH");
 		commuMapper.createCollection(colNm);
 		commuMapper.insertData(pList, colNm);
 
@@ -92,6 +93,7 @@ public class CommuService implements ICommuService {
 	// slr클럽
 	@Override
 	public int collectSlrData() throws Exception {
+		String colNm = "Slr_" + DateUtil.getDateTime("yyyyMMddHH");
 		Document odoc = Jsoup.connect("http://www.slrclub.com/bbs/zboard.php?id=free&page=1").get();
 		String page = odoc.select("span#actpg").text();
 		int res = 0;
@@ -166,7 +168,6 @@ public class CommuService implements ICommuService {
 			}
 		}
 
-		String colNm = "Slr_" + DateUtil.getDateTime("yyyyMMddHH");
 		commuMapper.createCollection(colNm);
 		commuMapper.insertData(pList, colNm);
 
@@ -177,16 +178,17 @@ public class CommuService implements ICommuService {
 	@Override
 	public int collectPpomData() throws Exception {
 		int res = 0;
+		String colNm = "Ppom_" + DateUtil.getDateTime("yyyyMMddHH");
 		List<CommuDTO> pList = new ArrayList<CommuDTO>();
 
 		for (int i = 1; i <= 20; i++) {
-			
+
 			String url = "http://www.ppomppu.co.kr/zboard/zboard.php?id=freeboard&page=";
 			url = url + Integer.toString(i);
 			Document doc = null;
 
 			doc = Jsoup.connect(url).get();
-			
+
 			Elements element = doc.select("table#revolution_main_table > tbody");
 
 			Iterator<Element> postList = element.select("tr").iterator();
@@ -280,16 +282,16 @@ public class CommuService implements ICommuService {
 			pList = pList.subList(0, 600);
 		}
 
-		String colNm = "Ppom_" + DateUtil.getDateTime("yyyyMMddHH");
 		commuMapper.createCollection(colNm);
 		commuMapper.insertData(pList, colNm);
 
 		return res;
 	}
-	
+
 	// 82쿡
 	@Override
 	public int collect82CookData() throws Exception {
+		String colNm = "82Cook_" + DateUtil.getDateTime("yyyyMMddHH");
 		int res = 0;
 		List<CommuDTO> pList = new ArrayList<CommuDTO>();
 		for (int i = 1; i <= 20; i++) {
@@ -330,7 +332,6 @@ public class CommuService implements ICommuService {
 			}
 		}
 
-		String colNm = "82Cook_" + DateUtil.getDateTime("yyyyMMddHH");
 		commuMapper.createCollection(colNm);
 		commuMapper.insertData(pList, colNm);
 
@@ -341,6 +342,7 @@ public class CommuService implements ICommuService {
 	@Override
 	public int collectMPData() throws Exception {
 		int res = 0;
+		String colNm = "Mlb_" + DateUtil.getDateTime("yyyyMMddHH");
 		List<CommuDTO> pList = new ArrayList<CommuDTO>();
 		String tmp1 = "";
 		Calendar cal1 = Calendar.getInstance();
@@ -500,7 +502,6 @@ public class CommuService implements ICommuService {
 			pList = pList.subList(0, 600);
 		}
 
-		String colNm = "Mlb_" + DateUtil.getDateTime("yyyyMMddHH");
 		commuMapper.createCollection(colNm);
 		commuMapper.insertData(pList, colNm);
 
@@ -543,18 +544,23 @@ public class CommuService implements ICommuService {
 			if (rList.size() == 0) {
 				switch (sList.get(i)) {
 				case "DcCom_":
+					commuMapper.insertCheckData(colNm);
 					commuService.collectDcComData();
 					break;
 				case "Slr_":
+					commuMapper.insertCheckData(colNm);
 					commuService.collectSlrData();
 					break;
 				case "Ppom_":
+					commuMapper.insertCheckData(colNm);
 					commuService.collectPpomData();
 					break;
 				case "82Cook_":
+					commuMapper.insertCheckData(colNm);
 					commuService.collect82CookData();
 					break;
 				case "Mlb_":
+					commuMapper.insertCheckData(colNm);
 					commuService.collectMPData();
 					break;
 				}
@@ -570,6 +576,7 @@ public class CommuService implements ICommuService {
 
 		for (int i = 0; i < sList.size(); i++) {
 			String colNm = "Analysis" + sList.get(i) + DateUtil.getDateTime("yyyyMMddHH");
+			String str = sList.get(i) + DateUtil.getDateTime("yyyyMMddHH");
 			List<DataDTO> rList = commuMapper.getAnalysisData(colNm);
 
 			if (rList == null) {
@@ -577,6 +584,7 @@ public class CommuService implements ICommuService {
 			}
 			if (rList.size() == 0) {
 				commuService.AnalysisData(sList.get(i));
+				commuMapper.updateCheckData(str);
 			}
 		}
 		return 1;
@@ -587,28 +595,24 @@ public class CommuService implements ICommuService {
 	public int AnalysisData(String str) throws Exception {
 
 		String comu = "";
-		switch (str) {
-		case "DcCom_":
+
+		if (str.contains("DcCom_")) {
 			comu = "컴퓨터 본체 갤러리";
-			break;
-		case "Slr_":
+		} else if (str.contains("Slr_")) {
 			comu = "SLR클럽";
-			break;
-		case "Ppom_":
+		} else if (str.contains("Ppom_")) {
 			comu = "뽐뿌";
-			break;
-		case "82Cook_":
+		} else if (str.contains("82Cook_")) {
 			comu = "82쿡";
-			break;
-		case "Mlb_":
+		} else if (str.contains("Mlb_")) {
 			comu = "MLBPARK";
-			break;
 		}
 
 		// R 연결 후 라이브러리 추가
 		RConnection c = new RConnection();
 
 		String colNm = str + DateUtil.getDateTime("yyyyMMddHH");
+		String colStr = colNm;
 
 		List<CommuDTO> rList = commuService.getData(colNm);
 
@@ -811,5 +815,420 @@ public class CommuService implements ICommuService {
 		String match = "[^\uAC00-\uD7A3xfe0-9a-zA-Z\\s]";
 		str = str.replaceAll(match, "");
 		return str;
+	}
+
+	@Override
+	public boolean checkCrawling(List<String> sList) throws Exception {
+		for (int i = 0; i < sList.size(); i++) {
+			boolean check = commuMapper.checkData(sList.get(i));
+			if (check == false) {
+				return false;
+			}
+		}
+		return true;
+	}
+
+	// 검색 크롤링 실행
+	@Override
+	public int checkSearchCrawlingData(List<String> sList, String str) throws Exception {
+		for (int i = 0; i < sList.size(); i++) {
+			String colNm = sList.get(i) + DateUtil.getDateTime("yyyyMMddHH");
+			List<CommuDTO> rList = commuMapper.getData(colNm);
+
+			if (rList == null) {
+				rList = new ArrayList<CommuDTO>();
+			}
+			if (rList.size() == 0) {
+				if (sList.get(i).contains("DcCom_")) {
+					commuMapper.insertCheckData(colNm);
+					commuService.SearchDcComData(str);
+				} else if (sList.get(i).contains("Slr_")) {
+					commuMapper.insertCheckData(colNm);
+					commuService.SearchSlrData(str);
+				} else if (sList.get(i).contains("Ppom_")) {
+					commuMapper.insertCheckData(colNm);
+					commuService.SearchPpomData(str);
+				} else if (sList.get(i).contains("82Cook_")) {
+					commuMapper.insertCheckData(colNm);
+					commuService.Search82CookData(str);
+				} else if (sList.get(i).contains("Mlb_")) {
+					commuMapper.insertCheckData(colNm);
+					commuService.SearchMPData(str);
+				}
+			}
+			rList = null;
+		}
+		return 1;
+	}
+
+	@Override
+	public int SearchSlrData(String str) throws Exception {
+		Map<String, String> header = new HashMap<String, String>();
+		header.put("origin", "http://www.slrclub.com");
+		header.put("Referer", "http://www.slrclub.com");
+		header.put("Accept", "application/json, text/javascript, */*; q=0.01");
+		header.put("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8");
+		header.put("Accept-Encoding", "gzip, deflate, br");
+		header.put("Accept-Language", "ko-KR,ko;q=0.9,en-US;q=0.8,en;q=0.7");
+		Map<String, String> data = new HashMap<String, String>();
+		data.put("user_id", "lonoka");
+		data.put("password", "scarlet14!");
+		data.put("autologin", "1");
+		data.put("group_no", "1");
+		String userAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.97 Safari/537.36";
+		Connection.Response response = Jsoup.connect("https://www.slrclub.com/login/process.php").userAgent(userAgent)
+				.headers(header).data(data).method(Connection.Method.POST).execute();
+
+		Map<String, String> loginCookie = response.cookies();
+		Map<String, String> sheader = new HashMap<String, String>();
+		sheader.put("Accept",
+				"text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9");
+		sheader.put("Accept-Encoding", "gzip, deflate");
+		sheader.put("Accept-Language", "ko-KR,ko;q=0.9,en-US;q=0.8,en;q=0.7");
+
+		Document odoc = Jsoup.connect("http://www.slrclub.com/service/search/?page=1&keyword=" + str)
+				.userAgent(userAgent).headers(sheader).cookies(loginCookie).get();
+		String page = odoc.select("span#actpg").text();
+
+		String colNm = "Slr_" + str + "_" + DateUtil.getDateTime("yyyyMMddHH");
+
+		List<CommuDTO> pList = new ArrayList<CommuDTO>();
+		if (Integer.parseInt(page) > 40) {
+			for (int i = 0; i < 40; i++) {
+				Document doc = Jsoup
+						.connect("http://www.slrclub.com/service/search/?page="
+								+ Integer.toString(Integer.parseInt(page) - i) + "&keyword=" + str)
+						.userAgent(userAgent).headers(sheader).cookies(loginCookie).get();
+
+				Elements element = doc.select("ul.list");
+
+				Iterator<Element> postList = element.select("> li").iterator();
+				while (postList.hasNext()) {
+					Element postInfo = postList.next();
+					String title = postInfo.select("p.title > a").text();
+					String writer = postInfo.select("span.name > span").text();
+					String time = postInfo.select("span.date").text();
+					int views = Integer.parseInt(postInfo.select("div.info > span").eq(3).text().substring(6));
+					String link = "http://www.slrclub.com/" + postInfo.select("p.title > a").attr("href");
+					time = time.replaceAll("/", "-");
+					time = "20" + time + " 00:00:00";
+					postInfo = null;
+
+					CommuDTO pDTO = new CommuDTO();
+
+					pDTO.setCollect_time(DateUtil.getDateTime("yyyyMMddHHmmss"));
+					pDTO.setCommu_name("SLR클럽");
+					pDTO.setTime(time);
+					pDTO.setTitle(title.replaceAll("'", "&#39;").replaceAll("&nbsp", " ").replaceAll("\n", ""));
+					pDTO.setWriter(writer.replaceAll("'", "&#39;"));
+					pDTO.setViews(views);
+					pDTO.setLink(link);
+
+					pList.add(pDTO);
+				}
+
+			}
+		} else {
+			for (int i = 0; i < Integer.parseInt(page); i++) {
+				Document doc = Jsoup.connect(
+						"http://www.slrclub.com/service/search/?page=" + Integer.toString(i) + "&keyword=" + str)
+						.userAgent(userAgent).headers(sheader).cookies(loginCookie).get();
+
+				Elements element = doc.select("ul.list");
+
+				Iterator<Element> postList = element.select("> li").iterator();
+				while (postList.hasNext()) {
+					Element postInfo = postList.next();
+					String title = postInfo.select("p.title > a").text();
+					String writer = postInfo.select("span.name > span").text();
+					String time = postInfo.select("span.date").text();
+					int views = Integer.parseInt(postInfo.select("div.info > span").eq(3).text().substring(6));
+					String link = "http://www.slrclub.com/" + postInfo.select("p.title > a").attr("href");
+					time = time.replaceAll("/", "-");
+					time = "20" + time + " 00:00:00";
+					postInfo = null;
+
+					CommuDTO pDTO = new CommuDTO();
+
+					pDTO.setCollect_time(DateUtil.getDateTime("yyyyMMddHHmmss"));
+					pDTO.setCommu_name("SLR클럽");
+					pDTO.setTime(time);
+					pDTO.setTitle(title.replaceAll("'", "&#39;").replaceAll("&nbsp", " ").replaceAll("\n", ""));
+					pDTO.setWriter(writer.replaceAll("'", "&#39;"));
+					pDTO.setViews(views);
+					pDTO.setLink(link);
+
+					pList.add(pDTO);
+				}
+
+			}
+		}
+
+		Collections.sort(pList, new Comparator<CommuDTO>() {
+			@Override
+			public int compare(CommuDTO pDTO, CommuDTO rDTO) {
+				if (pDTO.getTime().compareTo(rDTO.getTime()) < 0) {
+					return 1;
+				} else if (pDTO.getTime().compareTo(rDTO.getTime()) > 0) {
+					return -1;
+				}
+				return 0;
+			}
+		});
+		if (pList.size() > 600) {
+			pList = pList.subList(0, 600);
+		}
+
+		commuMapper.createCollection(colNm);
+		commuMapper.insertData(pList, colNm);
+
+		return 0;
+	}
+
+	@Override
+	public int SearchDcComData(String str) throws Exception {
+		String colNm = "DcCom_" + str + "_" + DateUtil.getDateTime("yyyyMMddHH");
+
+		List<CommuDTO> pList = new ArrayList<CommuDTO>();
+		
+		for (int i = 1; i <= 20; i++) {
+			Document doc = Jsoup.connect("https://gall.dcinside.com/board/lists/?id=pridepc_new3&search_pos=&s_type=search_all&s_keyword="
+					+ str + "&page=" + i).get();
+			Elements element = doc.select("table.gall_list");
+			int tmp = 0;
+			Iterator<Element> postList = element.select("tr.us-post").iterator();
+			while (postList.hasNext()) {
+				Element postInfo = postList.next();
+				String title = postInfo.select("td.gall_tit a").eq(0).text();
+				String writer = postInfo.select("td.gall_writer").attr("data-nick");
+				String time = postInfo.select("td.gall_date").attr("title");
+				int views = Integer.parseInt(postInfo.select("td.gall_count").text());
+				String link = "https://gall.dcinside.com" + postInfo.select("td.gall_tit a").eq(0).attr("href");
+
+				postInfo = null;
+
+				CommuDTO pDTO = new CommuDTO();
+
+				pDTO.setCollect_time(DateUtil.getDateTime("yyyyMMddHHmmss"));
+				pDTO.setCommu_name("컴퓨터 본체 갤러리");
+				pDTO.setTime(time);
+				pDTO.setTitle(title.replaceAll("'", "&#39;").replaceAll("&nbsp", " ").replaceAll("\n", ""));
+				pDTO.setWriter(writer.replaceAll("'", "&#39;"));
+				pDTO.setViews(views);
+				pDTO.setLink(link);
+
+				pList.add(pDTO);
+				tmp += 1;
+			}
+			if(tmp!=20) {
+				break;
+			}
+		}
+
+		Collections.sort(pList, new Comparator<CommuDTO>() {
+			@Override
+			public int compare(CommuDTO pDTO, CommuDTO rDTO) {
+				if (pDTO.getTime().compareTo(rDTO.getTime()) < 0) {
+					return 1;
+				} else if (pDTO.getTime().compareTo(rDTO.getTime()) > 0) {
+					return -1;
+				}
+				return 0;
+			}
+		});
+		if (pList.size() > 600) {
+			pList = pList.subList(0, 600);
+		}
+
+		commuMapper.createCollection(colNm);
+		commuMapper.insertData(pList, colNm);
+
+		return 0;
+	}
+
+	@Override
+	public int SearchPpomData(String str) throws Exception {
+		String colNm = "Ppom_" + str + "_" + DateUtil.getDateTime("yyyyMMddHH");
+
+		List<CommuDTO> pList = new ArrayList<CommuDTO>();
+
+		for (int i = 1; i <= 12; i++) {
+			Document doc = Jsoup.connect(
+					"http://www.ppomppu.co.kr/search_bbs.php?page_size=50&bbs_cate=2&order_type=date&search_type=sub_memo&keyword="
+							+ str + "&page_no=" + i)
+					.get();
+			Elements element = doc.select("div#result-tab2");
+
+			Iterator<Element> postList = element.select("form > div.item").iterator();
+			while (postList.hasNext()) {
+				Element postInfo = postList.next();
+				String title = postInfo.select("span.title > a").text();
+				String writer = postInfo.select("p.desc > span").eq(0).text();
+				String time = postInfo.select("p.desc > span").eq(2).text();
+				int views = Integer.parseInt(postInfo.select("p.desc > span").eq(1).text().substring(5));
+				String link = postInfo.select("span.title > a").attr("href");
+				time = time.replaceAll("\\.", "-");
+				time = time + " 00:00:00";
+				postInfo = null;
+
+				CommuDTO pDTO = new CommuDTO();
+
+				pDTO.setCollect_time(DateUtil.getDateTime("yyyyMMddHHmmss"));
+				pDTO.setCommu_name("뽐뿌");
+				pDTO.setTime(time);
+				pDTO.setTitle(title.replaceAll("'", "&#39;").replaceAll("&nbsp", " ").replaceAll("\n", ""));
+				pDTO.setWriter(writer.replaceAll("'", "&#39;"));
+				pDTO.setViews(views);
+				pDTO.setLink(link);
+
+				pList.add(pDTO);
+			}
+		}
+
+		Collections.sort(pList, new Comparator<CommuDTO>() {
+			@Override
+			public int compare(CommuDTO pDTO, CommuDTO rDTO) {
+				if (pDTO.getTime().compareTo(rDTO.getTime()) < 0) {
+					return 1;
+				} else if (pDTO.getTime().compareTo(rDTO.getTime()) > 0) {
+					return -1;
+				}
+				return 0;
+			}
+		});
+		if (pList.size() > 600) {
+			pList = pList.subList(0, 600);
+		}
+
+		commuMapper.createCollection(colNm);
+		commuMapper.insertData(pList, colNm);
+
+		return 0;
+	}
+
+	@Override
+	public int Search82CookData(String str) throws Exception {
+		String colNm = "82Cook_" + str + "_" + DateUtil.getDateTime("yyyyMMddHH");
+
+		List<CommuDTO> pList = new ArrayList<CommuDTO>();
+		
+		for (int i = 1; i <= 24; i++) {
+			Document doc = Jsoup.connect("https://www.82cook.com/entiz/enti.php?bn=15&searchType=search&search1=1&keys="
+					+ str + "&page=" + i).get();
+			Elements element = doc.select("table");
+			int tmp = 0;
+			Iterator<Element> postList = element.select("tbody > tr").iterator();
+			while (postList.hasNext()) {
+				Element postInfo = postList.next();
+				String title = postInfo.select("td.title > a").text();
+				String writer = postInfo.select("td.user_function").text();
+				String time = postInfo.select("td.regdate").attr("title");
+				int views = Integer.parseInt(StringReplace(postInfo.select("td").eq(4).text()));
+				String link = "https://www.82cook.com/entiz/" + postInfo.select("td.title > a").attr("href");
+				time = time.substring(0, 10);
+				time = time + " 00:00:00";
+				postInfo = null;
+
+				CommuDTO pDTO = new CommuDTO();
+
+				pDTO.setCollect_time(DateUtil.getDateTime("yyyyMMddHHmmss"));
+				pDTO.setCommu_name("82쿡");
+				pDTO.setTime(time);
+				pDTO.setTitle(title.replaceAll("'", "&#39;").replaceAll("&nbsp", " ").replaceAll("\n", ""));
+				pDTO.setWriter(writer.replaceAll("'", "&#39;"));
+				pDTO.setViews(views);
+				pDTO.setLink(link);
+
+				pList.add(pDTO);
+				tmp+=1;
+			}
+			if(tmp!=25) {
+				break;
+			}
+		}
+
+		Collections.sort(pList, new Comparator<CommuDTO>() {
+			@Override
+			public int compare(CommuDTO pDTO, CommuDTO rDTO) {
+				if (pDTO.getTime().compareTo(rDTO.getTime()) < 0) {
+					return 1;
+				} else if (pDTO.getTime().compareTo(rDTO.getTime()) > 0) {
+					return -1;
+				}
+				return 0;
+			}
+		});
+		if (pList.size() > 600) {
+			pList = pList.subList(0, 600);
+		}
+
+		commuMapper.createCollection(colNm);
+		commuMapper.insertData(pList, colNm);
+
+		return 0;
+	}
+
+	@Override
+	public int SearchMPData(String str) throws Exception {
+		String colNm = "Mlb_" + str + "_" + DateUtil.getDateTime("yyyyMMddHH");
+
+		List<CommuDTO> pList = new ArrayList<CommuDTO>();
+		
+		for (int i = 1; i <= 20; i++) {
+			Document doc = Jsoup.connect("http://mlbpark.donga.com/mp/b.php?select=sct&m=search&b=bullpen&select=sct&query="
+					+ str + "&p=" + (i-1)*3+"1").get();
+			Elements element = doc.select("table.tbl_type01");
+			int tmp = 0;
+			Iterator<Element> postList = element.select("tbody > tr").iterator();
+			while (postList.hasNext()) {
+				Element postInfo = postList.next();
+				String title = postInfo.select("td").eq(1).select("a").attr("alt");
+				String writer = postInfo.select("span.nick").text();
+				String time = postInfo.select("span.date").text();
+				if(time.contains(":")) {
+					time = DateUtil.getDateTime("yyyy-MM-dd");
+				}
+				int views = Integer.parseInt(StringReplace(postInfo.select("span.viewV").text()));
+				String link = postInfo.select("td").eq(1).select("a").attr("href");
+				time = time + " 00:00:00";
+				postInfo = null;
+
+				CommuDTO pDTO = new CommuDTO();
+
+				pDTO.setCollect_time(DateUtil.getDateTime("yyyyMMddHHmmss"));
+				pDTO.setCommu_name("MLBPARK");
+				pDTO.setTime(time);
+				pDTO.setTitle(title.replaceAll("'", "&#39;").replaceAll("&nbsp", " ").replaceAll("\n", ""));
+				pDTO.setWriter(writer.replaceAll("'", "&#39;"));
+				pDTO.setViews(views);
+				pDTO.setLink(link);
+
+				pList.add(pDTO);
+				tmp+=1;
+			}
+			if(tmp!=30) {
+				break;
+			}
+		}
+
+		Collections.sort(pList, new Comparator<CommuDTO>() {
+			@Override
+			public int compare(CommuDTO pDTO, CommuDTO rDTO) {
+				if (pDTO.getTime().compareTo(rDTO.getTime()) < 0) {
+					return 1;
+				} else if (pDTO.getTime().compareTo(rDTO.getTime()) > 0) {
+					return -1;
+				}
+				return 0;
+			}
+		});
+		if (pList.size() > 600) {
+			pList = pList.subList(0, 600);
+		}
+
+		commuMapper.createCollection(colNm);
+		commuMapper.insertData(pList, colNm);
+
+		return 0;
 	}
 }

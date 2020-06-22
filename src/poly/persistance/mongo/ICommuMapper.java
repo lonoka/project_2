@@ -3,6 +3,7 @@ package poly.persistance.mongo;
 import java.util.ArrayList;
 import java.util.List;
 
+import poly.dto.CheckDTO;
 import poly.dto.CommuDTO;
 import poly.dto.DataDTO;
 
@@ -35,4 +36,16 @@ public interface ICommuMapper {
 	 * MongoDB 분석 데이터 가져오기
 	 */
 	public List<DataDTO> getAnalysisData(String colNm) throws Exception;
+	/**
+	 * MongoDB 크롤링 확인데이터 체크
+	 */
+	public boolean checkData(String string);
+	/**
+	 * MongoDB 크롤링 확인데이터 저장
+	 */
+	public int insertCheckData(String colNm);
+	/**
+	 * MongoDB 크롤링 확인데이터 업데이트
+	 */
+	public int updateCheckData(String colNm);
 }

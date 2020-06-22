@@ -17,6 +17,18 @@
 	</div>
 </div>
 
+<div class="modal fade" id="search_modal" tabindex="-1" role="dialog"
+	data-backdrop="static" aria-labelledby="searchLabel" aria-hidden="true">
+	<div class="modal-dialog modal-dialog-centered modal-sm">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h4 class="modal-title" id="searchLabel">CA.</h4>
+			</div>
+			<div id="search_modal_body" class="modal-body">검색중입니다.</div>
+		</div>
+	</div>
+</div>
+
 <div class="modal fade" id="confirm_modal" tabindex="-1" role="dialog"
 	data-backdrop="static" aria-labelledby="confirmLabel"
 	aria-hidden="true">
