@@ -17,7 +17,7 @@
 	</div>
 </div>
 
-<div class="modal fade" id="search_modal" tabindex="-1" role="dialog"
+<div class="modal fade" id="search_modal" tabindex="-1" role="dialog" data-keyboard="false"
 	data-backdrop="static" aria-labelledby="searchLabel" aria-hidden="true">
 	<div class="modal-dialog modal-dialog-centered modal-sm">
 		<div class="modal-content">

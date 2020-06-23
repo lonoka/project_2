@@ -584,8 +584,8 @@ public class CommuService implements ICommuService {
 			}
 			if (rList.size() == 0) {
 				commuService.AnalysisData(sList.get(i));
-				commuMapper.updateCheckData(str);
 			}
+			commuMapper.updateCheckData(str);
 		}
 		return 1;
 	}
@@ -886,18 +886,31 @@ public class CommuService implements ICommuService {
 		sheader.put("Accept-Encoding", "gzip, deflate");
 		sheader.put("Accept-Language", "ko-KR,ko;q=0.9,en-US;q=0.8,en;q=0.7");
 
-		Document odoc = Jsoup.connect("http://www.slrclub.com/service/search/?page=1&keyword=" + str)
+		Document odoc = Jsoup.connect("http://www.slrclub.com/service/search/?keyword=" + str)
 				.userAgent(userAgent).headers(sheader).cookies(loginCookie).get();
-		String page = odoc.select("span#actpg").text();
+		Elements e = odoc.select("td.list_num");
+		Iterator<Element> pageList = e.select("> a").iterator();
+		int page = Integer.parseInt(odoc.select("span#actpg").text());
+		int tmp = page;
+		while(pageList.hasNext()) {
+			Element pInfo = pageList.next();
+			log.info(pInfo);
+			if(pInfo.hasText()) {
+				int pNum = Integer.parseInt(pInfo.text());
+				if(pNum>page) {
+					tmp = pNum;
+				}
+			}
+		}
 
 		String colNm = "Slr_" + str + "_" + DateUtil.getDateTime("yyyyMMddHH");
 
 		List<CommuDTO> pList = new ArrayList<CommuDTO>();
-		if (Integer.parseInt(page) > 40) {
+		if (tmp > 40) {
 			for (int i = 0; i < 40; i++) {
 				Document doc = Jsoup
 						.connect("http://www.slrclub.com/service/search/?page="
-								+ Integer.toString(Integer.parseInt(page) - i) + "&keyword=" + str)
+								+ (tmp - i) + "&keyword=" + str)
 						.userAgent(userAgent).headers(sheader).cookies(loginCookie).get();
 
 				Elements element = doc.select("ul.list");
@@ -929,7 +942,7 @@ public class CommuService implements ICommuService {
 
 			}
 		} else {
-			for (int i = 0; i < Integer.parseInt(page); i++) {
+			for (int i = 0; i < tmp; i++) {
 				Document doc = Jsoup.connect(
 						"http://www.slrclub.com/service/search/?page=" + Integer.toString(i) + "&keyword=" + str)
 						.userAgent(userAgent).headers(sheader).cookies(loginCookie).get();
