@@ -11,6 +11,7 @@
 	pageEncoding="UTF-8"%>
 <%
 	List<Map> pList = (List<Map>) request.getAttribute("pList");
+	List<DataDTO> seList = (List<DataDTO>) request.getAttribute("seList");
 	String userId = (String) session.getAttribute("userId");
 	String userAuthor = (String) session.getAttribute("userAuthor");
 	String sValue = CmmUtil.nvl((String) request.getAttribute("sValue"));
@@ -141,6 +142,30 @@ h2 a:hover {
 .table_5th {
 	width: 10%;
 }
+
+#ticker{
+	float:left;width:100px;
+}
+.navi{
+	float:right;
+}
+.recommend_text {
+	height:30px; 
+	overflow:hidden;
+}
+.recommend_text ul,.recommend_text li {
+	margin:0; 
+	padding:0; 
+	list-style:none;
+}
+.recommend_text li a {
+	height:30px; 
+	line-height:30px;
+	color : black;
+	display:block;
+	text-decoration:none;
+}
+
 </style>
 
 <title>CA.</title>
@@ -252,7 +277,7 @@ h2 a:hover {
 				<div class="row align-items-center justify-content-center">
 
 
-					<div class="col-md-12 mt-lg-5 text-center">
+					<div class="col-md-12 text-center">
 						<div id="slider" class="carousel slide" data-ride="carousel">
 							<ol class="carousel-indicators">
 								<%for(int i = 0; i<pList.size();i++){ %>
@@ -299,6 +324,18 @@ h2 a:hover {
 									<div class="col-12 col-md-3">
 										<button type="button" class="btn btn-block btn-lg btn-primary" onclick="searchComu()"
 											style="padding-top: 8.5px; padding-bottom: 8.5px; color: dodgerblue;">검색</button>
+									</div>
+								</div>
+							</div>
+							<div class="col-md-4" style="margin: 0 auto;">
+								<div class="row" style="text-align:center; font-size: 24px; color: black;">
+									<div style="margin: auto; text-align: center;">추천&nbsp검색어&nbsp:&nbsp</div>
+									<div class="recommend_text" style="margin: auto; text-align: center;">
+										<ul id="ticker">
+											<%for(int i = 0; i<seList.size();i++){%>
+										 		<li><a href="javascript:void(0)" onclick="searchClick('<%=seList.get(i)%>')"><%=seList.get(i) %></a></li>
+											<%} %>
+ 									    </ul>
 									</div>
 								</div>
 							</div>
@@ -707,7 +744,26 @@ h2 a:hover {
 
        });
 
-    });  
+    });
+	function searchClick(c){
+		<%if(userId==null){%>
+		$('#alert_modal_body').html('로그인이 필요한 서비스 입니다.');
+		$('#alert_modal').modal('show')
+		<%}else{%>
+		$('#search_modal').modal('show')
+		$('#searchValue').val(c);
+		$.ajax({
+			url : "/searchCheck.do",
+			type : "post",
+			data : {
+				'searchTitle' : c
+			},
+			success : function(a){
+				$('#searchForm').submit();
+			}
+		})
+		<%}%>
+	}
 	function searchComu(){
 		<%if(userId==null){%>
 		$('#alert_modal_body').html('로그인이 필요한 서비스 입니다.');
@@ -728,6 +784,51 @@ h2 a:hover {
 		})
 		<%}%>
 	}
+	jQuery(function($){
+		var ticker = function()
+			{
+				timer = setTimeout(function(){
+			    	$('#ticker li:first').animate( {marginTop: '-30px'}, 1500, function(){
+			    		$(this).detach().appendTo('ul#ticker').removeAttr('style');
+			    	});
+			        ticker();
+			    }, 2000);         
+			};
+			// 0번 이전 기능
+			$(document).on('click','.prev',function(){
+				$('#ticker li:last').hide().prependTo($('#ticker')).slideDown();
+			    clearTimeout(timer);
+			    ticker();
+			    if($('#pause').text() == 'Unpause'){
+			    	$('#pause').text('Pause');
+			    };
+			}); // 0번 기능 끝
+			//2. 재생정지기능 시작, 아직 다음 기능과 연동은 안됨...그래서 3을 만듦
+			var autoplay = true;
+			$(document).on('click','.pause',function(){
+			  	if(autoplay==true){
+				   	clearTimeout(timer);
+			        $(this).text('재생');
+			        autoplay=false;
+			    } else {
+			     	autoplay=true;
+			        $(this).text('정지');
+			        ticker();
+			    }
+			}); // 재생정지기능 끝  
+			//4 마우스를 올렸을 때 기능 정지
+			var tickerover = function(){
+				$('#ticker').mouseover(function(){
+			    	clearTimeout(timer);
+			    });
+			    $('#ticker').mouseout(function(){
+			    	ticker();
+			    });  
+			};
+			tickerover();
+			// 4 끝
+			ticker();
+		});
 </script>
 </body>
 </html>

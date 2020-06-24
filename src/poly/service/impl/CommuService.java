@@ -651,7 +651,7 @@ public class CommuService implements ICommuService {
 			REXP y = c.eval("m_df$n");
 			colNm = "Analysis" + str + DateUtil.getDateTime("yyyyMMddHH");
 
-			ArrayList<DataDTO> pList = new ArrayList<DataDTO>();
+			List<DataDTO> pList = new ArrayList<DataDTO>();
 			DataDTO pDTO = new DataDTO();
 			String[] noun = x.asStrings();
 			String[] count = y.asStrings();
@@ -1071,13 +1071,17 @@ public class CommuService implements ICommuService {
 							+ str + "&page_no=" + i)
 					.get();
 			Elements element = doc.select("div#result-tab2");
-
+			int tmp = 0;
 			Iterator<Element> postList = element.select("form > div.item").iterator();
 			while (postList.hasNext()) {
+				tmp++;
 				Element postInfo = postList.next();
 				String title = postInfo.select("span.title > a").text();
 				String writer = postInfo.select("p.desc > span").eq(0).text();
 				String time = postInfo.select("p.desc > span").eq(2).text();
+				if(postInfo.select("p.desc > span").eq(1).text().contains("정보없음")) {
+					break;
+				}
 				int views = Integer.parseInt(postInfo.select("p.desc > span").eq(1).text().substring(5));
 				String link = postInfo.select("span.title > a").attr("href");
 				time = time.replaceAll("\\.", "-");
@@ -1095,6 +1099,9 @@ public class CommuService implements ICommuService {
 				pDTO.setLink(link);
 
 				pList.add(pDTO);
+			}
+			if(tmp!=50) {
+				break;
 			}
 		}
 
@@ -1133,27 +1140,29 @@ public class CommuService implements ICommuService {
 			Iterator<Element> postList = element.select("tbody > tr").iterator();
 			while (postList.hasNext()) {
 				Element postInfo = postList.next();
-				String title = postInfo.select("td.title > a").text();
-				String writer = postInfo.select("td.user_function").text();
-				String time = postInfo.select("td.regdate").attr("title");
-				int views = Integer.parseInt(StringReplace(postInfo.select("td").eq(4).text()));
-				String link = "https://www.82cook.com/entiz/" + postInfo.select("td.title > a").attr("href");
-				time = time.substring(0, 10);
-				time = time + " 00:00:00";
-				postInfo = null;
+				if(!postInfo.select("td").eq(0).text().equals("검색결과가 없습니다")) {
+					String title = postInfo.select("td.title > a").text();
+					String writer = postInfo.select("td.user_function").text();
+					String time = postInfo.select("td.regdate").attr("title");
+					int views = Integer.parseInt(StringReplace(postInfo.select("td").eq(4).text()));
+					String link = "https://www.82cook.com/entiz/" + postInfo.select("td.title > a").attr("href");
+					time = time.substring(0, 10);
+					time = time + " 00:00:00";
+					postInfo = null;
 
-				CommuDTO pDTO = new CommuDTO();
+					CommuDTO pDTO = new CommuDTO();
 
-				pDTO.setCollect_time(DateUtil.getDateTime("yyyyMMddHHmmss"));
-				pDTO.setCommu_name("82쿡");
-				pDTO.setTime(time);
-				pDTO.setTitle(title.replaceAll("'", "&#39;").replaceAll("&nbsp", " ").replaceAll("\n", ""));
-				pDTO.setWriter(writer.replaceAll("'", "&#39;"));
-				pDTO.setViews(views);
-				pDTO.setLink(link);
+					pDTO.setCollect_time(DateUtil.getDateTime("yyyyMMddHHmmss"));
+					pDTO.setCommu_name("82쿡");
+					pDTO.setTime(time);
+					pDTO.setTitle(title.replaceAll("'", "&#39;").replaceAll("&nbsp", " ").replaceAll("\n", ""));
+					pDTO.setWriter(writer.replaceAll("'", "&#39;"));
+					pDTO.setViews(views);
+					pDTO.setLink(link);
 
-				pList.add(pDTO);
-				tmp+=1;
+					pList.add(pDTO);
+					tmp+=1;
+				}
 			}
 			if(tmp!=25) {
 				break;

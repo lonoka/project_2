@@ -30,7 +30,7 @@ public interface ICommuMapper {
 	/**
 	 * MongoDB 분석 데이터 저장하기
 	 */
-	public int insertAnalysisData(ArrayList<DataDTO> pList, String colNm);
+	public int insertAnalysisData(List<DataDTO> pList, String colNm);
 
 	/**
 	 * MongoDB 분석 데이터 가져오기

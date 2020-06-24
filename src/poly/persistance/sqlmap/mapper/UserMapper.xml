@@ -4,7 +4,7 @@
 <mapper namespace="poly.persistance.mapper.IUserMapper">
 	<!-- 회원 가입하기 -->
 	<insert id="insertUserInfo" parameterType="UserDTO">
-		INSERT INTO USER_INFO
+		INSERT INTO user_info
 		(
 		USER_ID,
 		USER_NAME,
@@ -34,7 +34,7 @@
 		SELECT
 		COUNT(*)
 		FROM
-		USER_INFO
+		user_info
 		WHERE USER_ID=#{user_id}
 	</select>
 
@@ -42,7 +42,7 @@
 	<select id="ckeckMail" parameterType="UserDTO" resultType="int">
 		SELECT COUNT(*)
 		FROM
-		USER_INFO
+		user_info
 		WHERE USER_MAIL=#{user_mail}
 	</select>
 
@@ -55,7 +55,7 @@
 		USER_AUTHOR,
 		USER_MAIL
 		FROM
-		USER_INFO
+		user_info
 		WHERE
 		USER_ID = #{user_id} AND PASSWORD = #{password}
 	</select>
@@ -66,7 +66,7 @@
 		SELECT
 		USER_ID as user_id
 		FROM
-		USER_INFO
+		user_info
 		WHERE
 		USER_NAME=#{user_name} AND USER_MAIL=#{user_mail}
 	</select>
@@ -77,7 +77,7 @@
 		SELECT
 		PASSWORD as password
 		FROM
-		USER_INFO
+		user_info
 		WHERE
 		USER_NAME=#{user_name} AND USER_MAIL=#{user_mail} AND USER_ID =
 		#{user_id}
@@ -86,7 +86,7 @@
 	<!-- 비밀번호 업데이트 -->
 	<update id="updatePwInfo" parameterType="UserDTO">
 		UPDATE
-		USER_INFO
+		user_info
 		SET
 		PASSWORD = #{password}
 		WHERE
@@ -96,7 +96,7 @@
 	<!-- 회원정보 수정 -->
 	<update id="updateUserInfo" parameterType="UserDTO">
 		UPDATE
-		USER_INFO
+		user_info
 		SET
 		USER_NAME = #{user_name},
 		PASSWORD = #{password},
@@ -115,7 +115,7 @@
 		USER_MAIL,
 		USER_AUTHOR
 		FROM
-		USER_INFO
+		user_info
 		WHERE
 		USER_ID=#{user_id}
 	</select>
@@ -125,7 +125,7 @@
 		SELECT
 		COUNT(*)
 		FROM
-		USER_INFO
+		user_info
 		<if test='searchSelect.equals("userId")'>
 		WHERE USER_ID LIKE CONCAT('%', #{searchCont}, '%')
 		</if>
@@ -143,7 +143,7 @@
 		USER_MAIL,
 		USER_AUTHOR
 		FROM
-		USER_INFO
+		user_info
 		<if test='searchSelect.equals("userId")'>
 		WHERE USER_ID LIKE CONCAT('%', #{searchCont}, '%')
 		</if>
@@ -156,7 +156,7 @@
 	<!-- 사용자 권한 업데이트 -->
 	<update id="modifyAuthor" parameterType="UserDTO">
 		UPDATE
-		USER_INFO
+		user_info
 		SET
 		<if test='user_author.equals("0")'>
 		USER_AUTHOR = '1'
@@ -172,7 +172,7 @@
 	<delete id="deleteUserInfo" parameterType="UserDTO">
 		DELETE
 		FROM
-			USER_INFO
+			user_info
 		WHERE
 			USER_ID=#{user_id}
 	</delete>

@@ -1,6 +1,8 @@
 package poly.controller;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -73,6 +75,7 @@ public class MainController {
 
 		List<Map> pList = new ArrayList<Map>();
 		Map<String, Object> pMap = new HashMap();
+		List<DataDTO> searchList = new ArrayList<DataDTO>();
 		String colNm = "";
 		for (int i = 0; i < sList.size(); i++) {
 			pMap = new HashMap<String, Object>();
@@ -119,14 +122,32 @@ public class MainController {
 				pMap.put("wList", wList);
 				pMap.put("tList", tList);
 				pMap.put("oList", oList);
+				searchList.addAll(rList);
 				pList.add(pMap);
 				pMap = null;
 			}
-
 		}
-		// 있는경우 값 들고와서 워드클라우드 보여주기
-
+		
+		Collections.sort(searchList, new Comparator<DataDTO>() {
+			@Override
+			public int compare(DataDTO pDTO, DataDTO rDTO) {
+				if (pDTO.getCount() < rDTO.getCount()) {
+					return 1;
+				} else if (pDTO.getCount() > rDTO.getCount()) {
+					return -1;
+				}
+				return 0;
+			}
+		});
+		List<String> seList = new ArrayList<String>();
+		for(int i = 0; i<searchList.size();i++) {
+			if(seList.size()>=20)
+				break;
+			if(!seList.contains(searchList.get(i).getWord()))
+				seList.add(searchList.get(i).getWord());
+		}
 		model.addAttribute("pList", pList);
+		model.addAttribute("seList", seList);
 
 		log.info(this.getClass().getName() + " index end!");
 
@@ -225,6 +246,7 @@ public class MainController {
 
 		List<Map> pList = new ArrayList<Map>();
 		Map<String, Object> pMap = new HashMap();
+		List<DataDTO> searchList = new ArrayList<DataDTO>();
 		String colNm = "";
 		for (int i = 0; i < sList.size(); i++) {
 			pMap = new HashMap<String, Object>();
@@ -272,13 +294,34 @@ public class MainController {
 				pMap.put("tList", tList);
 				pMap.put("oList", oList);
 				pList.add(pMap);
+				searchList.addAll(rList);
 				pMap = null;
 			}
 		}
 		// 있는경우 값 들고와서 워드클라우드 보여주기
+		
+		Collections.sort(searchList, new Comparator<DataDTO>() {
+			@Override
+			public int compare(DataDTO pDTO, DataDTO rDTO) {
+				if (pDTO.getCount() < rDTO.getCount()) {
+					return 1;
+				} else if (pDTO.getCount() > rDTO.getCount()) {
+					return -1;
+				}
+				return 0;
+			}
+		});
+		List<String> seList = new ArrayList<String>();
+		for(int i = 0; i<searchList.size();i++) {
+			if(seList.size()>=20)
+				break;
+			if(!seList.contains(searchList.get(i).getWord()))
+				seList.add(searchList.get(i).getWord());
+		}
 
 		model.addAttribute("pList", pList);
 		model.addAttribute("sValue", str);
+		model.addAttribute("seList", seList);
 
 		log.info(this.getClass().getName() + " searchPage end!");
 

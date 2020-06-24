@@ -127,7 +127,7 @@ public class CommuMapper implements ICommuMapper {
 	}
 
 	@Override
-	public int insertAnalysisData(ArrayList<DataDTO> pList, String colNm) {
+	public int insertAnalysisData(List<DataDTO> pList, String colNm) {
 		log.info(this.getClass().getName() + " insertAnalysisData Start!");
 
 		int res = 0;
