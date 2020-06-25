@@ -17,10 +17,8 @@ import org.rosuda.REngine.Rserve.RConnection;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import javafx.scene.control.Alert;
 import poly.dto.CommuDTO;
 import poly.dto.DataDTO;
 import poly.service.ICommuService;
@@ -41,7 +39,9 @@ public class MainController {
 	public String rConnection(HttpServletRequest request, HttpServletResponse response) throws Exception {
 
 		log.info(this.getClass().getName() + "rConnection start!");
-		RConnection c = new RConnection();
+		//RConnection c = new RConnection("54.180.67.42",6311);
+		RConnection c = new RConnection("192.168.170.161",6311);
+		c.login("lonoka","scarlet14!");
 		c.eval("library(tidyverse)");
 		c.eval("library(KoNLP)");
 		c.eval("useNIADic()");
@@ -90,40 +90,30 @@ public class MainController {
 				if (rList == null) {
 					rList = new ArrayList<DataDTO>();
 				}
-				if (rList.size() == 0) {
-					return "/user/checkPage";
-				}
 				colNm = "Writer" + sList.get(i) + DateUtil.getDateTime("yyyyMMddHH");
 				List<DataDTO> wList = commuService.getAnalysisData(colNm);
 				if (wList == null) {
 					wList = new ArrayList<DataDTO>();
-				}
-				if (wList.size() == 0) {
-					return "/user/checkPage";
 				}
 				colNm = "Time" + sList.get(i) + DateUtil.getDateTime("yyyyMMddHH");
 				List<DataDTO> tList = commuService.getAnalysisData(colNm);
 				if (tList == null) {
 					tList = new ArrayList<DataDTO>();
 				}
-				if (tList.size() == 0) {
-					return "/user/checkPage";
-				}
 				colNm = "Opinion" + sList.get(i) + DateUtil.getDateTime("yyyyMMddHH");
 				List<DataDTO> oList = commuService.getAnalysisData(colNm);
 				if (oList == null) {
 					oList = new ArrayList<DataDTO>();
 				}
-				if (oList.size() == 0) {
-					return "/user/checkPage";
+				if (rList.size() != 0 && tList.size() != 0 && wList.size() != 0 && oList.size() != 0) {
+					pMap.put("bList", bList);
+					pMap.put("rList", rList);
+					pMap.put("wList", wList);
+					pMap.put("tList", tList);
+					pMap.put("oList", oList);
+					pList.add(pMap);
+					searchList.addAll(rList);
 				}
-				pMap.put("bList", bList);
-				pMap.put("rList", rList);
-				pMap.put("wList", wList);
-				pMap.put("tList", tList);
-				pMap.put("oList", oList);
-				searchList.addAll(rList);
-				pList.add(pMap);
 				pMap = null;
 			}
 		}
@@ -230,10 +220,12 @@ public class MainController {
 		log.info(CmmUtil.nvl(request.getParameter("checkNum")));
 		log.info(CmmUtil.nvl(request.getParameter("searchValue")));
 		if (CmmUtil.nvl(request.getParameter("checkNum")).equals("")) {
+			log.info("checkNum 없음");
 			return "/user/checkPage";
 		}
 		String str = CmmUtil.nvl(request.getParameter("searchValue"));
 		if (str.equals("")) {
+			log.info("searchValue 없음");
 			return "/user/checkPage";
 		}
 		int result = 0;
@@ -261,40 +253,30 @@ public class MainController {
 				if (rList == null) {
 					rList = new ArrayList<DataDTO>();
 				}
-				if (rList.size() == 0) {
-					return "/user/checkPage";
-				}
 				colNm = "Writer" + sList.get(i) + DateUtil.getDateTime("yyyyMMddHH");
 				List<DataDTO> wList = commuService.getAnalysisData(colNm);
 				if (wList == null) {
 					wList = new ArrayList<DataDTO>();
-				}
-				if (wList.size() == 0) {
-					return "/user/checkPage";
 				}
 				colNm = "Time" + sList.get(i) + DateUtil.getDateTime("yyyyMMddHH");
 				List<DataDTO> tList = commuService.getAnalysisData(colNm);
 				if (tList == null) {
 					tList = new ArrayList<DataDTO>();
 				}
-				if (tList.size() == 0) {
-					return "/user/checkPage";
-				}
 				colNm = "Opinion" + sList.get(i) + DateUtil.getDateTime("yyyyMMddHH");
 				List<DataDTO> oList = commuService.getAnalysisData(colNm);
 				if (oList == null) {
 					oList = new ArrayList<DataDTO>();
 				}
-				if (oList.size() == 0) {
-					return "/user/checkPage";
+				if (rList.size() != 0 && tList.size() != 0 && wList.size() != 0 && oList.size() != 0) {
+					pMap.put("bList", bList);
+					pMap.put("rList", rList);
+					pMap.put("wList", wList);
+					pMap.put("tList", tList);
+					pMap.put("oList", oList);
+					pList.add(pMap);
+					searchList.addAll(rList);
 				}
-				pMap.put("bList", bList);
-				pMap.put("rList", rList);
-				pMap.put("wList", wList);
-				pMap.put("tList", tList);
-				pMap.put("oList", oList);
-				pList.add(pMap);
-				searchList.addAll(rList);
 				pMap = null;
 			}
 		}

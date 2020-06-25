@@ -609,7 +609,9 @@ public class CommuService implements ICommuService {
 		}
 
 		// R 연결 후 라이브러리 추가
-		RConnection c = new RConnection();
+		//RConnection c = new RConnection("54.180.67.42",6311);
+		RConnection c = new RConnection("192.168.170.161",6311);
+		c.login("lonoka","scarlet14!");
 
 		String colNm = str + DateUtil.getDateTime("yyyyMMddHH");
 		String colStr = colNm;
@@ -619,7 +621,7 @@ public class CommuService implements ICommuService {
 		if (rList == null) {
 			rList = new ArrayList<CommuDTO>();
 		}
-		if (rList.size() > 0) {
+		if (rList.size() > 1) {
 			String tmp = "";
 			String[] title = new String[rList.size()];
 			String[] writer = new String[rList.size()];
@@ -921,10 +923,17 @@ public class CommuService implements ICommuService {
 					String title = postInfo.select("p.title > a").text();
 					String writer = postInfo.select("span.name > span").text();
 					String time = postInfo.select("span.date").text();
+					if(time.contains(":")) {
+						time = DateUtil.getDateTime("yyyy-MM-dd")+" 00:00:00";
+					}else {
+						time = time.replaceAll("/", "-");
+						time = "20" + time + " 00:00:00";
+					}
+					if(postInfo.select("div.info > span").eq(3).text().substring(6).equals("")) {
+						break;
+					}
 					int views = Integer.parseInt(postInfo.select("div.info > span").eq(3).text().substring(6));
 					String link = "http://www.slrclub.com/" + postInfo.select("p.title > a").attr("href");
-					time = time.replaceAll("/", "-");
-					time = "20" + time + " 00:00:00";
 					postInfo = null;
 
 					CommuDTO pDTO = new CommuDTO();
@@ -955,6 +964,9 @@ public class CommuService implements ICommuService {
 					String title = postInfo.select("p.title > a").text();
 					String writer = postInfo.select("span.name > span").text();
 					String time = postInfo.select("span.date").text();
+					if(postInfo.select("div.info > span").eq(3).text().substring(6).equals("")) {
+						break;
+					}
 					int views = Integer.parseInt(postInfo.select("div.info > span").eq(3).text().substring(6));
 					String link = "http://www.slrclub.com/" + postInfo.select("p.title > a").attr("href");
 					time = time.replaceAll("/", "-");
@@ -1210,7 +1222,11 @@ public class CommuService implements ICommuService {
 				if(time.contains(":")) {
 					time = DateUtil.getDateTime("yyyy-MM-dd");
 				}
-				int views = Integer.parseInt(StringReplace(postInfo.select("span.viewV").text()));
+				int views = 0;
+				if(StringReplace(postInfo.select("span.viewV").text()).equals("")){
+					break;
+				}
+				views = Integer.parseInt(StringReplace(postInfo.select("span.viewV").text()));
 				String link = postInfo.select("td").eq(1).select("a").attr("href");
 				time = time + " 00:00:00";
 				postInfo = null;

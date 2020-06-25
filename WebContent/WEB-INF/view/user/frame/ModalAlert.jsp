@@ -24,7 +24,8 @@
 			<div class="modal-header">
 				<h4 class="modal-title" id="searchLabel">CA.</h4>
 			</div>
-			<div id="search_modal_body" class="modal-body">검색중입니다.</div>
+			<div id="search_modal_body" class="modal-body">검색중입니다.
+			</div>
 		</div>
 	</div>
 </div>

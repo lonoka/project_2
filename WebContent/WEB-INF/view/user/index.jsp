@@ -144,7 +144,8 @@ h2 a:hover {
 }
 
 #ticker{
-	float:left;width:100px;
+	float:left;
+	width:100%;
 }
 .navi{
 	float:right;
@@ -152,6 +153,7 @@ h2 a:hover {
 .recommend_text {
 	height:30px; 
 	overflow:hidden;
+	width: 200px;
 }
 .recommend_text ul,.recommend_text li {
 	margin:0; 
@@ -164,6 +166,7 @@ h2 a:hover {
 	color : black;
 	display:block;
 	text-decoration:none;
+	text-overflow: ellipsis;
 }
 
 </style>
