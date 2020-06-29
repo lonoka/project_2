@@ -605,6 +605,7 @@ h2 a:hover {
 				List<DataDTO> oList = (List<DataDTO>) pList.get(j).get("oList");
 		%>
 		<script type="text/javascript">
+		//차트 벨류값 받아오기
 	<%if (oList.get(0).getWord().equals("긍정")) {%>
 	var positive<%=j%> = <%=oList.get(0).getCount()%>
 	var negative<%=j%> = <%=oList.get(1).getCount()%>
@@ -621,9 +622,11 @@ h2 a:hover {
 		// Themes end
 
 		// create chart
+		// 차트위치 지정
 		var chart = am4core.create("opinion_chart_<%=j%>", am4charts.GaugeChart);
 		chart.hiddenState.properties.opacity = 0; // this makes initial fade in effect
 
+		// 차트 크기
 		chart.innerRadius = -25;
 
 		var axis = chart.xAxes.push(new am4charts.ValueAxis());
@@ -635,6 +638,7 @@ h2 a:hover {
 
 		var colorSet = new am4core.ColorSet();
 
+		//차트 색상 지정
 		var range0 = axis.axisRanges.create();
 		range0.value = 0;
 		range0.endValue = 50;
@@ -649,6 +653,7 @@ h2 a:hover {
 		range1.axisFill.fill = am4core.color("#92A8D1");
 		range1.axisFill.zIndex = -1;
 
+		// 차트 화살표 생성
 		var hand = chart.hands.push(new am4charts.ClockHand());
 
 		hand.showValue(cal<%=j%>, 100, am4core.ease.cubicOut);
