@@ -7,7 +7,7 @@
 		<div class="modal-content">
 			<div class="modal-header">
 				<h4 class="modal-title" id="loginLabel">
-					<span class="h2 mb-0">CA<span class="text-primary">.</span>
+					<span class="mb-0">CommunityAnalysis<span class="text-primary">.</span>
 					</span>Login
 				</h4>
 				<button type="button" class="close" data-dismiss="modal"

@@ -171,7 +171,7 @@ h2 a:hover {
 
 </style>
 
-<title>CA.</title>
+<title>CommunityAnalysis</title>
 </head>
 <body data-spy="scroll" data-offset="300">
 

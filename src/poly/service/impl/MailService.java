@@ -64,7 +64,7 @@ public class MailService implements IMailService {
 			message.addRecipient(Message.RecipientType.TO, new InternetAddress("dabookshelf2019@gmail.com"));
 
 			// 메일 제목
-			message.setSubject("CA. 고객문의 이메일입니다.");
+			message.setSubject("CommunityAnalysis 고객문의 이메일입니다.");
 
 			// 메일 내용
 			message.setText(" 문의자 : " + pDTO.getContactName() + "\n 전화번호 : " + pDTO.getContactTel() + "\n 이메일 : "

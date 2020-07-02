@@ -5,7 +5,7 @@
 	<div class="modal-dialog modal-dialog-centered modal-sm">
 		<div class="modal-content">
 			<div class="modal-header">
-				<h4 class="modal-title" id="alertLabel">CA.</h4>
+				<h4 class="modal-title" id="alertLabel">CommunityAnalysis</h4>
 				<button type="button" class="close" data-dismiss="modal"
 					aria-label="Close">
 					<span aria-hidden="true">&times;</span>
@@ -22,7 +22,7 @@
 	<div class="modal-dialog modal-dialog-centered modal-sm">
 		<div class="modal-content">
 			<div class="modal-header">
-				<h4 class="modal-title" id="searchLabel">CA.</h4>
+				<h4 class="modal-title" id="searchLabel">CommunityAnalysis</h4>
 			</div>
 			<div id="search_modal_body" class="modal-body">검색중입니다.
 			</div>
@@ -36,7 +36,7 @@
 	<div class="modal-dialog modal-dialog-centered modal-sm">
 		<div class="modal-content">
 			<div class="modal-header">
-				<h4 class="modal-title" id="confirmLabel">CA.</h4>
+				<h4 class="modal-title" id="confirmLabel">CommunityAnalysis</h4>
 				<button type="button" class="close" data-dismiss="modal"
 					aria-label="Close" onclick="reset_confirm_modal()">
 					<span aria-hidden="true">&times;</span>

@@ -7,7 +7,7 @@
 	<div class="modal-dialog modal-lg modal-dialog-centered">
 		<div class="modal-content">
 			<div class="modal-header">
-				<h4 class="modal-title" id="crmLabel">CA. crm</h4>
+				<h4 class="modal-title" id="crmLabel">CommunityAnalysis crm</h4>
 				<button type="button" class="close" data-dismiss="modal" onclick="crm_reset()"
 					aria-label="Close">
 					<span aria-hidden="true">&times;</span>

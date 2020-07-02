@@ -41,7 +41,7 @@
 		})
 	}
 </script>
-<title>CA.</title>
+<title>CommunityAnalysis</title>
 </head>
 <body>
 	<div id="overlayer"></div>
