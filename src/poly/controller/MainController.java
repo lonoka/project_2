@@ -40,7 +40,8 @@ public class MainController {
 
 		log.info(this.getClass().getName() + "rConnection start!");
 		//RConnection c = new RConnection("54.180.67.42",6311);
-		RConnection c = new RConnection("192.168.170.161",6311);
+		//RConnection c = new RConnection("192.168.170.161",6311);
+		RConnection c = new RConnection();
 		c.login("lonoka","scarlet14!");
 		c.eval("library(tidyverse)");
 		c.eval("library(KoNLP)");

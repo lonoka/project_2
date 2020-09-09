@@ -610,7 +610,8 @@ public class CommuService implements ICommuService {
 
 		// R 연결 후 라이브러리 추가
 		//RConnection c = new RConnection("54.180.67.42",6311);
-		RConnection c = new RConnection("192.168.170.161",6311);
+		//RConnection c = new RConnection("192.168.170.161",6311);
+		RConnection c = new RConnection();
 		c.login("lonoka","scarlet14!");
 
 		String colNm = str + DateUtil.getDateTime("yyyyMMddHH");
